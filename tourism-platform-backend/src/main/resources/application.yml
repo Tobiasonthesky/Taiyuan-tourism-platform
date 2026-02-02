@@ -1,0 +1,141 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: tourism-platform
+  
+  # MVC配置（解决Swagger兼容性问题）
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+    # 国际化配置
+  messages:
+    basename: messages
+    encoding: UTF-8
+    cache-duration: 3600
+  
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tourism_platform?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    hikari:
+      # 连接池配置，优化并发性能
+      minimum-idle: 5           # 最小空闲连接数
+      maximum-pool-size: 20      # 最大连接池大小
+      auto-commit: true
+      idle-timeout: 30000        # 空闲连接超时时间（30秒）
+      max-lifetime: 1800000      # 连接最大生存时间（30分钟）
+      connection-timeout: 30000  # 连接超时时间（30秒）
+      connection-test-query: SELECT 1
+  
+  # Redis配置（可选）
+  redis:
+    host: localhost
+    port: 6379
+    password: 
+    database: 0
+    timeout: 3000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+
+# MyBatis Plus配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.tourism.entity
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# JWT配置
+jwt:
+  secret: tourism-platform-secret-key-2024-spring-boot-vue
+  expiration: 86400000 # 24小时，单位毫秒
+
+# 文件上传配置
+file:
+  upload:
+    # 使用相对路径，相对于项目根目录（或jar包所在目录）
+    # 如果设置为空字符串，将使用项目根目录下的uploads文件夹
+    path: ./uploads/
+    max-size: 10485760 # 10MB
+
+# Knife4j配置
+knife4j:
+  enable: true
+  openapi:
+    title: 家乡文旅宣传平台API文档
+    description: 基于Spring Boot的家乡文旅宣传平台接口文档
+    version: 1.0.0
+
+
+
+# 地图API配置
+map:
+  api:
+    key: 7ba19dba0a4d392930866c7429439cc8 # 高德地图或百度地图API密钥 web api
+    type: amap # amap-高德, baidu-百度
+
+# AI配置（DeepSeek）
+ai:
+  deepseek:
+    enabled: true # 是否启用AI功能，设置为true启用
+    api-key: sk-e7923f25d8824785b0ed59254875b79e # DeepSeek API密钥
+    base-url: https://api.deepseek.com # DeepSeek API基础URL
+strategy:
+    prompt:
+      # 系统角色定义
+      system-role: "您是一位资深的旅游规划专家和内容创作顾问，具备丰富的目的地知识、行程规划经验和文案撰写能力。您的职责是基于用户提供的需求与资源信息，生成专业、实用、可执行的旅游攻略内容。"
+      # 章节标识符
+      requirement-section: "【用户需求分析】"
+      attractions-section: "【目的地景点资源】"
+      foods-section: "【当地美食推荐】"
+      hotels-section: "【住宿选择建议】"
+      output-section: "【内容生成规范】"
+      # JSON输出结构模板
+      json-template: |
+        {
+          "title": "攻略标题（≤20字，需体现目的地特色与行程主题）",
+          "description": "攻略摘要（100-200字，精炼概括行程亮点、核心体验与推荐理由）",
+          "content": "详细攻略正文（800-1500字，包含：每日行程安排、景点游览建议、美食体验指南、住宿推荐理由、交通路线规划，确保时间分配合理、路线逻辑清晰）",
+          "tips": "实用贴士（200-300字，涵盖交通出行、消费预算、安全防护、最佳游览时间等关键信息）",
+          "bestSeason": "最佳旅游季节（格式：季节名称 + 推荐理由，示例：春季，气候温和宜人，花季景观优美，适合户外活动）"
+        }
+      # 内容生成规范与约束条件
+      requirements: |
+        ## 内容质量要求
+        1. 行程规划需遵循时间合理性与地理连贯性原则，避免重复路线与无效往返，确保每日行程紧凑且可执行
+        2. 资源使用约束：景点、美食、酒店信息**严格限定于提供的资源列表**，不得自行添加或虚构内容
+        3. 预算管理：如用户提供预算信息，需按日分配消费额度，明确标注交通、餐饮、住宿、门票等核心支出项
+        4. 文案风格：语言需生动有趣、富有感染力，突出目的地独特文化、自然景观与人文特色，避免模板化、同质化表述
+        5. 字数限制：严格遵守字段长度约束，景点描述≤100字/个，美食描述≤80字/个，确保信息精炼且完整
+        6. 输出格式：最终响应**仅输出标准JSON对象**，不得包含任何前置说明、后置注释或其他非JSON格式文本
+        7. 资源兜底策略：当可用景点列表为空或与目的地不匹配时，自动采用太原市实际热门景点进行推荐与行程规划
+        ## 专业标准
+        - 行程安排需考虑实际交通时间与景点开放时间
+        - 推荐内容需兼顾不同用户群体的需求（如家庭游、情侣游、商务游等）
+        - 消费建议需结合当地实际物价水平
+        - 安全提示需涵盖常见风险点与应对措施
+      # 字段长度限制配置
+      attraction-description-length: 100
+      food-description-length: 80
+
+# 日志配置
+logging:
+  level:
+    com.tourism: debug
+    org.springframework.security: debug

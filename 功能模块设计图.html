@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家乡文旅宣传平台功能模块设计图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+        
+        .title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 50px;
+            color: white;
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+        }
+        
+        .diagram-wrapper {
+            position: relative;
+            min-height: 1400px;
+            padding: 20px;
+        }
+        
+        /* 顶层系统标题 */
+        .system-root {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .system-root-box {
+            display: inline-block;
+            background: linear-gradient(135deg, #409EFF 0%, #67C23A 100%);
+            color: white;
+            padding: 20px 50px;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 6px 20px rgba(64, 158, 255, 0.4);
+        }
+        
+        /* 主层容器 */
+        .main-layers {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .layer {
+            position: relative;
+            z-index: 10;
+        }
+        
+        .layer-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 25px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 5px solid #409EFF;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .modules-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* 模块卡片 */
+        .module-card {
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            min-width: 200px;
+            max-width: 280px;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(64, 158, 255, 0.3);
+            border-color: #409EFF;
+        }
+        
+        .module-card.core {
+            background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+            border-color: #1890ff;
+        }
+        
+        .module-card.important {
+            background: linear-gradient(135deg, #fff7e6 0%, #ffe7ba 100%);
+            border-color: #fa8c16;
+        }
+        
+        .module-card.user {
+            background: linear-gradient(135deg, #f0f5ff 0%, #d6e4ff 100%);
+        }
+        
+        .module-card.admin {
+            background: linear-gradient(135deg, #fff0f6 0%, #ffd6e7 100%);
+        }
+        
+        .module-header {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+            text-align: center;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e8e8e8;
+        }
+        
+        .module-content {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.8;
+        }
+        
+        .module-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .module-content li {
+            padding: 4px 0;
+            padding-left: 18px;
+            position: relative;
+        }
+        
+        .module-content li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #409EFF;
+            font-weight: bold;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 1400px) {
+            .modules-container {
+                gap: 15px;
+            }
+            
+            .module-card {
+                min-width: 180px;
+                max-width: 240px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 22px;
+                padding: 15px;
+            }
+            
+            .module-card {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">基于Spring Boot的家乡文旅宣传平台功能模块设计图</div>
+        
+        <div class="diagram-wrapper">
+            <!-- 系统根节点 -->
+            <div class="system-root">
+                <div class="system-root-box">家乡文旅宣传平台</div>
+            </div>
+            
+            <!-- 主功能层 -->
+            <div class="main-layers">
+                <!-- 第一层：核心功能层 -->
+                <div class="layer">
+                    <div class="layer-title">核心功能层</div>
+                    <div class="modules-container">
+                        <div class="module-card core" data-module="user-auth">
+                            <div class="module-header">用户认证模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>用户注册</li>
+                                    <li>用户登录</li>
+                                    <li>JWT Token认证</li>
+                                    <li>用户登出</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card core" data-module="content-display">
+                            <div class="module-header">内容展示模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>景点展示</li>
+                                    <li>美食展示</li>
+                                    <li>文化展示</li>
+                                    <li>攻略展示</li>
+                                    <li>酒店展示</li>
+                                    <li>体验项目展示</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card important" data-module="ai-generate">
+                            <div class="module-header">AI智能攻略生成</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>DeepSeek API集成</li>
+                                    <li>提示词模板构建</li>
+                                    <li>攻略内容生成</li>
+                                    <li>JSON格式解析</li>
+                                    <li>攻略保存与审核</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card core" data-module="map-service">
+                            <div class="module-header">地图导航模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>高德地图集成</li>
+                                    <li>地理编码服务</li>
+                                    <li>地图标记展示</li>
+                                    <li>路径规划</li>
+                                    <li>地址自动解析</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 第二层：业务功能层 -->
+                <div class="layer">
+                    <div class="layer-title">业务功能层</div>
+                    <div class="modules-container">
+                        <div class="module-card user" data-module="user-interact">
+                            <div class="module-header">用户交互模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>收藏功能</li>
+                                    <li>评论功能</li>
+                                    <li>评分功能</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card user" data-module="booking">
+                            <div class="module-header">在线预订模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>门票预订</li>
+                                    <li>酒店预订</li>
+                                    <li>体验项目预订</li>
+                                    <li>订单管理</li>
+                                    <li>订单状态跟踪</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card user" data-module="recommend">
+                            <div class="module-header">智能推荐模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>热门推荐</li>
+                                    <li>个性化推荐</li>
+                                    <li>相关推荐</li>
+                                    <li>推荐算法降级</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card user" data-module="user-center">
+                            <div class="module-header">用户中心模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>个人信息管理</li>
+                                    <li>收藏列表</li>
+                                    <li>浏览历史</li>
+                                    <li>订单列表</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card user" data-module="content-submit">
+                            <div class="module-header">内容提交模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>景点提交</li>
+                                    <li>美食提交</li>
+                                    <li>文化提交</li>
+                                    <li>攻略提交</li>
+                                    <li>地址自动解析</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 第三层：管理功能层 -->
+                <div class="layer">
+                    <div class="layer-title">管理功能层</div>
+                    <div class="modules-container">
+                        <div class="module-card admin" data-module="content-mgmt">
+                            <div class="module-header">内容管理模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>景点管理（增删改查）</li>
+                                    <li>美食管理（增删改查）</li>
+                                    <li>文化管理（增删改查）</li>
+                                    <li>攻略管理（增删改查）</li>
+                                    <li>酒店管理（增删改查）</li>
+                                    <li>体验项目管理</li>
+                                    <li>图片管理</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card admin important" data-module="audit-mgmt">
+                            <div class="module-header">审核管理模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>待审核内容列表</li>
+                                    <li>内容审核（通过/拒绝）</li>
+                                    <li>自动获取地理位置</li>
+                                    <li>审核状态管理</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card admin" data-module="user-mgmt">
+                            <div class="module-header">用户管理模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>用户列表查询</li>
+                                    <li>用户搜索</li>
+                                    <li>角色管理</li>
+                                    <li>权限控制</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card admin" data-module="order-mgmt">
+                            <div class="module-header">订单管理模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>订单列表查询</li>
+                                    <li>订单状态筛选</li>
+                                    <li>订单详情查看</li>
+                                    <li>订单处理</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card admin" data-module="system-mgmt">
+                            <div class="module-header">系统管理模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>公告管理</li>
+                                    <li>分类管理</li>
+                                    <li>数据统计</li>
+                                    <li>报表生成</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 第四层：支撑功能层 -->
+                <div class="layer">
+                    <div class="layer-title">支撑功能层</div>
+                    <div class="modules-container">
+                        <div class="module-card" data-module="file-upload">
+                            <div class="module-header">文件上传模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>图片上传</li>
+                                    <li>文件格式验证</li>
+                                    <li>文件大小限制</li>
+                                    <li>文件存储管理</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card" data-module="category-mgmt">
+                            <div class="module-header">分类管理模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>景点分类</li>
+                                    <li>美食分类</li>
+                                    <li>文化分类</li>
+                                    <li>分类查询</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card" data-module="browse-history">
+                            <div class="module-header">浏览记录模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>浏览记录记录</li>
+                                    <li>浏览历史查询</li>
+                                    <li>浏览统计</li>
+                                    <li>个性化推荐支持</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card" data-module="favorite">
+                            <div class="module-header">收藏管理模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>收藏功能</li>
+                                    <li>收藏列表</li>
+                                    <li>收藏状态查询</li>
+                                    <li>收藏删除</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="module-card" data-module="comment-mgmt">
+                            <div class="module-header">评论管理模块</div>
+                            <div class="module-content">
+                                <ul>
+                                    <li>评论发布</li>
+                                    <li>评论列表</li>
+                                    <li>评论回复</li>
+                                    <li>评论统计</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

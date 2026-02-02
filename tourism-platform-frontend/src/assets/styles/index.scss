@@ -1,0 +1,228 @@
+@import './variables.scss';
+
+// 全局样式
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: $font-size-base;
+  line-height: 1.6;
+  color: $text-primary;
+  background-color: $bg-color;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// 清除浮动
+.clearfix::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+// 容器
+.container {
+  width: 1200px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+  
+  @media (max-width: 1200px) {
+    width: 100%;
+    padding: 0 $spacing-md;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 0 $spacing-sm;
+  }
+}
+
+// 页面标题
+.page-title {
+  font-size: $font-size-title;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-lg;
+  color: $text-primary;
+  position: relative;
+  padding-bottom: $spacing-md;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: $gradient-primary;
+    border-radius: $border-radius-sm;
+  }
+}
+
+// 章节标题
+.section-title {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-lg;
+  color: $text-primary;
+  position: relative;
+  padding-left: $spacing-md;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 24px;
+    background: $primary-color;
+    border-radius: $border-radius-sm;
+  }
+}
+
+// 卡片样式
+.card {
+  background: $bg-white;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-light;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  transition: $transition-base;
+  
+  &:hover {
+    box-shadow: $shadow-base;
+    transform: translateY(-2px);
+  }
+}
+
+// 文本省略
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-ellipsis-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+.text-ellipsis-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+// 按钮样式增强
+.el-button {
+  border-radius: $border-radius-md;
+  font-weight: $font-weight-medium;
+  transition: $transition-base;
+  
+  &.is-round {
+    border-radius: 20px;
+  }
+}
+
+// 卡片样式增强
+.el-card {
+  border-radius: $border-radius-md;
+  border: 1px solid $border-lighter;
+  box-shadow: $shadow-light;
+  transition: $transition-base;
+  
+  &:hover {
+    box-shadow: $shadow-base;
+  }
+  
+  .el-card__body {
+    padding: $spacing-lg;
+  }
+}
+
+// 输入框样式增强
+.el-input__inner {
+  border-radius: $border-radius-md;
+  transition: $transition-base;
+  
+  &:focus {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.1);
+  }
+}
+
+// 标签页样式增强
+.el-tabs__item {
+  font-weight: $font-weight-medium;
+  transition: $transition-base;
+  
+  &.is-active {
+    color: $primary-color;
+    font-weight: $font-weight-bold;
+  }
+}
+
+.el-tabs__active-bar {
+  background-color: $primary-color;
+  height: 3px;
+}
+
+// 表格样式增强
+.el-table {
+  border-radius: $border-radius-md;
+  overflow: hidden;
+  
+  th {
+    background-color: $bg-light;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+  }
+  
+  tr:hover {
+    background-color: rgba(64, 158, 255, 0.05);
+  }
+}
+
+// 分页样式增强
+.el-pagination {
+  .el-pager li {
+    border-radius: $border-radius-sm;
+    transition: $transition-base;
+    
+    &.active {
+      background-color: $primary-color;
+      color: $bg-white;
+    }
+  }
+}
+
+// 响应式
+@media (max-width: 1200px) {
+  .container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: $font-size-xl;
+  }
+  
+  .section-title {
+    font-size: $font-size-lg;
+  }
+}
+

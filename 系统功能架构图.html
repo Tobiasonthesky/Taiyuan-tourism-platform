@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家乡文旅宣传平台系统功能架构图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+        
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: white;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+        }
+        
+        .diagram-container {
+            position: relative;
+            min-height: 1000px;
+            padding: 80px 20px 20px;
+        }
+        
+        .system-title-box {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #409EFF 0%, #67C23A 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
+            z-index: 10;
+            white-space: nowrap;
+        }
+        
+        .sides-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 60px;
+            align-items: flex-start;
+        }
+        
+        .side {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .side-label {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .user-side .side-label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .admin-side .side-label {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .module-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .group-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 12px;
+            padding-left: 10px;
+            border-left: 4px solid #409EFF;
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+        
+        .modules-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .module {
+            background: white;
+            border: 2px solid #333;
+            border-radius: 6px;
+            padding: 14px 12px;
+            font-size: 13px;
+            text-align: center;
+            flex: 1;
+            min-width: 110px;
+            position: relative;
+            cursor: default;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            line-height: 1.4;
+        }
+        
+        .module:hover {
+            background: #f0f9ff;
+            border-color: #409EFF;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(64, 158, 255, 0.3);
+        }
+        
+        .module.core {
+            background: #e6f7ff;
+            border-color: #1890ff;
+            font-weight: bold;
+        }
+        
+        .module.important {
+            background: #fff7e6;
+            border-color: #fa8c16;
+            font-weight: bold;
+        }
+        
+        .module.full-width {
+            width: 100%;
+            flex: none;
+        }
+        
+        .input-label {
+            font-size: 10px;
+            color: #999;
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            background: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+        }
+        
+        /* SVG箭头层 */
+        .arrows-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .arrow {
+            stroke: #333;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+        
+        .arrow.dashed {
+            stroke-dasharray: 5,5;
+            stroke: #666;
+        }
+        
+        .arrow-label {
+            font-size: 11px;
+            fill: #666;
+            background: white;
+            padding: 2px 6px;
+        }
+        
+        /* 中心分隔线 */
+        .center-divider {
+            position: absolute;
+            left: 50%;
+            top: 100px;
+            bottom: 20px;
+            width: 2px;
+            background: linear-gradient(to bottom, #ddd, #bbb, #ddd);
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1400px) {
+            .sides-container {
+                flex-direction: column;
+                gap: 40px;
+            }
+            
+            .side {
+                width: 100%;
+            }
+            
+            .center-divider {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .title {
+                font-size: 20px;
+                padding: 15px;
+            }
+            
+            .modules-row {
+                flex-direction: column;
+            }
+            
+            .module {
+                width: 100%;
+            }
+            
+            .system-title-box {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">基于Spring Boot的家乡文旅宣传平台系统功能架构图</div>
+        
+        <div class="diagram-container">
+            <!-- 中心分隔线 -->
+            <div class="center-divider"></div>
+            
+            <!-- SVG箭头层 -->
+            <svg class="arrows-layer" id="arrows-svg">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#333" />
+                    </marker>
+                </defs>
+            </svg>
+            
+            <!-- 系统标题 -->
+            <div class="system-title-box">家乡文旅宣传平台</div>
+            
+            <!-- 两侧内容 -->
+            <div class="sides-container">
+                <!-- 用户端 -->
+                <div class="side user-side">
+                    <div class="side-label">用户端</div>
+                    
+                    <!-- 用户认证 -->
+                    <div class="module-group" data-group="auth">
+                        <div class="group-title">用户认证</div>
+                        <div class="modules-row">
+                            <div class="module core" data-module="register">
+                                <div class="input-label">用户名/密码</div>
+                                注册
+                            </div>
+                            <div class="module core" data-module="login">
+                                <div class="input-label">用户名/密码</div>
+                                登录
+                            </div>
+                            <div class="module" data-module="logout">登出</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 内容浏览 -->
+                    <div class="module-group" data-group="browse">
+                        <div class="group-title">内容浏览</div>
+                        <div class="modules-row">
+                            <div class="module important full-width" data-module="query">
+                                景点/美食/文化/攻略查询
+                            </div>
+                        </div>
+                        <div class="modules-row">
+                            <div class="module" data-module="attraction-detail">景点详情</div>
+                            <div class="module" data-module="food-detail">美食详情</div>
+                            <div class="module" data-module="culture-detail">文化详情</div>
+                        </div>
+                        <div class="modules-row">
+                            <div class="module" data-module="strategy-detail">攻略详情</div>
+                            <div class="module important" data-module="ai-generate">AI智能攻略生成</div>
+                            <div class="module" data-module="map">地图导航</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 用户交互 -->
+                    <div class="module-group" data-group="interact">
+                        <div class="group-title">用户交互</div>
+                        <div class="modules-row">
+                            <div class="module" data-module="favorite">收藏功能</div>
+                            <div class="module" data-module="comment">评论功能</div>
+                            <div class="module" data-module="order">在线预订</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 用户中心 -->
+                    <div class="module-group" data-group="center">
+                        <div class="group-title">用户中心</div>
+                        <div class="modules-row">
+                            <div class="module core full-width" data-module="profile">个人中心</div>
+                        </div>
+                        <div class="modules-row">
+                            <div class="module" data-module="favorite-list">收藏列表</div>
+                            <div class="module" data-module="history">浏览历史</div>
+                            <div class="module" data-module="order-list">订单列表</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 内容提交 -->
+                    <div class="module-group" data-group="submit">
+                        <div class="group-title">内容提交</div>
+                        <div class="modules-row">
+                            <div class="module important full-width" data-module="submit-content">
+                                内容提交（景点/美食/文化/攻略）
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 管理端 -->
+                <div class="side admin-side">
+                    <div class="side-label">管理端</div>
+                    
+                    <!-- 管理员认证 -->
+                    <div class="module-group" data-group="admin-auth">
+                        <div class="group-title">管理员认证</div>
+                        <div class="modules-row">
+                            <div class="module core" data-module="admin-login">
+                                <div class="input-label">管理员账号</div>
+                                登录
+                            </div>
+                            <div class="module" data-module="admin-logout">登出</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 内容管理 -->
+                    <div class="module-group" data-group="content-mgmt">
+                        <div class="group-title">内容管理</div>
+                        <div class="modules-row">
+                            <div class="module important full-width" data-module="content-crud">
+                                内容管理（增删改查、图片管理）
+                            </div>
+                        </div>
+                        <div class="modules-row">
+                            <div class="module" data-module="attraction-mgmt">景点管理</div>
+                            <div class="module" data-module="food-mgmt">美食管理</div>
+                            <div class="module" data-module="culture-mgmt">文化管理</div>
+                        </div>
+                        <div class="modules-row">
+                            <div class="module" data-module="strategy-mgmt">攻略管理</div>
+                            <div class="module" data-module="hotel-mgmt">酒店管理</div>
+                            <div class="module" data-module="experience-mgmt">体验项目管理</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 审核管理 -->
+                    <div class="module-group" data-group="audit">
+                        <div class="group-title">审核管理</div>
+                        <div class="modules-row">
+                            <div class="module important full-width" data-module="audit-mgmt">审核管理</div>
+                        </div>
+                        <div class="modules-row">
+                            <div class="module" data-module="pending-list">待审核内容列表</div>
+                            <div class="module" data-module="audit-action">内容审核（通过/拒绝）</div>
+                            <div class="module" data-module="auto-geocode">自动获取地理位置</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 其他管理 -->
+                    <div class="module-group" data-group="system-mgmt">
+                        <div class="group-title">系统管理</div>
+                        <div class="modules-row">
+                            <div class="module" data-module="user-mgmt">用户管理</div>
+                            <div class="module" data-module="order-mgmt">订单管理</div>
+                            <div class="module" data-module="announcement-mgmt">公告管理</div>
+                        </div>
+                        <div class="modules-row">
+                            <div class="module" data-module="statistics">数据统计（生成报表）</div>
+                            <div class="module" data-module="category-mgmt">分类管理</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 动态绘制连接线
+        function drawConnections() {
+            const svg = document.getElementById('arrows-svg');
+            const container = document.querySelector('.diagram-container');
+            const containerRect = container.getBoundingClientRect();
+            
+            // 清除现有箭头
+            const existingArrows = svg.querySelectorAll('.arrow:not(#arrowhead)');
+            existingArrows.forEach(arrow => arrow.remove());
+            
+            // 获取关键模块位置
+            const submitModule = document.querySelector('[data-module="submit-content"]');
+            const auditModule = document.querySelector('[data-module="audit-mgmt"]');
+            const pendingModule = document.querySelector('[data-module="pending-list"]');
+            
+            if (submitModule && auditModule && pendingModule) {
+                const submitRect = submitModule.getBoundingClientRect();
+                const auditRect = auditModule.getBoundingClientRect();
+                const pendingRect = pendingModule.getBoundingClientRect();
+                
+                const containerTop = containerRect.top;
+                const containerLeft = containerRect.left;
+                
+                // 计算相对位置
+                const submitX = submitRect.left + submitRect.width / 2 - containerLeft;
+                const submitY = submitRect.top + submitRect.height / 2 - containerTop;
+                const auditX = auditRect.left + auditRect.width / 2 - containerLeft;
+                const auditY = auditRect.top + auditRect.height / 2 - containerTop;
+                const pendingX = pendingRect.left + pendingRect.width / 2 - containerLeft;
+                const pendingY = pendingRect.top + pendingRect.height / 2 - containerTop;
+                
+                // 绘制跨端连接线
+                const line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line1.setAttribute('class', 'arrow dashed');
+                line1.setAttribute('x1', submitX);
+                line1.setAttribute('y1', submitY);
+                line1.setAttribute('x2', pendingX);
+                line1.setAttribute('y2', pendingY);
+                svg.appendChild(line1);
+                
+                // 添加标签
+                const label1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label1.setAttribute('class', 'arrow-label');
+                label1.setAttribute('x', (submitX + pendingX) / 2);
+                label1.setAttribute('y', (submitY + pendingY) / 2 - 5);
+                label1.setAttribute('text-anchor', 'middle');
+                label1.textContent = '提交内容';
+                svg.appendChild(label1);
+                
+                // 审核反馈线
+                const line2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line2.setAttribute('class', 'arrow dashed');
+                line2.setAttribute('x1', auditX);
+                line2.setAttribute('y1', auditY + 30);
+                line2.setAttribute('x2', submitX);
+                line2.setAttribute('y2', submitY + 30);
+                svg.appendChild(line2);
+                
+                const label2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label2.setAttribute('class', 'arrow-label');
+                label2.setAttribute('x', (auditX + submitX) / 2);
+                label2.setAttribute('y', (auditY + submitY) / 2 + 25);
+                label2.setAttribute('text-anchor', 'middle');
+                label2.textContent = '审核反馈';
+                svg.appendChild(label2);
+            }
+        }
+        
+        // 更新SVG尺寸
+        function updateSVGSize() {
+            const svg = document.getElementById('arrows-svg');
+            const container = document.querySelector('.diagram-container');
+            svg.setAttribute('width', container.offsetWidth);
+            svg.setAttribute('height', container.offsetHeight);
+        }
+        
+        window.addEventListener('load', () => {
+            updateSVGSize();
+            setTimeout(drawConnections, 100);
+        });
+        
+        window.addEventListener('resize', () => {
+            updateSVGSize();
+            setTimeout(drawConnections, 100);
+        });
+    </script>
+</body>
+</html>
