@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
- * 推荐控制器
+ * ?
  */
 @RestController
 @RequestMapping("/recommendations")
-@Api(tags = "推荐管理")
+@Api(tags = "")
 public class RecommendationController {
     
     @Autowired
@@ -26,7 +26,7 @@ public class RecommendationController {
     private JwtUtil jwtUtil;
     
     @GetMapping("/hot")
-    @ApiOperation("获取热门推荐")
+    @ApiOperation("")
     public Result<Map<String, ?>> getHotRecommendations(
             @RequestParam(required = false) String type,
             @RequestParam(required = false, defaultValue = "10") Integer limit) {
@@ -35,13 +35,13 @@ public class RecommendationController {
     }
     
     @GetMapping("/personalized")
-    @ApiOperation("获取个性化推荐")
+    @ApiOperation("")
     public Result<Map<String, ?>> getPersonalizedRecommendations(
             @RequestParam(required = false, defaultValue = "10") Integer limit,
             HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         if (token == null) {
-            // 未登录用户返回热门推荐
+            // ?
             return Result.success(recommendationService.getHotRecommendations(null, limit));
         }
         
@@ -52,7 +52,7 @@ public class RecommendationController {
                 return Result.success(result);
             }
         } catch (Exception e) {
-            // Token无效，返回热门推荐
+            // Token?
         }
         
         return Result.success(recommendationService.getHotRecommendations(null, limit));

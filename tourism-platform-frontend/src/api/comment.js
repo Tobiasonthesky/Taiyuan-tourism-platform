@@ -27,9 +27,9 @@ export function deleteComment(id) {
 }
 
 // 添加评论回复
-export function addCommentReply(data) {
+export function addCommentReply(commentId, data) {
   return request({
-    url: '/comment-replies',
+    url: `/comments/${commentId}/replies`,
     method: 'post',
     data
   })
@@ -38,9 +38,16 @@ export function addCommentReply(data) {
 // 获取评论回复列表
 export function getCommentReplies(commentId) {
   return request({
-    url: '/comment-replies',
-    method: 'get',
-    params: { commentId }
+    url: `/comments/${commentId}/replies`,
+    method: 'get'
+  })
+}
+
+// 删除评论回复
+export function deleteCommentReply(commentId, replyId) {
+  return request({
+    url: `/comments/${commentId}/replies/${replyId}`,
+    method: 'delete'
   })
 }
 

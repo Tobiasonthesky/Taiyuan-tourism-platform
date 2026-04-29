@@ -1,7 +1,7 @@
 <template>
   <div class="attraction-page">
     <div class="container">
-      <h1 class="page-title">景点列表</h1>
+      <h1 class="page-title">{{ $t('attraction.title') }}</h1>
       
       <!-- 搜索和筛选 -->
       <el-card class="filter-card">
@@ -9,24 +9,24 @@
           <el-col :span="8">
             <el-input
               v-model="searchKeyword"
-              placeholder="搜索景点"
+              :placeholder="$t('common.search') + ' ' + $t('attraction.title')"
               prefix-icon="el-icon-search"
               @input="debouncedSearch"
               @keyup.enter.native="handleSearch"
             />
           </el-col>
           <el-col :span="6">
-            <el-select v-model="categoryId" placeholder="选择分类" clearable @change="handleSearch">
+            <el-select v-model="categoryId" :placeholder="$t('attraction.selectCategory')" clearable @change="handleSearch">
               <el-option
                 v-for="item in categories"
                 :key="item.id"
-                :label="item.name"
+                :label="getCategoryLabel(item.name)"
                 :value="item.id"
               />
             </el-select>
           </el-col>
           <el-col :span="4">
-            <el-button type="primary" @click="handleSearch">搜索</el-button>
+            <el-button type="primary" @click="handleSearch">{{ $t('common.search') }}</el-button>
           </el-col>
         </el-row>
       </el-card>
@@ -48,7 +48,7 @@
             />
             <div v-else class="card-image-placeholder">
               <i class="el-icon-picture-outline"></i>
-              <span>暂无图片</span>
+              <span>{{ $t('common.noImage') }}</span>
             </div>
             <div class="card-content">
               <h3>{{ item.name }}</h3>
@@ -59,7 +59,7 @@
               <div class="card-footer">
                 <span class="price">¥{{ item.ticketPrice }}</span>
                 <span class="views">
-                  <i class="el-icon-view"></i> {{ item.viewCount }}
+                  <i class="el-icon-view"></i> {{ item.viewCount }} {{ $t('common.views') }}
                 </span>
               </div>
             </div>
@@ -71,8 +71,8 @@
       <EmptyState
         v-else
         icon="el-icon-picture-outline"
-        title="暂无景点"
-        description="暂时没有找到相关景点"
+        :title="$t('common.noData')"
+        :description="$t('common.noData')"
       />
 
       <!-- 分页 -->
@@ -110,7 +110,7 @@ export default {
       searchKeyword: '',
       categoryId: null,
       page: 1,
-      size: 12,
+      size: 10,
       total: 0,
       loading: false
     }
@@ -124,6 +124,16 @@ export default {
     this.loadAttractions()
   },
   methods: {
+    getCategoryLabel(name) {
+      const categoryMap = {
+        '自然风光': 'natural',
+        '人文景观': 'cultural',
+        '历史古迹': 'historical',
+        '现代建筑': 'modern'
+      }
+      const key = categoryMap[name]
+      return key ? this.$t(`attraction.categories.${key}`) : name
+    },
     async loadCategories() {
       try {
         const res = await getAttractionCategories()

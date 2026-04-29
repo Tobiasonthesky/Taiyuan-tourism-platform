@@ -1,121 +1,121 @@
 <template>
   <div class="admin-page">
     <div class="container">
-      <h1 class="page-title">管理后台</h1>
+      <h1 class="page-title">{{ $t('admin.dashboard') }}</h1>
       
       <!-- 统计卡片 -->
       <div class="stats-grid">
         <el-card class="stat-card">
           <div class="stat-content">
             <div class="stat-value">{{ statistics.userCount }}</div>
-            <div class="stat-label">用户总数</div>
+            <div class="stat-label">{{ $t('admin.totalUsers') }}</div>
           </div>
         </el-card>
         <el-card class="stat-card">
           <div class="stat-content">
             <div class="stat-value">{{ statistics.adminCount }}</div>
-            <div class="stat-label">管理员数</div>
+            <div class="stat-label">{{ $t('admin.adminCount') }}</div>
           </div>
         </el-card>
         <el-card class="stat-card">
           <div class="stat-content">
             <div class="stat-value">{{ statistics.attractionCount }}</div>
-            <div class="stat-label">景点数</div>
+            <div class="stat-label">{{ $t('admin.attractionCount') }}</div>
           </div>
         </el-card>
         <el-card class="stat-card">
           <div class="stat-content">
             <div class="stat-value">{{ statistics.orderCount }}</div>
-            <div class="stat-label">订单数</div>
+            <div class="stat-label">{{ $t('admin.orderCount') }}</div>
           </div>
         </el-card>
         <el-card class="stat-card">
           <div class="stat-content">
             <div class="stat-value">{{ statistics.foodCount || 0 }}</div>
-            <div class="stat-label">美食数</div>
+            <div class="stat-label">{{ $t('admin.foodCount') }}</div>
           </div>
         </el-card>
         <el-card class="stat-card pending-card" @click.native="goToManage('audit')" style="cursor: pointer;">
           <div class="stat-content">
             <div class="stat-value" style="color: #E6A23C;">{{ statistics.pendingCount || 0 }}</div>
-            <div class="stat-label">待审核</div>
+            <div class="stat-label">{{ $t('admin.pendingCount') }}</div>
           </div>
         </el-card>
       </div>
 
       <!-- 功能菜单 -->
       <el-card class="menu-card">
-        <h2 class="menu-title">功能管理</h2>
+        <h2 class="menu-title">{{ $t('admin.functionManagement') }}</h2>
         <div class="menu-grid">
           <el-card class="menu-item" @click.native="goToManage('users')">
             <div class="menu-icon-wrapper">
               <i class="el-icon-user"></i>
             </div>
-            <h3>用户管理</h3>
-            <p>管理用户信息、角色和状态</p>
+            <h3>{{ $t('admin.userManagement') }}</h3>
+            <p>{{ $t('admin.userManagementDesc') }}</p>
           </el-card>
           <el-card class="menu-item" @click.native="goToManage('attractions')">
             <div class="menu-icon-wrapper">
               <i class="el-icon-picture-outline"></i>
             </div>
-            <h3>景点管理</h3>
-            <p>管理景点信息</p>
+            <h3>{{ $t('admin.attractionManagement') }}</h3>
+            <p>{{ $t('admin.attractionManagementDesc') }}</p>
           </el-card>
           <el-card class="menu-item" @click.native="goToManage('foods')">
             <div class="menu-icon-wrapper">
               <i class="el-icon-food"></i>
             </div>
-            <h3>美食管理</h3>
-            <p>管理美食信息</p>
+            <h3>{{ $t('admin.foodManagement') }}</h3>
+            <p>{{ $t('admin.foodManagementDesc') }}</p>
           </el-card>
           <el-card class="menu-item" @click.native="goToManage('cultures')">
             <div class="menu-icon-wrapper">
               <i class="el-icon-trophy"></i>
             </div>
-            <h3>文化管理</h3>
-            <p>管理文化信息</p>
+            <h3>{{ $t('admin.cultureManagement') }}</h3>
+            <p>{{ $t('admin.cultureManagementDesc') }}</p>
           </el-card>
           <el-card class="menu-item" @click.native="goToManage('strategies')">
             <div class="menu-icon-wrapper">
               <i class="el-icon-document"></i>
             </div>
-            <h3>攻略管理</h3>
-            <p>管理旅游攻略</p>
+            <h3>{{ $t('admin.strategyManagement') }}</h3>
+            <p>{{ $t('admin.strategyManagementDesc') }}</p>
           </el-card>
           <el-card class="menu-item" @click.native="goToManage('hotels')">
             <div class="menu-icon-wrapper">
               <i class="el-icon-office-building"></i>
             </div>
-            <h3>酒店管理</h3>
-            <p>管理酒店信息</p>
+            <h3>{{ $t('admin.hotelManagement') }}</h3>
+            <p>{{ $t('admin.hotelManagementDesc') }}</p>
           </el-card>
           <el-card class="menu-item" @click.native="goToManage('experiences')">
             <div class="menu-icon-wrapper">
               <i class="el-icon-star-on"></i>
             </div>
-            <h3>体验项目管理</h3>
-            <p>管理体验项目</p>
+            <h3>{{ $t('admin.experienceManagement') }}</h3>
+            <p>{{ $t('admin.experienceManagementDesc') }}</p>
           </el-card>
           <el-card class="menu-item" @click.native="goToManage('orders')">
             <div class="menu-icon-wrapper">
               <i class="el-icon-s-order"></i>
             </div>
-            <h3>订单管理</h3>
-            <p>查看和管理订单</p>
+            <h3>{{ $t('admin.orderManagement') }}</h3>
+            <p>{{ $t('admin.orderManagementDesc') }}</p>
           </el-card>
           <el-card class="menu-item" @click.native="goToManage('announcements')">
             <div class="menu-icon-wrapper">
               <i class="el-icon-bell"></i>
             </div>
-            <h3>活动公告管理</h3>
-            <p>管理活动公告信息</p>
+            <h3>{{ $t('admin.announcementManagement') }}</h3>
+            <p>{{ $t('admin.announcementManagementDesc') }}</p>
           </el-card>
           <el-card class="menu-item" @click.native="goToManage('audit')">
             <div class="menu-icon-wrapper">
               <i class="el-icon-check"></i>
             </div>
-            <h3>内容审核</h3>
-            <p>审核用户提交的内容</p>
+            <h3>{{ $t('admin.contentAudit') }}</h3>
+            <p>{{ $t('admin.contentAuditDesc') }}</p>
           </el-card>
         </div>
       </el-card>

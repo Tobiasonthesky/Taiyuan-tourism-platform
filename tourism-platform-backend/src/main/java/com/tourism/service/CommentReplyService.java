@@ -1,6 +1,7 @@
 package com.tourism.service;
 
 import com.tourism.entity.CommentReply;
+import com.tourism.vo.CommentReplyVO;
 
 import java.util.List;
 
@@ -17,11 +18,11 @@ public interface CommentReplyService {
     /**
      * 获取回复列表
      */
-    List<CommentReply> getReplyList(Long commentId);
+    List<CommentReplyVO> getReplyList(Long commentId);
     
     /**
      * 删除回复
      */
-    void deleteReply(Long replyId, Long userId);
+    void deleteReply(Long commentId, Long replyId, Long userId);
 }
 

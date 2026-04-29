@@ -47,21 +47,16 @@ public class FoodController {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);
         
-        // 将前端传来的Map转换为Food实体，处理restaurant和address字段
         Food food = convertMapToFood(foodData);
         
         food.setUserId(userId);
-        food.setStatus(0); // 待审核
+        food.setStatus(0);
         food.setViewCount(0);
         food.setCommentCount(0);
         food.setFavoriteCount(0);
         
-        System.out.println("用户提交美食 - 接收到的数据: " + JSON.toJSONString(foodData));
-        System.out.println("用户提交美食 - 转换后的recommendedRestaurants: " + food.getRecommendedRestaurants());
-        
         foodMapper.insert(food);
         
-        // 解析recommendedRestaurants字段，填充restaurant和address字段以便前端显示
         if (food.getRecommendedRestaurants() != null && !food.getRecommendedRestaurants().isEmpty()) {
             try {
                 JSONArray restaurants = JSON.parseArray(food.getRecommendedRestaurants());
@@ -77,20 +72,15 @@ public class FoodController {
                     }
                 }
             } catch (Exception e) {
-                // JSON解析失败，忽略
             }
         }
         
         return Result.success(food);
     }
     
-    /**
-     * 将前端传来的Map转换为Food实体，处理restaurant和address字段
-     */
     private Food convertMapToFood(Map<String, Object> foodData) {
         Food food = new Food();
         
-        // 手动设置字段
         if (foodData.containsKey("id") && foodData.get("id") != null) {
             food.setId(Long.valueOf(foodData.get("id").toString()));
         }
@@ -125,7 +115,6 @@ public class FoodController {
             food.setTags(foodData.get("tags") != null ? foodData.get("tags").toString() : null);
         }
         
-        // 处理restaurant和address字段，转换为recommendedRestaurants JSON
         String restaurant = null;
         String address = null;
         String longitude = null;
@@ -171,14 +160,12 @@ public class FoodController {
             }
         }
         
-        // 如果有地址，转换为JSON格式存储到recommendedRestaurants
         if (address != null && !address.isEmpty()) {
             JSONArray restaurantsArray = new JSONArray();
             JSONObject restaurantObj = new JSONObject();
             
-            // 如果餐厅名称为空，使用美食名称
             String restaurantName = (restaurant != null && !restaurant.isEmpty()) ? restaurant : 
-                (food.getName() != null ? food.getName() + "推荐餐厅" : "推荐餐厅");
+                (food.getName() != null ? food.getName() : "");
             restaurantObj.put("name", restaurantName);
             restaurantObj.put("address", address);
             
@@ -186,20 +173,17 @@ public class FoodController {
                 try {
                     restaurantObj.put("longitude", new BigDecimal(longitude));
                 } catch (Exception e) {
-                    // 忽略转换错误
                 }
             }
             if (latitude != null && !latitude.isEmpty()) {
                 try {
                     restaurantObj.put("latitude", new BigDecimal(latitude));
                 } catch (Exception e) {
-                    // 忽略转换错误
                 }
             }
             restaurantsArray.add(restaurantObj);
             food.setRecommendedRestaurants(restaurantsArray.toJSONString());
         } else if (foodData.containsKey("recommendedRestaurants")) {
-            // 如果前端直接传了recommendedRestaurants，使用它
             Object recRest = foodData.get("recommendedRestaurants");
             if (recRest != null) {
                 if (recRest instanceof String) {
@@ -232,7 +216,6 @@ public class FoodController {
     public Result<Food> getFoodDetail(@PathVariable Long id, HttpServletRequest request) {
         Food food = foodService.getFoodDetail(id);
         
-        // 添加浏览记录（如果用户已登录）
         String token = getTokenFromRequest(request);
         if (token != null) {
             try {
@@ -241,7 +224,6 @@ public class FoodController {
                     browseHistoryService.addBrowseHistory(userId, "food", id);
                 }
             } catch (Exception e) {
-                // 忽略Token解析错误
             }
         }
         
@@ -266,4 +248,3 @@ public class FoodController {
         return null;
     }
 }
-

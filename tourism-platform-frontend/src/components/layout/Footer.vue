@@ -3,30 +3,30 @@
     <div class="container">
       <div class="footer-content">
         <div class="footer-item">
-          <h3>关于我们</h3>
-          <p>家乡文旅宣传平台</p>
-          <p>致力于推广家乡丰富的文旅资源</p>
+          <h3>{{ $t('footer.about') }}</h3>
+          <p>{{ $t('footer.platform') }}</p>
+          <p>{{ $t('footer.description') }}</p>
         </div>
         <div class="footer-item">
-          <h3>快速链接</h3>
-          <p><router-link to="/food">美食 🍜</router-link></p>
-          <p><router-link to="/culture">文化 📚</router-link></p>
-          <p><router-link to="/strategy">攻略 🗺️</router-link></p>
+          <h3>{{ $t('footer.quickLinks') }}</h3>
+          <p><router-link to="/food">{{ $t('common.food') }} 🍜</router-link></p>
+          <p><router-link to="/culture">{{ $t('common.culture') }} 📚</router-link></p>
+          <p><router-link to="/strategy">{{ $t('common.strategy') }} 🗺️</router-link></p>
         </div>
         <div class="footer-item">
-          <h3>即刻预订</h3>
-          <p><router-link to="/attraction">景点 🌄</router-link></p>
-          <p><router-link to="/hotel">酒店 🏨</router-link></p>
-          <p><router-link to="/experience">体验 🎪</router-link></p>
+          <h3>{{ $t('footer.bookNow') }}</h3>
+          <p><router-link to="/attraction">{{ $t('common.attraction') }} 🌄</router-link></p>
+          <p><router-link to="/hotel">{{ $t('common.hotel') }} 🏨</router-link></p>
+          <p><router-link to="/experience">{{ $t('common.experience') }} 🎪</router-link></p>
         </div>
         <div class="footer-item">
-          <h3>联系我们</h3>
-          <p>邮箱: info@tourism.com</p>
-          <p>电话: 400-123-4567</p>
+          <h3>{{ $t('footer.contact') }}</h3>
+          <p>{{ $t('footer.email') }}: info@tourism.com</p>
+          <p>{{ $t('footer.phone') }}: 400-123-4567</p>
         </div>
       </div>
       <div class="copyright">
-        <p>© 2026 家乡文旅宣传平台 版权所有</p>
+        <p>© 2026 {{ $t('footer.copyright') }}</p>
       </div>
     </div>
   </el-footer>
@@ -40,8 +40,8 @@ export default {
 
 <style scoped>
 .footer {
-  background: linear-gradient(135deg, #ff3232 0%, #8b0034 100%);
-  color: #fff;
+  background: #f5f5f7;
+  color: #1d1d1f;
   padding: 60px 0 30px;
   margin-top: 0;
   position: relative;
@@ -57,8 +57,8 @@ export default {
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  height: 1px;
+  background: #d2d2d7;
   z-index: 1;
 }
 
@@ -80,9 +80,9 @@ export default {
 
 .footer .footer-item h3 {
   margin-bottom: 20px;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
-  color: #fff;
+  color: #1d1d1f;
   position: relative;
   padding-bottom: 12px;
 }
@@ -93,35 +93,35 @@ export default {
   bottom: 0;
   left: 0;
   width: 40px;
-  height: 3px;
-  background: #409eff;
+  height: 2px;
+  background: #0071e3;
   border-radius: 2px;
 }
 
 .footer .footer-item p {
   margin: 12px 0;
-  color: rgba(255, 255, 255, 0.7);
+  color: #86868b;
   line-height: 1.8;
   transition: color 0.3s ease;
 }
 
 .footer .footer-item p a {
-  color: rgba(255, 255, 255, 0.7);
+  color: #86868b;
   text-decoration: none;
   transition: all 0.3s ease;
   display: inline-block;
 }
 
 .footer .footer-item p a:hover {
-  color: #409eff;
+  color: #0071e3;
   transform: translateX(5px);
 }
 
 .footer .copyright {
   text-align: center;
   padding-top: 30px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.6);
+  border-top: 1px solid #d2d2d7;
+  color: #86868b;
   font-size: 14px;
 }
 

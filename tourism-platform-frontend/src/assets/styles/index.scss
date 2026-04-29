@@ -209,6 +209,40 @@ body {
   }
 }
 
+// 搜索表单样式
+.search-form {
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  
+  .el-form-item {
+    margin-bottom: $spacing-md;
+  }
+}
+
+// 卡片头部按钮区域
+.el-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+}
+
+// 自定义卡片头部样式
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  width: 100%;
+  
+  .card-actions {
+    display: flex;
+    gap: $spacing-sm;
+  }
+}
+
 // 响应式
 @media (max-width: 1200px) {
   .container {

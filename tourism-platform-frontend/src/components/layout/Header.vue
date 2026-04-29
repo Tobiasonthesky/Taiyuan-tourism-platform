@@ -3,7 +3,7 @@
     <div class="container">
       <div class="header-content">
         <div class="logo" @click="goHome">
-          <h1>太原文旅</h1>
+          <h1>{{ $t('common.brand') }}</h1>
         </div>
         <el-menu
           :default-active="activeIndex"
@@ -105,6 +105,19 @@ export default {
     handleLanguageChange(lang) {
       this.$i18n.locale = lang
       localStorage.setItem('language', lang)
+      // 更新 Element UI 语言设置
+      import('element-ui/lib/locale').then(module => {
+        const locale = module.default
+        if (lang === 'zh') {
+          import('element-ui/lib/locale/lang/zh-CN').then(zhLocale => {
+            locale.use(zhLocale.default)
+          })
+        } else {
+          import('element-ui/lib/locale/lang/en').then(enLocale => {
+            locale.use(enLocale.default)
+          })
+        }
+      })
       this.$message.success(lang === 'zh' ? '语言已切换为中文' : 'Language switched to English')
     },
     goHome() {
@@ -169,11 +182,11 @@ export default {
 
 <style scoped>
 .header {
-  background: linear-gradient(135deg, #ff0000 0%, #764ba2 100%);
-  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 0;
-  height: 70px !important;
-  line-height: 70px;
+  height: 64px !important;
+  line-height: 64px;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -193,12 +206,12 @@ export default {
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  min-width: 0; /* 允许 flex 子元素收缩 */
+  min-width: 0;
 }
 
 .header .header-content .nav-menu {
-  overflow: visible; /* 确保菜单可见 */
-  flex-shrink: 1; /* 允许菜单收缩但保持可见 */
+  overflow: hidden;
+  flex-shrink: 1;
   min-width: 0;
 }
 
@@ -207,6 +220,8 @@ export default {
   display: flex;
   align-items: center;
   transition: transform 0.3s ease;
+  flex-shrink: 0;
+  min-width: 140px;
 }
 
 .header .logo:hover {
@@ -215,28 +230,25 @@ export default {
 
 .header .logo h1 {
   margin: 0;
-  font-size: 26px;
-  background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-size: 20px;
+  color: #1d1d1f;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .header .nav-menu {
   flex: 1;
   border-bottom: none;
-  margin-left: 40px;
+  margin-left: 20px;
   background: transparent;
-  min-width: 0; /* 允许 flex 收缩 */
-  overflow: visible; /* 确保菜单项可见 */
+  min-width: 0;
+  overflow: hidden;
 }
 
 .header .nav-menu >>> .el-menu {
   display: flex !important;
-  flex-wrap: nowrap !important; /* 防止菜单项换行 */
-  overflow: visible !important;
+  flex-wrap: nowrap !important;
+  overflow: hidden !important;
 }
 
 .header .nav-menu >>> .el-menu--horizontal {
@@ -244,42 +256,46 @@ export default {
 }
 
 .header .nav-menu >>> .el-menu-item {
-  color: rgba(255, 255, 255, 0.9);
+  color: #86868b;
   font-weight: 500;
+  font-size: 14px;
   transition: all 0.3s ease;
   border-bottom: 2px solid transparent;
-  white-space: nowrap !important; /* 防止文本换行 */
-  padding: 0 16px !important; /* 确保足够的水平内边距 */
-  margin: 0 2px !important; /* 菜单项之间的间距 */
-  min-width: auto !important; /* 允许自动宽度 */
-  flex-shrink: 0 !important; /* 防止菜单项被压缩 */
-  display: inline-block !important; /* 确保每个菜单项独立显示 */
+  white-space: nowrap !important;
+  padding: 0 12px !important;
+  margin: 0 1px !important;
+  min-width: auto !important;
+  flex-shrink: 1 !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
   box-sizing: border-box;
 }
 
 .header .nav-menu >>> .el-menu-item:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.1);
-  border-bottom-color: rgba(255, 255, 255, 0.5);
+  color: #1d1d1f;
+  background: rgba(0, 0, 0, 0.05);
+  border-bottom-color: rgba(0, 113, 227, 0.5);
 }
 
 .header .nav-menu >>> .el-menu-item.is-active {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.15);
-  border-bottom-color: #fff;
+  color: #0071e3;
+  background: rgba(0, 113, 227, 0.05);
+  border-bottom-color: #0071e3;
   font-weight: 600;
 }
 
 .header .user-info {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-left: 20px;
+  gap: 8px;
+  margin-left: 16px;
+  flex-shrink: 0;
 }
 
 .header .user-info .language-selector {
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.9);
+  color: #86868b;
   font-size: 14px;
   padding: 6px 12px;
   border-radius: 20px;
@@ -287,13 +303,13 @@ export default {
 }
 
 .header .user-info .language-selector:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.05);
+  color: #1d1d1f;
 }
 
 .header .user-info .user-name {
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.9);
+  color: #86868b;
   font-weight: 500;
   padding: 6px 16px;
   border-radius: 20px;
@@ -322,8 +338,8 @@ export default {
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
   display: block;
 }
@@ -336,26 +352,26 @@ export default {
 }
 
 .header .user-info .user-name:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.05);
+  color: #1d1d1f;
 }
 
 .header .user-info >>> .el-button {
-  color: rgba(255, 255, 255, 0.9);
+  color: #86868b;
 }
 
 .header .user-info >>> .el-button.el-button--text:hover {
-  color: #fff;
+  color: #1d1d1f;
 }
 
 .header .user-info >>> .el-button.el-button--primary {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: #0071e3;
+  border-color: #0071e3;
 }
 
 .header .user-info >>> .el-button.el-button--primary:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: #0077ed;
+  border-color: #0077ed;
 }
 
 .header .user-info >>> .el-dropdown-menu {

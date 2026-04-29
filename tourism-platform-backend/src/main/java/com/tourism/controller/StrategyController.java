@@ -28,29 +28,29 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/strategies")
 @Api(tags = "旅游攻略管理")
 public class StrategyController {
-    
+
     @Autowired
     private StrategyService strategyService;
-    
+
     @Autowired
     private BrowseHistoryService browseHistoryService;
-    
+
     @Autowired
     private JwtUtil jwtUtil;
-    
+
     @Autowired
     private StrategyMapper strategyMapper;
-    
+
     @Autowired
     private UserMapper userMapper;
-    
+
     @Autowired
     private StrategyGenerateService strategyGenerateService;
-    
+
     @PostMapping("/generate")
     @ApiOperation("AI生成攻略")
-    public Result<Strategy> generateStrategy(@Validated @RequestBody StrategyGenerateDTO dto, 
-                                              HttpServletRequest request) {
+    public Result<Strategy> generateStrategy(@Validated @RequestBody StrategyGenerateDTO dto,
+                                             HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long userId = null;
         if (token != null) {
@@ -60,11 +60,11 @@ public class StrategyController {
                 // 忽略Token解析错误，允许未登录用户使用
             }
         }
-        
+
         Strategy strategy = strategyGenerateService.generateStrategy(dto, userId);
         return Result.success("攻略生成成功", strategy);
     }
-    
+
     @PostMapping("/submit")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @ApiOperation("提交攻略（管理员直接通过，用户待审核）")
@@ -74,25 +74,25 @@ public class StrategyController {
             if (token == null) {
                 return Result.error("未登录，请先登录");
             }
-            
+
             Long userId = jwtUtil.getUserIdFromToken(token);
             if (userId == null) {
                 return Result.error("用户信息无效，请重新登录");
             }
-            
+
             // 查询用户信息，判断是否为管理员
             User user = userMapper.selectById(userId);
             if (user == null) {
                 return Result.error("用户不存在");
             }
-            
+
             // 设置用户ID
             strategy.setUserId(userId);
-            
+
             // 根据用户角色设置状态：管理员直接通过（status=1），普通用户待审核（status=0）
             boolean isAdmin = RoleConstants.isAdmin(user.getRole());
             strategy.setStatus(isAdmin ? 1 : 0);
-            
+
             // 设置统计字段
             if (strategy.getViewCount() == null) {
                 strategy.setViewCount(0);
@@ -109,7 +109,7 @@ public class StrategyController {
             if (strategy.getIsRecommend() == null) {
                 strategy.setIsRecommend(0);
             }
-            
+
             // 确保分类不为空（安全处理 null 和空字符串）
             String category = strategy.getCategory();
             if (category == null || category.isEmpty() || category.trim().isEmpty()) {
@@ -144,7 +144,7 @@ public class StrategyController {
                     strategy.setCategory(category);
                 }
             }
-            
+
             // 处理可能为空的字符串字段，将空字符串转为 null
             if (strategy.getTheme() != null) {
                 String theme = strategy.getTheme().trim();
@@ -166,7 +166,7 @@ public class StrategyController {
                 String tips = strategy.getTips().trim();
                 strategy.setTips(tips.isEmpty() ? null : tips);
             }
-            
+
             // 限制 bestSeason 字段长度（数据库字段限制为50字符）
             if (strategy.getBestSeason() != null) {
                 String bestSeason = strategy.getBestSeason().trim();
@@ -178,10 +178,10 @@ public class StrategyController {
                     strategy.setBestSeason(bestSeason);
                 }
             }
-            
+
             // 插入数据库
             strategyMapper.insert(strategy);
-            
+
             // 根据用户角色返回不同的提示信息
             String message = isAdmin ? "攻略保存成功，已直接发布" : "攻略提交成功，等待审核";
             return Result.success(message, strategy);
@@ -190,7 +190,7 @@ public class StrategyController {
             return Result.error("提交失败：" + e.getMessage());
         }
     }
-    
+
     @GetMapping
     @ApiOperation("获取攻略列表")
     public Result<PageVO<Strategy>> getStrategies(
@@ -202,12 +202,12 @@ public class StrategyController {
         PageVO<Strategy> pageVO = strategyService.getStrategyList(category, theme, isRecommend, page, size);
         return Result.success(pageVO);
     }
-    
+
     @GetMapping("/{id:[0-9]+}")
     @ApiOperation("获取攻略详情")
     public Result<Strategy> getStrategyDetail(@PathVariable Long id, HttpServletRequest request) {
         Strategy strategy = strategyService.getStrategyDetail(id);
-        
+
         // 添加浏览记录（如果用户已登录）
         String token = getTokenFromRequest(request);
         if (token != null) {
@@ -220,10 +220,10 @@ public class StrategyController {
                 // 忽略Token解析错误
             }
         }
-        
+
         return Result.success(strategy);
     }
-    
+
     private String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
@@ -232,4 +232,3 @@ public class StrategyController {
         return null;
     }
 }
-

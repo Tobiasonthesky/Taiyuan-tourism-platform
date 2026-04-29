@@ -20,6 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.List;
 import java.util.Map;
 
@@ -189,7 +193,12 @@ public class AiAssistantServiceImpl implements AiAssistantService {
             return null;
         }
     }
-    
+
+    /**
+     *
+     * 获取网站数据摘要
+     * @return
+     */
     @Override
     public String getWebsiteDataSummary() {
         try {
@@ -235,6 +244,31 @@ public class AiAssistantServiceImpl implements AiAssistantService {
                             food.getName() != null ? food.getName() : "未知美食",
                             food.getDescription() != null ? food.getDescription() : "暂无描述",
                             food.getRating() != null ? food.getRating() : 0.0));
+                        
+                        // 解析推荐餐厅信息（从JSON字段中提取）
+                        String restaurantName = null;
+                        String restaurantAddress = null;
+                        if (food.getRecommendedRestaurants() != null && !food.getRecommendedRestaurants().isEmpty()) {
+                            try {
+                                JSONArray restaurants = JSON.parseArray(food.getRecommendedRestaurants());
+                                if (restaurants != null && restaurants.size() > 0) {
+                                    JSONObject firstRestaurant = restaurants.getJSONObject(0);
+                                    restaurantName = firstRestaurant.getString("name");
+                                    restaurantAddress = firstRestaurant.getString("address");
+                                }
+                            } catch (Exception e) {
+                                logger.warn("解析美食{}的推荐餐厅信息失败", food.getName(), e);
+                            }
+                        }
+                        
+                        // 添加推荐餐厅信息
+                        if (restaurantName != null && !restaurantName.isEmpty()) {
+                            summary.append(String.format("  推荐餐厅：%s", restaurantName));
+                            if (restaurantAddress != null && !restaurantAddress.isEmpty()) {
+                                summary.append(String.format("，地址：%s", restaurantAddress));
+                            }
+                            summary.append("\n");
+                        }
                     }
                 } else {
                     summary.append("- 暂无美食数据\n");
@@ -388,7 +422,9 @@ public class AiAssistantServiceImpl implements AiAssistantService {
                    "- 如果用户询问的信息不在上述数据中，可以基于常识回答，但要明确说明这是通用建议，不是平台数据\n" +
                    "- 如果用户想要生成攻略，可以引导用户使用AI攻略生成功能\n" +
                    "- 回答要简洁明了，避免冗长，但要包含关键信息\n" +
-                   "- 对于酒店房型问题和活动公告问题，如果数据中有相关信息，必须准确回答，不要说不存在";
+                   "- 对于酒店房型问题和活动公告问题，如果数据中有相关信息，必须准确回答，不要说不存在\n" +
+                   "- 除非用户要求，否则你回答和思考的语言需要和用户提问的语言保持一致。\n";
+
         } catch (Exception e) {
             logger.error("构建系统提示词失败", e);
             // 如果获取数据摘要失败，使用简化版的提示词

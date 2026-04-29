@@ -142,5 +142,23 @@ public class UserServiceImpl implements UserService {
         }
         return BeanUtil.copyProperties(user, UserVO.class);
     }
+    
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePassword(Long userId, String oldPassword, String newPassword) {
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        
+        // 验证旧密码
+        if (!passwordUtil.matches(oldPassword, user.getPassword())) {
+            throw new BusinessException("旧密码不正确");
+        }
+        
+        // 更新新密码
+        user.setPassword(passwordUtil.encode(newPassword));
+        userMapper.updateById(user);
+    }
 }
 

@@ -2,7 +2,7 @@
   <div class="culture-detail">
     <div class="container" v-if="culture">
       <!-- 返回按钮 -->
-      <el-button icon="el-icon-arrow-left" @click="goBack" style="margin-bottom: 20px;">返回</el-button>
+      <el-button icon="el-icon-arrow-left" @click="goBack" style="margin-bottom: 20px;">{{ $t('common.back') }}</el-button>
       <el-card class="detail-card">
         <h1>{{ culture.name }}</h1>
         <!-- 视频展示 -->
@@ -13,7 +13,7 @@
             class="detail-video"
             preload="metadata"
           >
-            您的浏览器不支持视频播放
+            {{ $t('common.browserNotSupportVideo') }}
           </video>
         </div>
         <!-- 图片轮播 -->

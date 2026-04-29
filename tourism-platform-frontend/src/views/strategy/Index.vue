@@ -2,14 +2,14 @@
   <div class="strategy-page">
     <div class="container">
       <div class="page-header">
-        <h1 class="page-title">旅游攻略</h1>
+        <h1 class="page-title">{{ $t('strategy.title') }}</h1>
         <el-button 
           type="primary" 
           icon="el-icon-magic-stick" 
           @click="goToGenerate"
           style="margin-left: 20px;"
         >
-          AI生成攻略
+          {{ $t('strategy.aiGenerate') }}
         </el-button>
       </div>
       
@@ -21,8 +21,8 @@
               <h3>{{ item.title }}</h3>
               <p class="text-ellipsis-2">{{ item.description }}</p>
               <div class="card-footer">
-                <span>时长：{{ item.duration }}天</span>
-                <span>主题：{{ item.theme }}</span>
+                <span>{{ $t('strategy.duration') }}：{{ item.duration }}{{ $t('common.day') }}</span>
+                <span>{{ $t('strategy.theme') }}：{{ item.theme }}</span>
               </div>
             </div>
           </el-card>
@@ -53,7 +53,7 @@ export default {
     return {
       strategies: [],
       page: 1,
-      size: 12,
+      size: 10,
       total: 0
     }
   },

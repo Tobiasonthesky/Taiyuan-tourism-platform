@@ -1,64 +1,64 @@
 <template>
   <div class="admin-strategies">
     <el-card>
-      <div slot="header">
-        <span>攻略管理</span>
-        <div style="float: right;">
-          <el-button type="primary" size="small" @click="handleAdd">新增攻略</el-button>
-          <el-button size="small" @click="goBack">返回</el-button>
+      <div slot="header" class="card-header">
+        <span>{{ $t('admin.strategyManagement') }}</span>
+        <div class="card-actions">
+          <el-button type="primary" size="small" @click="handleAdd">{{ $t('admin.addStrategy') }}</el-button>
+          <el-button size="small" @click="goBack">{{ $t('common.back') }}</el-button>
         </div>
       </div>
 
       <!-- 搜索栏 -->
       <el-form :inline="true" class="search-form">
-        <el-form-item label="关键词">
-          <el-input v-model="searchKeyword" placeholder="攻略标题" clearable @keyup.enter.native="handleSearch" />
+        <el-form-item :label="$t('common.keyword')">
+          <el-input v-model="searchKeyword" :placeholder="$t('strategy.title')" clearable @keyup.enter.native="handleSearch" />
         </el-form-item>
-        <el-form-item label="分类">
-          <el-select v-model="searchCategory" placeholder="请选择" clearable>
-            <el-option label="1日游" value="1day" />
-            <el-option label="2日游" value="2day" />
-            <el-option label="主题游" value="theme" />
+        <el-form-item :label="$t('common.category')">
+          <el-select v-model="searchCategory" :placeholder="$t('common.pleaseSelect')" clearable>
+            <el-option :label="$t('strategy.oneDay')" value="1day" />
+            <el-option :label="$t('strategy.twoDay')" value="2day" />
+            <el-option :label="$t('strategy.theme')" value="theme" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">搜索</el-button>
-          <el-button @click="handleReset">重置</el-button>
+          <el-button type="primary" @click="handleSearch">{{ $t('common.search') }}</el-button>
+          <el-button @click="handleReset">{{ $t('common.reset') }}</el-button>
         </el-form-item>
       </el-form>
 
       <!-- 攻略列表 -->
       <el-table :data="strategies" v-loading="loading" border>
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="title" label="攻略标题" width="200" />
-        <el-table-column prop="category" label="分类" width="100">
+        <el-table-column prop="id" :label="$t('common.id')" width="80" />
+        <el-table-column prop="title" :label="$t('strategy.title')" width="200" />
+        <el-table-column prop="category" :label="$t('common.category')" width="100">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.category === '1day'" type="info">1日游</el-tag>
-            <el-tag v-else-if="scope.row.category === '2day'" type="warning">2日游</el-tag>
-            <el-tag v-else-if="scope.row.category === 'theme'" type="success">主题游</el-tag>
+            <el-tag v-if="scope.row.category === '1day'" type="info">{{ $t('strategy.oneDay') }}</el-tag>
+            <el-tag v-else-if="scope.row.category === '2day'" type="warning">{{ $t('strategy.twoDay') }}</el-tag>
+            <el-tag v-else-if="scope.row.category === 'theme'" type="success">{{ $t('strategy.theme') }}</el-tag>
             <span v-else>{{ scope.row.category }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="theme" label="主题" width="120" />
-        <el-table-column prop="description" label="描述" width="250" show-overflow-tooltip />
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column prop="theme" :label="$t('strategy.theme')" width="120" />
+        <el-table-column prop="description" :label="$t('common.description')" width="250" show-overflow-tooltip />
+        <el-table-column prop="status" :label="$t('common.status')" width="100">
           <template slot-scope="scope">
             <el-tag :type="scope.row.status === 1 ? 'success' : scope.row.status === 0 ? 'warning' : 'danger'">
-              {{ scope.row.status === 1 ? '已通过' : scope.row.status === 0 ? '待审核' : '已拒绝' }}
+              {{ scope.row.status === 1 ? $t('strategy.approved') : scope.row.status === 0 ? $t('strategy.pending') : $t('strategy.rejected') }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="isRecommend" label="推荐" width="80">
+        <el-table-column prop="isRecommend" :label="$t('strategy.recommend')" width="80">
           <template slot-scope="scope">
             <el-tag :type="scope.row.isRecommend === 1 ? 'success' : 'info'">
-              {{ scope.row.isRecommend === 1 ? '是' : '否' }}
+              {{ scope.row.isRecommend === 1 ? $t('common.yes') : $t('common.no') }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column :label="$t('common.actions')" width="250" fixed="right">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button size="mini" @click="handleEdit(scope.row)">{{ $t('common.edit') }}</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">{{ $t('common.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -81,84 +81,84 @@
       @close="handleDialogClose"
     >
       <el-form :model="form" label-width="120px" ref="form">
-        <el-form-item label="攻略标题" required>
+        <el-form-item :label="$t('strategy.title')" required>
           <el-input v-model="form.title" />
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="分类" required>
-              <el-select v-model="form.category" placeholder="请选择分类">
-                <el-option label="1日游" value="1day" />
-                <el-option label="2日游" value="2day" />
-                <el-option label="主题游" value="theme" />
+            <el-form-item :label="$t('common.category')" required>
+              <el-select v-model="form.category" :placeholder="$t('strategy.selectCategory')">
+                <el-option :label="$t('strategy.oneDay')" value="1day" />
+                <el-option :label="$t('strategy.twoDay')" value="2day" />
+                <el-option :label="$t('strategy.theme')" value="theme" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="主题">
-              <el-input v-model="form.theme" placeholder="如：亲子、情侣、摄影等" />
+            <el-form-item :label="$t('strategy.theme')">
+              <el-input v-model="form.theme" :placeholder="$t('strategy.themePlaceholder')" />
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="封面图片">
+        <el-form-item :label="$t('strategy.coverImage')">
           <ImageUpload v-model="form.coverImage" />
         </el-form-item>
-        <el-form-item label="多图片管理">
+        <el-form-item :label="$t('strategy.multiImage')">
           <MultiImageUpload v-model="form.images" />
           <div style="margin-top: 8px; color: #909399; font-size: 12px;">
             <i class="el-icon-info"></i>
-            提示：保存内容后，图片会自动关联到该攻略
+            {{ $t('strategy.imageTip') }}
           </div>
         </el-form-item>
-        <el-form-item label="描述">
+        <el-form-item :label="$t('common.description')">
           <el-input v-model="form.description" type="textarea" :rows="3" />
         </el-form-item>
-        <el-form-item label="详细内容">
+        <el-form-item :label="$t('common.content')">
           <el-input v-model="form.content" type="textarea" :rows="6" />
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="游玩时长（天）">
+            <el-form-item :label="$t('strategy.duration')">
               <el-input-number v-model="form.duration" :min="1" :max="30" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="预算（元）">
+            <el-form-item :label="$t('strategy.budget')">
               <el-input-number v-model="form.budget" :min="0" :precision="2" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="最佳季节">
-              <el-input v-model="form.bestSeason" placeholder="如：春季、夏季等" />
+            <el-form-item :label="$t('strategy.bestSeason')">
+              <el-input v-model="form.bestSeason" :placeholder="$t('strategy.bestSeasonPlaceholder')" />
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="注意事项">
+        <el-form-item :label="$t('strategy.tips')">
           <el-input v-model="form.tips" type="textarea" :rows="3" />
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="状态">
+            <el-form-item :label="$t('common.status')">
               <el-radio-group v-model="form.status">
-                <el-radio :label="0">待审核</el-radio>
-                <el-radio :label="1">已通过</el-radio>
-                <el-radio :label="2">已拒绝</el-radio>
+                <el-radio :label="0">{{ $t('strategy.pending') }}</el-radio>
+                <el-radio :label="1">{{ $t('strategy.approved') }}</el-radio>
+                <el-radio :label="2">{{ $t('strategy.rejected') }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="是否推荐">
+            <el-form-item :label="$t('strategy.isRecommend')">
               <el-radio-group v-model="form.isRecommend">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
+                <el-radio :label="1">{{ $t('common.yes') }}</el-radio>
+                <el-radio :label="0">{{ $t('common.no') }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <div slot="footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="dialogVisible = false">{{ $t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{ $t('common.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -188,7 +188,7 @@ export default {
       total: 0,
       loading: false,
       dialogVisible: false,
-      dialogTitle: '新增攻略',
+      dialogTitle: this.$t('admin.addStrategy'),
       form: {
         id: null,
         title: '',
@@ -231,7 +231,7 @@ export default {
           this.total = res.data?.total || 0
         }
       } catch (error) {
-        this.$message.error('加载攻略列表失败')
+        this.$message.error(this.$t('common.operateFailed'))
       } finally {
         this.loading = false
       }
@@ -256,7 +256,7 @@ export default {
       this.loadStrategies()
     },
     handleAdd() {
-      this.dialogTitle = '新增攻略'
+      this.dialogTitle = this.$t('admin.addStrategy')
       this.form = {
         id: null,
         title: '',
@@ -276,7 +276,7 @@ export default {
       this.dialogVisible = true
     },
     async handleEdit(row) {
-      this.dialogTitle = '编辑攻略'
+      this.dialogTitle = this.$t('admin.editStrategy')
       this.form = { ...row }
       // 加载现有图片
       if (row.id) {
@@ -306,7 +306,7 @@ export default {
           if (res.code === 200) {
             strategyId = this.form.id
           } else {
-            this.$message.error('更新失败')
+            this.$message.error(this.$t('common.operateFailed'))
             return
           }
         } else {
@@ -314,7 +314,7 @@ export default {
           if (res.code === 200 && res.data) {
             strategyId = res.data.id
           } else {
-            this.$message.error('创建失败')
+            this.$message.error(this.$t('common.operateFailed'))
             return
           }
         }
@@ -344,31 +344,31 @@ export default {
             }
           } catch (error) {
             console.error('保存图片失败:', error)
-            this.$message.warning('内容保存成功，但图片保存失败')
+            this.$message.warning(this.$t('common.saveSuccess') + '，' + this.$t('common.image') + this.$t('common.operateFailed'))
           }
         }
 
-        this.$message.success(this.form.id ? '更新成功' : '创建成功')
+        this.$message.success(this.form.id ? this.$t('common.updateSuccess') : this.$t('common.createSuccess'))
         this.dialogVisible = false
         this.loadStrategies()
       } catch (error) {
-        this.$message.error('操作失败')
+        this.$message.error(this.$t('common.operateFailed'))
       }
     },
     async handleDelete(row) {
-      this.$confirm('确定要删除该攻略吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('admin.confirmDeleteStrategy'), this.$t('common.tip'), {
+        confirmButtonText: this.$t('common.confirm'),
+        cancelButtonText: this.$t('common.cancel'),
         type: 'warning'
       }).then(async () => {
         try {
           const res = await deleteStrategy(row.id)
           if (res.code === 200) {
-            this.$message.success('删除成功')
+            this.$message.success(this.$t('common.deleteSuccess'))
             this.loadStrategies()
           }
         } catch (error) {
-          this.$message.error('删除失败')
+          this.$message.error(this.$t('common.deleteFailed'))
         }
       }).catch(() => {})
     },

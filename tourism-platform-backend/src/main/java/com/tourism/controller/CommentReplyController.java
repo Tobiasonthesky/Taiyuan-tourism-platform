@@ -4,6 +4,7 @@ import com.tourism.dto.CommentReplyAddDTO;
 import com.tourism.entity.CommentReply;
 import com.tourism.service.CommentReplyService;
 import com.tourism.utils.JwtUtil;
+import com.tourism.vo.CommentReplyVO;
 import com.tourism.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,11 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * 评论回复控制器
+ * ?
  */
 @RestController
 @RequestMapping("/comments/{commentId}/replies")
-@Api(tags = "评论回复管理")
+@Api(tags = "")
 public class CommentReplyController {
     
     @Autowired
@@ -29,7 +30,7 @@ public class CommentReplyController {
     private JwtUtil jwtUtil;
     
     @PostMapping
-    @ApiOperation("添加回复")
+    @ApiOperation("")
     public Result<CommentReply> addReply(
             @PathVariable Long commentId,
             @Validated @RequestBody CommentReplyAddDTO dto,
@@ -38,23 +39,23 @@ public class CommentReplyController {
         Long userId = jwtUtil.getUserIdFromToken(token);
         
         CommentReply reply = replyService.addReply(commentId, userId, dto.getReplyToId(), dto.getContent());
-        return Result.success("回复成功", reply);
+        return Result.success("", reply);
     }
     
     @GetMapping
-    @ApiOperation("获取回复列表")
-    public Result<List<CommentReply>> getReplies(@PathVariable Long commentId) {
-        List<CommentReply> replies = replyService.getReplyList(commentId);
+    @ApiOperation("")
+    public Result<List<CommentReplyVO>> getReplies(@PathVariable Long commentId) {
+        List<CommentReplyVO> replies = replyService.getReplyList(commentId);
         return Result.success(replies);
     }
     
     @DeleteMapping("/{id}")
-    @ApiOperation("删除回复")
-    public Result<?> deleteReply(@PathVariable Long id, HttpServletRequest request) {
+    @ApiOperation("")
+    public Result<?> deleteReply(@PathVariable Long commentId, @PathVariable Long id, HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);
-        replyService.deleteReply(id, userId);
-        return Result.success("删除成功");
+        replyService.deleteReply(commentId, id, userId);
+        return Result.success("");
     }
     
     private String getTokenFromRequest(HttpServletRequest request) {

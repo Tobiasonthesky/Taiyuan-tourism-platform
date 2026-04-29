@@ -1362,6 +1362,16 @@ public class AdminController {
         return Result.success(pageVO);
     }
     
+    @GetMapping("/orders/{id}")
+    @ApiOperation("获取订单详情")
+    public Result<OrderEntity> getOrderDetail(@PathVariable Long id) {
+        OrderEntity order = orderMapper.selectById(id);
+        if (order == null) {
+            return Result.notFound("订单不存在");
+        }
+        return Result.success(order);
+    }
+    
     @GetMapping("/statistics")
     @ApiOperation("获取统计数据")
     public Result<?> getStatistics() {

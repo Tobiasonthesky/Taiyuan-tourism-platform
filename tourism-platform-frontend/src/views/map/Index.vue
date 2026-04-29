@@ -1,59 +1,59 @@
 <template>
   <div class="map-page">
     <div class="container">
-      <h1 class="page-title">太原文旅地图</h1>
+      <h1 class="page-title">{{ $t('map.title') }}</h1>
       
       <!-- 控制面板 -->
       <div class="map-controls">
         <el-card shadow="never" class="control-card">
           <div class="control-row">
             <div class="filter-group">
-              <span class="label">类型筛选：</span>
+              <span class="label">{{ $t('map.typeFilter') }}：</span>
               <el-checkbox-group v-model="selectedTypes" @change="handleTypeChange">
-                <el-checkbox label="attraction">景点</el-checkbox>
-                <el-checkbox label="restaurant">餐厅</el-checkbox>
-                <el-checkbox label="hotel">酒店</el-checkbox>
-                <el-checkbox label="culture">文化活动</el-checkbox>
+                <el-checkbox label="attraction">{{ $t('map.attractions') }}</el-checkbox>
+                <el-checkbox label="restaurant">{{ $t('map.restaurants') }}</el-checkbox>
+                <el-checkbox label="hotel">{{ $t('map.hotels') }}</el-checkbox>
+                <el-checkbox label="culture">{{ $t('map.culture') }}</el-checkbox>
               </el-checkbox-group>
             </div>
             
             <div class="search-group">
               <el-input
                 v-model="searchKeyword"
-                placeholder="搜索地点..."
+                :placeholder="$t('map.search') + '...'"
                 prefix-icon="el-icon-search"
                 style="width: 300px;"
                 @keyup.enter.native="handleSearch"
                 clearable
               />
-              <el-button type="primary" @click="handleSearch" style="margin-left: 10px;">搜索</el-button>
+              <el-button type="primary" @click="handleSearch" style="margin-left: 10px;">{{ $t('common.search') }}</el-button>
             </div>
           </div>
           
           <div class="control-row" style="margin-top: 15px;">
             <div class="route-group">
-              <span class="label">导航模式：</span>
+              <span class="label">{{ $t('map.navigationMode') }}：</span>
               <el-radio-group v-model="routeMode" size="small">
-                <el-radio-button label="driving">驾车</el-radio-button>
-                <el-radio-button label="walking">步行</el-radio-button>
-                <el-radio-button label="riding">骑行</el-radio-button>
+                <el-radio-button label="driving">{{ $t('map.driving') }}</el-radio-button>
+                <el-radio-button label="walking">{{ $t('map.walking') }}</el-radio-button>
+                <el-radio-button label="riding">{{ $t('map.riding') }}</el-radio-button>
               </el-radio-group>
             </div>
             
             <el-button type="success" size="small" @click="getCurrentLocation" :loading="locating">
-              <i class="el-icon-location"></i> {{ locating ? '定位中...' : '定位当前位置' }}
+              <i class="el-icon-location"></i> {{ locating ? $t('map.locating') : $t('map.locateCurrent') }}
             </el-button>
             
             <el-button type="primary" size="small" @click="refreshMap" :loading="refreshing">
-              <i class="el-icon-refresh"></i> {{ refreshing ? '刷新中...' : '刷新地图' }}
+              <i class="el-icon-refresh"></i> {{ refreshing ? $t('map.refreshing') : $t('map.refreshMap') }}
             </el-button>
             
             <el-button type="info" size="small" @click="clearRoute">
-              <i class="el-icon-close"></i> 清除路线
+              <i class="el-icon-close"></i> {{ $t('map.clearRoute') }}
             </el-button>
             
             <el-button type="warning" size="small" @click="showHelpDialog = true">
-              <i class="el-icon-question"></i> 使用说明
+              <i class="el-icon-question"></i> {{ $t('map.help') }}
             </el-button>
           </div>
         </el-card>
@@ -67,26 +67,26 @@
         <div class="map-legend">
           <div class="legend-item">
             <span class="legend-icon attraction"></span>
-            <span>景点</span>
+            <span>{{ $t('map.attractions') }}</span>
           </div>
           <div class="legend-item">
             <span class="legend-icon restaurant"></span>
-            <span>餐厅</span>
+            <span>{{ $t('map.restaurants') }}</span>
           </div>
           <div class="legend-item">
             <span class="legend-icon hotel"></span>
-            <span>酒店</span>
+            <span>{{ $t('map.hotels') }}</span>
           </div>
           <div class="legend-item">
             <span class="legend-icon culture"></span>
-            <span>文化活动</span>
+            <span>{{ $t('map.cultureActivities') }}</span>
           </div>
         </div>
       </div>
 
       <!-- 使用说明对话框 -->
       <el-dialog
-        title="地图使用说明"
+        :title="$t('map.helpDialogTitle')"
         :visible.sync="showHelpDialog"
         width="700px"
         :close-on-click-modal="false"

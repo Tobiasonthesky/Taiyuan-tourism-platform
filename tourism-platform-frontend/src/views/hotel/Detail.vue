@@ -2,7 +2,7 @@
   <div class="hotel-detail">
     <div class="container" v-if="hotel">
       <!-- 返回按钮 -->
-      <el-button icon="el-icon-arrow-left" @click="goBack" style="margin-bottom: 20px;">返回</el-button>
+      <el-button icon="el-icon-arrow-left" @click="goBack" style="margin-bottom: 20px;">{{ $t('common.back') }}</el-button>
       <!-- 基本信息 -->
       <el-card class="detail-card">
         <el-row :gutter="20">
@@ -31,19 +31,19 @@
                 show-score
                 text-color="#ff9900"
               />
-              <span class="rating">评分：{{ hotel.rating }}</span>
+              <span class="rating">{{ $t('hotel.rating') }}：{{ hotel.rating }}</span>
             </div>
             <div class="info-item">
-              <span class="label">地址：</span>
+              <span class="label">{{ $t('hotel.address') }}：</span>
               <span>{{ hotel.address }}</span>
             </div>
             <div class="info-item">
-              <span class="label">联系电话：</span>
+              <span class="label">{{ $t('hotel.phone') }}：</span>
               <span>{{ hotel.phone }}</span>
             </div>
             <div class="info-item">
-              <span class="label">最低价格：</span>
-              <span class="price">¥{{ hotel.minPrice }}/晚起</span>
+              <span class="label">{{ $t('hotel.minPrice') }}：</span>
+              <span class="price">¥{{ hotel.minPrice }}/{{ $t('hotel.minPrice') }}</span>
             </div>
             <div class="actions">
               <el-button
@@ -53,7 +53,7 @@
                 @click="viewOnMap"
                 v-if="hotel.longitude && hotel.latitude"
               >
-                查看地图
+                {{ $t('attraction.viewOnMap') }}
               </el-button>
               <el-button
                 :type="isFavorite ? 'danger' : 'default'"
@@ -61,7 +61,7 @@
                 @click="handleFavorite"
                 :disabled="!isLogin"
               >
-                {{ isFavorite ? '已收藏' : '收藏' }}
+                {{ isFavorite ? $t('hotel.favorited') : $t('hotel.favorite') }}
               </el-button>
             </div>
           </el-col>
@@ -70,7 +70,7 @@
 
       <!-- 房间列表 -->
       <el-card class="detail-card" v-if="rooms.length > 0">
-        <h2>房间类型</h2>
+        <h2>{{ $t('hotel.rooms') }}</h2>
         <el-row :gutter="20">
           <el-col :span="8" v-for="room in rooms" :key="room.id">
             <el-card class="room-card">
@@ -85,18 +85,18 @@
                 <p class="room-type">{{ room.roomType }}</p>
                 <p class="room-desc">{{ room.description }}</p>
                 <div class="room-meta">
-                  <span>面积：{{ room.area }}㎡</span>
-                  <span>床型：{{ room.bedType }}</span>
-                  <span>可住：{{ room.maxOccupancy }}人</span>
+                  <span>{{ $t('hotel.area') }}：{{ room.area }}㎡</span>
+                  <span>{{ $t('hotel.bedType') }}：{{ room.bedType }}</span>
+                  <span>{{ $t('hotel.maxOccupancy') }}：{{ room.maxOccupancy }}{{ $t('common.person') }}</span>
                 </div>
                 <div class="room-price">
-                  <span class="price">¥{{ room.price }}/晚</span>
+                  <span class="price">¥{{ room.price }}/{{ $t('hotel.night') }}</span>
                   <el-button
                     type="primary"
                     size="small"
                     @click.stop="bookRoom(room)"
                   >
-                    预订
+                    {{ $t('hotel.bookNow') }}
                   </el-button>
                 </div>
               </div>
@@ -107,26 +107,26 @@
       
       <!-- 无房间提示 -->
       <el-card class="detail-card" v-else-if="hotel && roomsLoaded">
-        <el-empty description="该酒店暂无可用房间">
+        <el-empty :description="$t('common.noData')">
           <template slot="image">
             <i class="el-icon-box" style="font-size: 80px; color: #ddd;"></i>
           </template>
           <div style="margin-top: 20px;">
-            <p style="color: #999; margin-bottom: 10px;">请联系酒店获取更多信息</p>
-            <el-button type="primary" @click="contactHotel">联系酒店</el-button>
+            <p style="color: #999; margin-bottom: 10px;">{{ $t('hotel.contactHotel') }}</p>
+            <el-button type="primary" @click="contactHotel">{{ $t('hotel.contactHotel') }}</el-button>
           </div>
         </el-empty>
       </el-card>
 
       <!-- 详细介绍 -->
       <el-card class="detail-card">
-        <h2>详细介绍</h2>
+        <h2>{{ $t('common.description') }}</h2>
         <div class="content" v-html="hotel.description"></div>
       </el-card>
 
       <!-- 评论 -->
       <el-card class="detail-card">
-        <h2>用户评论</h2>
+        <h2>{{ $t('comment.comments') }}</h2>
         <CommentList
           :target-type="'hotel'"
           :target-id="hotel.id"
@@ -135,13 +135,13 @@
 
       <!-- 预订对话框 -->
       <el-dialog
-        title="预订房间"
+        :title="$t('hotel.bookingDialog')"
         :visible.sync="bookingDialogVisible"
         width="600px"
         @close="resetBookingForm"
       >
-        <el-form :model="bookingForm" label-width="100px">
-          <el-form-item label="酒店名称">
+        <el-form :model="bookingForm" label-width="140px">
+          <el-form-item :label="$t('hotel.hotelName')">
             <el-input :value="hotel?.name" disabled />
           </el-form-item>
               <el-option
@@ -154,16 +154,16 @@
                   <div>
                     <div style="font-weight: bold;">{{ room.roomName }}</div>
                     <div style="font-size: 12px; color: #999;">
-                      {{ room.roomType }} | {{ room.area }}㎡ | {{ room.bedType }} | 可住{{ room.maxOccupancy }}人
+                      {{ room.roomType }} | {{ room.area }}㎡ | {{ room.bedType }} | {{ $t('hotel.maxOccupancy') }}{{ room.maxOccupancy }}{{ $t('common.person') }}
                     </div>
                   </div>
                   <div style="color: #f56c6c; font-weight: bold;">
-                    ¥{{ room.price }}/晚
+                    ¥{{ room.price }}/{{ $t('hotel.night') }}
                   </div>
                 </div>
               </el-option>
           <!-- 选中房间的详细信息 -->
-          <el-form-item v-if="selectedRoom" label="房间信息">
+          <el-form-item v-if="selectedRoom" :label="$t('common.roomInfo')">
             <el-card shadow="never" style="background-color: #f5f7fa;">
               <div style="display: flex; gap: 20px;">
                 <div v-if="selectedRoom.image" style="flex-shrink: 0;">
@@ -177,63 +177,65 @@
                   <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">
                     {{ selectedRoom.roomName }}
                   </div>
-                  <div style="font-size: 14px; color: #666; margin-bottom: 4px;">
-                    <span>类型：{{ selectedRoom.roomType }}</span>
-                    <span style="margin-left: 15px;">面积：{{ selectedRoom.area }}㎡</span>
+                  <div style="font-size: 14px; color: #666; margin-bottom: 8px;">
+                    <span>{{ $t('hotel.roomType') }}：{{ selectedRoom.roomType }}</span>
+                    <span style="margin-left: 20px;">{{ $t('hotel.area') }}：{{ selectedRoom.area }}㎡</span>
                   </div>
-                  <div style="font-size: 14px; color: #666; margin-bottom: 4px;">
-                    <span>床型：{{ selectedRoom.bedType }}</span>
-                    <span style="margin-left: 15px;">最大入住：{{ selectedRoom.maxOccupancy }}人</span>
-                    <span style="margin-left: 15px;">库存：{{ selectedRoom.stock || 0 }}间</span>
+                  <div style="font-size: 14px; color: #666; margin-bottom: 8px;">
+                    <span>{{ $t('hotel.bedType') }}：{{ selectedRoom.bedType }}</span>
+                    <span style="margin-left: 20px;">{{ $t('hotel.maxOccupancy') }}：{{ selectedRoom.maxOccupancy }}{{ $t('common.person') }}</span>
+                  </div>
+                  <div style="font-size: 14px; color: #666;">
+                    {{ $t('hotel.stock') }}：{{ selectedRoom.stock || 0 }}{{ $t('hotel.rooms') }}
                   </div>
                   <div v-if="selectedRoom.description" style="font-size: 13px; color: #999; margin-top: 8px;">
                     {{ selectedRoom.description }}
                   </div>
                   <div style="font-size: 18px; color: #f56c6c; font-weight: bold; margin-top: 8px;">
-                    ¥{{ selectedRoom.price }}/晚
+                    ¥{{ selectedRoom.price }}/{{ $t('hotel.night') }}
                   </div>
                 </div>
               </div>
             </el-card>
           </el-form-item>
-          <el-form-item label="入住日期" required>
+          <el-form-item :label="$t('hotel.checkIn')" required>
             <el-date-picker
               v-model="bookingForm.checkInDate"
               type="date"
-              placeholder="选择入住日期"
+              :placeholder="$t('hotel.selectCheckInDate')"
               value-format="yyyy-MM-dd"
             />
           </el-form-item>
-          <el-form-item label="退房日期" required>
+          <el-form-item :label="$t('hotel.checkOut')" required>
             <el-date-picker
               v-model="bookingForm.checkOutDate"
               type="date"
-              placeholder="选择退房日期"
+              :placeholder="$t('hotel.selectCheckOutDate')"
               value-format="yyyy-MM-dd"
             />
           </el-form-item>
-          <el-form-item label="房间数量" required>
+          <el-form-item :label="$t('hotel.roomQuantity')" required>
             <el-input-number
               v-model="bookingForm.quantity"
               :min="1"
               :max="selectedRoom?.stock || selectedRoom?.roomCount || 10"
             />
             <span v-if="selectedRoom" style="margin-left: 10px; color: #999; font-size: 12px;">
-              （当前库存：{{ selectedRoom.stock || 0 }}间）
+              （{{ $t('hotel.currentStock') }}：{{ selectedRoom.stock || 0 }}{{ $t('hotel.rooms') }}）
             </span>
           </el-form-item>
-          <el-form-item label="订单总额" v-if="selectedRoom">
+          <el-form-item :label="$t('order.totalAmount')" v-if="selectedRoom">
             <span class="total-price">
               ¥{{ calculateTotalPrice() }}
             </span>
           </el-form-item>
-          <el-form-item label="联系人" required>
+          <el-form-item :label="$t('order.contactName')" required>
             <el-input v-model="bookingForm.contactName" />
           </el-form-item>
-          <el-form-item label="联系电话" required>
+          <el-form-item :label="$t('order.contactPhone')" required>
             <el-input v-model="bookingForm.contactPhone" />
           </el-form-item>
-          <el-form-item label="备注">
+          <el-form-item :label="$t('order.remark')">
             <el-input
               v-model="bookingForm.remark"
               type="textarea"
@@ -242,8 +244,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer">
-          <el-button @click="bookingDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleBooking">确认预订</el-button>
+          <el-button @click="bookingDialogVisible = false">{{ $t('common.cancel') }}</el-button>
+          <el-button type="primary" @click="handleBooking">{{ $t('hotel.confirmBooking') }}</el-button>
         </div>
       </el-dialog>
     </div>
@@ -379,7 +381,7 @@ export default {
     },
     async handleFavorite() {
       if (!this.isLogin) {
-        this.$message.warning('请先登录')
+        this.$message.warning(this.$t('common.pleaseLogin'))
         return
       }
 
@@ -387,14 +389,14 @@ export default {
         if (this.isFavorite) {
           await removeFavorite('hotel', this.hotel.id)
           this.isFavorite = false
-          this.$message.success('取消收藏成功')
+          this.$message.success(this.$t('favorite.removeSuccess'))
         } else {
           await addFavorite({
             targetType: 'hotel',
             targetId: this.hotel.id
           })
           this.isFavorite = true
-          this.$message.success('收藏成功')
+          this.$message.success(this.$t('favorite.addSuccess'))
         }
       } catch (error) {
         this.$message.error('操作失败')

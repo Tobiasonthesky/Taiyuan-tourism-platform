@@ -1,43 +1,43 @@
 <template>
   <div class="admin-cultures">
     <el-card>
-      <div slot="header">
-        <span>文化管理</span>
-        <div style="float: right;">
-          <el-button type="primary" size="small" @click="handleAdd">新增文化</el-button>
-          <el-button size="small" @click="goBack">返回</el-button>
+      <div slot="header" class="card-header">
+        <span>{{ $t('admin.cultureManagement') }}</span>
+        <div class="card-actions">
+          <el-button type="primary" size="small" @click="handleAdd">{{ $t('admin.addCulture') }}</el-button>
+          <el-button size="small" @click="goBack">{{ $t('common.back') }}</el-button>
         </div>
       </div>
 
       <!-- 搜索栏 -->
       <el-form :inline="true" class="search-form">
-        <el-form-item label="关键词">
-          <el-input v-model="searchKeyword" placeholder="文化名称" clearable @keyup.enter.native="handleSearch" />
+        <el-form-item :label="$t('common.keyword')">
+          <el-input v-model="searchKeyword" :placeholder="$t('culture.cultureName')" clearable @keyup.enter.native="handleSearch" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">搜索</el-button>
-          <el-button @click="handleReset">重置</el-button>
+          <el-button type="primary" @click="handleSearch">{{ $t('common.search') }}</el-button>
+          <el-button @click="handleReset">{{ $t('common.reset') }}</el-button>
         </el-form-item>
       </el-form>
 
       <!-- 文化列表 -->
       <el-table :data="cultures" v-loading="loading" border>
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="name" label="文化名称" width="200" />
-        <el-table-column prop="activityLocation" label="活动地点" width="250" show-overflow-tooltip />
-        <el-table-column prop="activityTime" label="活动时间" width="150" />
-        <el-table-column prop="description" label="描述" width="250" show-overflow-tooltip />
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column prop="id" :label="$t('common.id')" width="80" />
+        <el-table-column prop="name" :label="$t('culture.cultureName')" width="200" />
+        <el-table-column prop="activityLocation" :label="$t('culture.activityLocation')" width="250" show-overflow-tooltip />
+        <el-table-column prop="activityTime" :label="$t('culture.activityTime')" width="150" />
+        <el-table-column prop="description" :label="$t('common.description')" width="250" show-overflow-tooltip />
+        <el-table-column prop="status" :label="$t('common.status')" width="100">
           <template slot-scope="scope">
             <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">
-              {{ scope.row.status === 1 ? '上架' : '下架' }}
+              {{ scope.row.status === 1 ? $t('admin.online') : $t('admin.offline') }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column :label="$t('common.actions')" width="250" fixed="right">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button size="mini" @click="handleEdit(scope.row)">{{ $t('common.edit') }}</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">{{ $t('common.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -60,26 +60,26 @@
       @close="handleDialogClose"
     >
       <el-form :model="form" label-width="100px" ref="form">
-        <el-form-item label="文化名称" required>
+        <el-form-item :label="$t('culture.cultureName')" required>
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="封面图片">
+        <el-form-item :label="$t('culture.coverImage')">
           <ImageUpload v-model="form.coverImage" />
         </el-form-item>
-        <el-form-item label="多图片管理">
+        <el-form-item :label="$t('culture.multiImage')">
           <MultiImageUpload v-model="form.images" />
           <div style="margin-top: 8px; color: #909399; font-size: 12px;">
             <i class="el-icon-info"></i>
-            提示：保存内容后，图片会自动关联到该文化
+            {{ $t('culture.imageTip') }}
           </div>
         </el-form-item>
-        <el-form-item label="活动时间">
-          <el-input v-model="form.activityTime" placeholder="例如：每年农历正月十五" />
+        <el-form-item :label="$t('culture.activityTime')">
+          <el-input v-model="form.activityTime" :placeholder="$t('culture.activityTimeExample')" />
         </el-form-item>
-        <el-form-item label="活动地点">
+        <el-form-item :label="$t('culture.activityLocation')">
           <el-input 
             v-model="form.activityLocation" 
-            placeholder="请输入活动地点详细地址，系统将自动解析经纬度" 
+            :placeholder="$t('culture.pleaseInputAddress')" 
             @blur="handleAddressBlur"
           >
             <template slot="suffix">
@@ -88,34 +88,34 @@
             </template>
           </el-input>
           <div v-if="form.longitude && form.latitude" style="margin-top: 5px; color: #67C23A; font-size: 12px;">
-            <i class="el-icon-success"></i> 已自动获取坐标：{{ form.longitude }}, {{ form.latitude }}
+            <i class="el-icon-success"></i> {{ $t('common.autoLocated') }}：{{ form.longitude }}, {{ form.latitude }}
           </div>
         </el-form-item>
-        <el-form-item label="经度" prop="longitude" style="display: none;">
+        <el-form-item :label="$t('common.longitude')" prop="longitude" style="display: none;">
           <el-input v-model="form.longitude" />
         </el-form-item>
-        <el-form-item label="纬度" prop="latitude" style="display: none;">
+        <el-form-item :label="$t('common.latitude')" prop="latitude" style="display: none;">
           <el-input v-model="form.latitude" />
         </el-form-item>
-        <el-form-item label="历史背景">
+        <el-form-item :label="$t('culture.history')">
           <el-input v-model="form.history" type="textarea" :rows="3" />
         </el-form-item>
-        <el-form-item label="描述">
+        <el-form-item :label="$t('common.description')">
           <el-input v-model="form.description" type="textarea" :rows="3" />
         </el-form-item>
-        <el-form-item label="详细内容">
+        <el-form-item :label="$t('common.content')">
           <el-input v-model="form.content" type="textarea" :rows="5" />
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item :label="$t('common.status')">
           <el-radio-group v-model="form.status">
-            <el-radio :label="1">上架</el-radio>
-            <el-radio :label="0">下架</el-radio>
+            <el-radio :label="1">{{ $t('admin.online') }}</el-radio>
+            <el-radio :label="0">{{ $t('admin.offline') }}</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="dialogVisible = false">{{ $t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{ $t('common.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -146,7 +146,7 @@ export default {
       total: 0,
       loading: false,
       dialogVisible: false,
-      dialogTitle: '新增文化',
+      dialogTitle: this.$t('admin.addCulture'),
       searchingLocation: false,
       form: {
         id: null,
@@ -200,7 +200,7 @@ export default {
           this.total = res.data?.total || 0
         }
       } catch (error) {
-        this.$message.error('加载文化列表失败')
+        this.$message.error(this.$t('common.operateFailed'))
       } finally {
         this.loading = false
       }
@@ -224,7 +224,7 @@ export default {
       this.loadCultures()
     },
     handleAdd() {
-      this.dialogTitle = '新增文化'
+      this.dialogTitle = this.$t('admin.addCulture')
       this.form = {
         id: null,
         name: '',
@@ -242,7 +242,7 @@ export default {
       this.dialogVisible = true
     },
     async handleEdit(row) {
-      this.dialogTitle = '编辑文化'
+      this.dialogTitle = this.$t('admin.editCulture')
       this.form = {
         ...row,
         activityLocation: row.activityLocation || '',
@@ -294,7 +294,7 @@ export default {
           if (res.code === 200) {
             cultureId = this.form.id
           } else {
-            this.$message.error('更新失败')
+            this.$message.error(this.$t('common.operateFailed'))
             return
           }
         } else {
@@ -302,7 +302,7 @@ export default {
           if (res.code === 200 && res.data) {
             cultureId = res.data.id
           } else {
-            this.$message.error('创建失败')
+            this.$message.error(this.$t('common.operateFailed'))
             return
           }
         }
@@ -332,31 +332,31 @@ export default {
             }
           } catch (error) {
             console.error('保存图片失败:', error)
-            this.$message.warning('内容保存成功，但图片保存失败')
+            this.$message.warning(this.$t('common.saveSuccess') + '，' + this.$t('common.image') + this.$t('common.operateFailed'))
           }
         }
 
-        this.$message.success(this.form.id ? '更新成功' : '创建成功')
+        this.$message.success(this.form.id ? this.$t('common.updateSuccess') : this.$t('common.createSuccess'))
         this.dialogVisible = false
         this.loadCultures()
       } catch (error) {
-        this.$message.error('操作失败')
+        this.$message.error(this.$t('common.operateFailed'))
       }
     },
     async handleDelete(row) {
-      this.$confirm('确定要删除该文化吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('admin.confirmDelete').replace('{name}', this.$t('culture.cultureName')), this.$t('admin.tip'), {
+        confirmButtonText: this.$t('common.confirm'),
+        cancelButtonText: this.$t('common.cancel'),
         type: 'warning'
       }).then(async () => {
         try {
           const res = await deleteCulture(row.id)
           if (res.code === 200) {
-            this.$message.success('删除成功')
+            this.$message.success(this.$t('common.deleteSuccess'))
             this.loadCultures()
           }
         } catch (error) {
-          this.$message.error('删除失败')
+          this.$message.error(this.$t('common.deleteFailed'))
         }
       }).catch(() => {
         // 用户取消删除操作，不需要做任何处理

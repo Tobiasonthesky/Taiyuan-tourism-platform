@@ -2,33 +2,33 @@
   <div class="submit-page">
     <el-card>
       <div slot="header">
-        <span>提交内容</span>
+        <span>{{ $t('user.submitContent') }}</span>
         <div style="float: right;">
-          <el-button size="small" @click="goBack">返回</el-button>
+          <el-button size="small" @click="goBack">{{ $t('common.back') }}</el-button>
         </div>
       </div>
 
       <!-- 类型选择 -->
       <el-form :inline="true" style="margin-bottom: 20px;">
-        <el-form-item label="内容类型">
+        <el-form-item :label="$t('user.contentType')">
           <el-select v-model="contentType" @change="handleTypeChange" style="width: 200px;">
-            <el-option label="景点" value="attraction" />
-            <el-option label="美食" value="food" />
-            <el-option label="文化" value="culture" />
-            <el-option label="攻略" value="strategy" />
+            <el-option :label="$t('common.attraction')" value="attraction" />
+            <el-option :label="$t('common.food')" value="food" />
+            <el-option :label="$t('common.culture')" value="culture" />
+            <el-option :label="$t('common.strategy')" value="strategy" />
           </el-select>
         </el-form-item>
       </el-form>
 
       <!-- 景点表单 -->
       <el-form v-if="contentType === 'attraction'" :model="attractionForm" label-width="120px" ref="attractionForm">
-        <el-form-item label="景点名称" required>
-          <el-input v-model="attractionForm.name" placeholder="请输入景点名称" />
+        <el-form-item :label="$t('attraction.name')" required>
+          <el-input v-model="attractionForm.name" :placeholder="$t('attraction.pleaseInputName')" />
         </el-form-item>
-        <el-form-item label="地址">
+        <el-form-item :label="$t('common.address')">
           <el-input 
             v-model="attractionForm.address" 
-            placeholder="请输入详细地址，系统将自动解析经纬度" 
+            :placeholder="$t('attraction.pleaseInputAddress')" 
             @blur="handleAttractionAddressBlur"
           >
             <template slot="suffix">
@@ -37,73 +37,73 @@
             </template>
           </el-input>
           <div v-if="attractionForm.longitude && attractionForm.latitude" style="margin-top: 5px; color: #67C23A; font-size: 12px;">
-            <i class="el-icon-success"></i> 已自动获取坐标：{{ attractionForm.longitude }}, {{ attractionForm.latitude }}
+            <i class="el-icon-success"></i> {{ $t('attraction.autoLocated') }}：{{ attractionForm.longitude }}, {{ attractionForm.latitude }}
           </div>
         </el-form-item>
-        <el-form-item label="经度" prop="longitude" style="display: none;">
+        <el-form-item :label="$t('common.longitude')" prop="longitude" style="display: none;">
           <el-input v-model="attractionForm.longitude" />
         </el-form-item>
-        <el-form-item label="纬度" prop="latitude" style="display: none;">
+        <el-form-item :label="$t('common.latitude')" prop="latitude" style="display: none;">
           <el-input v-model="attractionForm.latitude" />
         </el-form-item>
-        <el-form-item label="门票价格">
+        <el-form-item :label="$t('common.ticketPrice')">
           <el-input-number v-model="attractionForm.ticketPrice" :min="0" :precision="2" />
         </el-form-item>
-        <el-form-item label="开放时间">
-          <el-input v-model="attractionForm.openingHours" placeholder="如：8:00-18:00" />
+        <el-form-item :label="$t('common.openingHours')">
+          <el-input v-model="attractionForm.openingHours" :placeholder="$t('attraction.pleaseInputOpeningHours')" />
         </el-form-item>
-        <el-form-item label="封面图片">
-          <el-input v-model="attractionForm.coverImage" placeholder="图片URL" />
+        <el-form-item :label="$t('attraction.coverImage')">
+          <el-input v-model="attractionForm.coverImage" :placeholder="$t('common.imageUrl')" />
         </el-form-item>
-        <el-form-item label="多图片（每行一个URL）">
+        <el-form-item :label="$t('common.multiImage')">
           <el-input
             v-model="attractionForm.imageUrls"
             type="textarea"
             :rows="4"
-            placeholder="每行输入一个图片URL，支持多张图片"
+            :placeholder="$t('attraction.multiImagePlaceholder')"
           />
         </el-form-item>
-        <el-form-item label="描述" required>
-          <el-input v-model="attractionForm.description" type="textarea" :rows="4" placeholder="请输入景点描述" />
+        <el-form-item :label="$t('attraction.description')" required>
+          <el-input v-model="attractionForm.description" type="textarea" :rows="4" :placeholder="$t('attraction.pleaseInputDescription')" />
         </el-form-item>
-        <el-form-item label="详细内容">
-          <el-input v-model="attractionForm.content" type="textarea" :rows="6" placeholder="请输入详细内容" />
+        <el-form-item :label="$t('attraction.content')">
+          <el-input v-model="attractionForm.content" type="textarea" :rows="6" :placeholder="$t('attraction.pleaseInputContent')" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitAttraction">提交审核</el-button>
-          <el-button @click="resetAttractionForm">重置</el-button>
+          <el-button type="primary" @click="submitAttraction">{{ $t('common.submitAudit') }}</el-button>
+          <el-button @click="resetAttractionForm">{{ $t('common.reset') }}</el-button>
         </el-form-item>
       </el-form>
 
       <!-- 美食表单 -->
       <el-form v-if="contentType === 'food'" :model="foodForm" label-width="120px" ref="foodForm">
-        <el-form-item label="美食名称" required>
-          <el-input v-model="foodForm.name" placeholder="请输入美食名称" />
+        <el-form-item :label="$t('food.name')" required>
+          <el-input v-model="foodForm.name" :placeholder="$t('food.pleaseInputName')" />
         </el-form-item>
-        <el-form-item label="封面图片">
-          <el-input v-model="foodForm.coverImage" placeholder="图片URL" />
+        <el-form-item :label="$t('food.coverImage')">
+          <el-input v-model="foodForm.coverImage" :placeholder="$t('common.imageUrl')" />
         </el-form-item>
-        <el-form-item label="多图片（每行一个URL）">
+        <el-form-item :label="$t('food.multiImages')">
           <el-input
             v-model="foodForm.imageUrls"
             type="textarea"
             :rows="4"
-            placeholder="每行输入一个图片URL，支持多张图片"
+            :placeholder="$t('food.multiImagePlaceholder')"
           />
         </el-form-item>
-        <el-form-item label="描述" required>
-          <el-input v-model="foodForm.description" type="textarea" :rows="4" placeholder="请输入美食描述" />
+        <el-form-item :label="$t('food.description')" required>
+          <el-input v-model="foodForm.description" type="textarea" :rows="4" :placeholder="$t('food.pleaseInputDescription')" />
         </el-form-item>
-        <el-form-item label="主要食材">
-          <el-input v-model="foodForm.ingredients" placeholder="请输入主要食材" />
+        <el-form-item :label="$t('food.ingredients')">
+          <el-input v-model="foodForm.ingredients" :placeholder="$t('food.pleaseInputIngredients')" />
         </el-form-item>
-        <el-form-item label="推荐餐厅名称">
-          <el-input v-model="foodForm.restaurant" placeholder="请输入餐厅名称" />
+        <el-form-item :label="$t('food.restaurantName')">
+          <el-input v-model="foodForm.restaurant" :placeholder="$t('food.pleaseInputRestaurant')" />
         </el-form-item>
-        <el-form-item label="餐厅地址">
+        <el-form-item :label="$t('common.address')">
           <el-input 
             v-model="foodForm.address" 
-            placeholder="请输入餐厅详细地址，系统将自动解析经纬度" 
+            :placeholder="$t('food.pleaseInputAddress')" 
             @blur="handleFoodAddressBlur"
           >
             <template slot="suffix">
@@ -112,53 +112,53 @@
             </template>
           </el-input>
           <div v-if="foodForm.longitude && foodForm.latitude" style="margin-top: 5px; color: #67C23A; font-size: 12px;">
-            <i class="el-icon-success"></i> 已自动获取坐标：{{ foodForm.longitude }}, {{ foodForm.latitude }}
+            <i class="el-icon-success"></i> {{ $t('food.autoLocated') }}：{{ foodForm.longitude }}, {{ foodForm.latitude }}
           </div>
         </el-form-item>
-        <el-form-item label="经度" prop="longitude" style="display: none;">
+        <el-form-item :label="$t('common.longitude')" prop="longitude" style="display: none;">
           <el-input v-model="foodForm.longitude" />
         </el-form-item>
-        <el-form-item label="纬度" prop="latitude" style="display: none;">
+        <el-form-item :label="$t('common.latitude')" prop="latitude" style="display: none;">
           <el-input v-model="foodForm.latitude" />
         </el-form-item>
-        <el-form-item label="详细内容">
-          <el-input v-model="foodForm.content" type="textarea" :rows="6" placeholder="请输入详细内容" />
+        <el-form-item :label="$t('food.content')">
+          <el-input v-model="foodForm.content" type="textarea" :rows="6" :placeholder="$t('food.pleaseInputContent')" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitFood">提交审核</el-button>
-          <el-button @click="resetFoodForm">重置</el-button>
+          <el-button type="primary" @click="submitFood">{{ $t('common.submitAudit') }}</el-button>
+          <el-button @click="resetFoodForm">{{ $t('common.reset') }}</el-button>
         </el-form-item>
       </el-form>
 
       <!-- 文化表单 -->
       <el-form v-if="contentType === 'culture'" :model="cultureForm" label-width="120px" ref="cultureForm">
-        <el-form-item label="文化名称" required>
-          <el-input v-model="cultureForm.name" placeholder="请输入文化名称" />
+        <el-form-item :label="$t('culture.cultureName')" required>
+          <el-input v-model="cultureForm.name" :placeholder="$t('culture.pleaseInputName')" />
         </el-form-item>
-        <el-form-item label="封面图片">
-          <el-input v-model="cultureForm.coverImage" placeholder="图片URL" />
+        <el-form-item :label="$t('culture.coverImage')">
+          <el-input v-model="cultureForm.coverImage" :placeholder="$t('common.imageUrl')" />
         </el-form-item>
-        <el-form-item label="多图片（每行一个URL）">
+        <el-form-item :label="$t('common.multiImage')">
           <el-input
             v-model="cultureForm.imageUrls"
             type="textarea"
             :rows="4"
-            placeholder="每行输入一个图片URL，支持多张图片"
+            :placeholder="$t('culture.multiImagePlaceholder')"
           />
         </el-form-item>
-        <el-form-item label="描述" required>
-          <el-input v-model="cultureForm.description" type="textarea" :rows="4" placeholder="请输入文化描述" />
+        <el-form-item :label="$t('culture.description')" required>
+          <el-input v-model="cultureForm.description" type="textarea" :rows="4" :placeholder="$t('culture.pleaseInputDescription')" />
         </el-form-item>
-        <el-form-item label="历史背景">
-          <el-input v-model="cultureForm.history" type="textarea" :rows="4" placeholder="请输入历史背景" />
+        <el-form-item :label="$t('culture.history')">
+          <el-input v-model="cultureForm.history" type="textarea" :rows="4" :placeholder="$t('culture.pleaseInputHistory')" />
         </el-form-item>
-        <el-form-item label="活动时间">
-          <el-input v-model="cultureForm.activityTime" placeholder="请输入活动时间" />
+        <el-form-item :label="$t('culture.activityTime')">
+          <el-input v-model="cultureForm.activityTime" :placeholder="$t('culture.pleaseInputActivityTime')" />
         </el-form-item>
-        <el-form-item label="活动地点">
+        <el-form-item :label="$t('culture.activityLocation')">
           <el-input 
             v-model="cultureForm.activityLocation" 
-            placeholder="请输入活动地点详细地址，系统将自动解析经纬度" 
+            :placeholder="$t('culture.pleaseInputActivityLocation')" 
             @blur="handleCultureAddressBlur"
           >
             <template slot="suffix">
@@ -167,68 +167,68 @@
             </template>
           </el-input>
           <div v-if="cultureForm.longitude && cultureForm.latitude" style="margin-top: 5px; color: #67C23A; font-size: 12px;">
-            <i class="el-icon-success"></i> 已自动获取坐标：{{ cultureForm.longitude }}, {{ cultureForm.latitude }}
+            <i class="el-icon-success"></i> {{ $t('culture.autoLocated') }}：{{ cultureForm.longitude }}, {{ cultureForm.latitude }}
           </div>
         </el-form-item>
-        <el-form-item label="经度" prop="longitude" style="display: none;">
+        <el-form-item :label="$t('common.longitude')" prop="longitude" style="display: none;">
           <el-input v-model="cultureForm.longitude" />
         </el-form-item>
-        <el-form-item label="纬度" prop="latitude" style="display: none;">
+        <el-form-item :label="$t('common.latitude')" prop="latitude" style="display: none;">
           <el-input v-model="cultureForm.latitude" />
         </el-form-item>
-        <el-form-item label="详细内容">
-          <el-input v-model="cultureForm.content" type="textarea" :rows="6" placeholder="请输入详细内容" />
+        <el-form-item :label="$t('culture.content')">
+          <el-input v-model="cultureForm.content" type="textarea" :rows="6" :placeholder="$t('culture.pleaseInputContent')" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitCulture">提交审核</el-button>
-          <el-button @click="resetCultureForm">重置</el-button>
+          <el-button type="primary" @click="submitCulture">{{ $t('common.submitAudit') }}</el-button>
+          <el-button @click="resetCultureForm">{{ $t('common.reset') }}</el-button>
         </el-form-item>
       </el-form>
 
       <!-- 攻略表单 -->
       <el-form v-if="contentType === 'strategy'" :model="strategyForm" label-width="120px" ref="strategyForm">
-        <el-form-item label="攻略标题" required>
-          <el-input v-model="strategyForm.title" placeholder="请输入攻略标题" />
+        <el-form-item :label="$t('strategy.strategyTitle')" required>
+          <el-input v-model="strategyForm.title" :placeholder="$t('strategy.pleaseInputTitle')" />
         </el-form-item>
-        <el-form-item label="分类">
-          <el-select v-model="strategyForm.category" placeholder="请选择分类" style="width: 100%">
-            <el-option label="1日游" value="1day" />
-            <el-option label="2日游" value="2day" />
-            <el-option label="主题游" value="theme" />
+        <el-form-item :label="$t('common.category')">
+          <el-select v-model="strategyForm.category" :placeholder="$t('strategy.selectCategory')" style="width: 100%">
+            <el-option :label="$t('strategy.oneDayTour')" value="1day" />
+            <el-option :label="$t('strategy.twoDayTour')" value="2day" />
+            <el-option :label="$t('strategy.themeTour')" value="theme" />
           </el-select>
         </el-form-item>
-        <el-form-item label="主题">
-          <el-input v-model="strategyForm.theme" placeholder="如：亲子、情侣、摄影等" />
+        <el-form-item :label="$t('strategy.theme')">
+          <el-input v-model="strategyForm.theme" :placeholder="$t('strategy.pleaseInputTheme')" />
         </el-form-item>
-        <el-form-item label="封面图片">
-          <el-input v-model="strategyForm.coverImage" placeholder="图片URL" />
+        <el-form-item :label="$t('strategy.coverImage')">
+          <el-input v-model="strategyForm.coverImage" :placeholder="$t('common.imageUrl')" />
         </el-form-item>
-        <el-form-item label="多图片（每行一个URL）">
+        <el-form-item :label="$t('common.multiImage')">
           <el-input
             v-model="strategyForm.imageUrls"
             type="textarea"
             :rows="4"
-            placeholder="每行输入一个图片URL，支持多张图片"
+            :placeholder="$t('strategy.multiImagePlaceholder')"
           />
         </el-form-item>
-        <el-form-item label="描述" required>
-          <el-input v-model="strategyForm.description" type="textarea" :rows="4" placeholder="请输入攻略描述" />
+        <el-form-item :label="$t('strategy.description')" required>
+          <el-input v-model="strategyForm.description" type="textarea" :rows="4" :placeholder="$t('strategy.pleaseInputDescription')" />
         </el-form-item>
-        <el-form-item label="游玩时长（天）">
+        <el-form-item :label="$t('strategy.duration')">
           <el-input-number v-model="strategyForm.duration" :min="1" />
         </el-form-item>
-        <el-form-item label="预算（元）">
+        <el-form-item :label="$t('strategy.budget')">
           <el-input-number v-model="strategyForm.budget" :min="0" :precision="2" />
         </el-form-item>
-        <el-form-item label="最佳季节">
-          <el-input v-model="strategyForm.bestSeason" placeholder="如：春季、夏季等" />
+        <el-form-item :label="$t('strategy.bestSeason')">
+          <el-input v-model="strategyForm.bestSeason" :placeholder="$t('strategy.pleaseInputBestSeason')" />
         </el-form-item>
-        <el-form-item label="详细内容">
-          <el-input v-model="strategyForm.content" type="textarea" :rows="8" placeholder="请输入详细攻略内容" />
+        <el-form-item :label="$t('strategy.content')">
+          <el-input v-model="strategyForm.content" type="textarea" :rows="8" :placeholder="$t('strategy.pleaseInputContent')" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitStrategy">提交审核</el-button>
-          <el-button @click="resetStrategyForm">重置</el-button>
+          <el-button type="primary" @click="submitStrategy">{{ $t('common.submitAudit') }}</el-button>
+          <el-button @click="resetStrategyForm">{{ $t('common.reset') }}</el-button>
         </el-form-item>
       </el-form>
     </el-card>

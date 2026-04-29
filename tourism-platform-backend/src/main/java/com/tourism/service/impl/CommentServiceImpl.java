@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,11 +47,16 @@ public class CommentServiceImpl implements CommentService {
     
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private CommentReplyMapper commentReplyMapper;
     
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Comment addComment(Long userId, String targetType, Long targetId, String content,
                               BigDecimal rating, String ratingDetail, String images) {
+        validateCommentTarget(targetType, targetId);
+
         Comment comment = new Comment();
         comment.setUserId(userId);
         comment.setTargetType(targetType);
@@ -70,6 +76,43 @@ public class CommentServiceImpl implements CommentService {
         updateTargetCommentCount(targetType, targetId, rating);
         
         return comment;
+    }
+
+    private void validateCommentTarget(String targetType, Long targetId) {
+        switch (targetType) {
+            case "attraction":
+                if (attractionMapper.selectById(targetId) == null) {
+                    throw new BusinessException("景点不存在");
+                }
+                break;
+            case "food":
+                if (foodMapper.selectById(targetId) == null) {
+                    throw new BusinessException("美食不存在");
+                }
+                break;
+            case "hotel":
+                if (hotelMapper.selectById(targetId) == null) {
+                    throw new BusinessException("酒店不存在");
+                }
+                break;
+            case "culture":
+                if (cultureMapper.selectById(targetId) == null) {
+                    throw new BusinessException("文化项目不存在");
+                }
+                break;
+            case "strategy":
+                if (strategyMapper.selectById(targetId) == null) {
+                    throw new BusinessException("攻略不存在");
+                }
+                break;
+            case "experience":
+                if (experienceMapper.selectById(targetId) == null) {
+                    throw new BusinessException("体验项目不存在");
+                }
+                break;
+            default:
+                throw new BusinessException("不支持的评论类型");
+        }
     }
     
     /**
@@ -149,7 +192,7 @@ public class CommentServiceImpl implements CommentService {
                 // 计算新的平均分：(当前平均分 * (评论数-1) + 新评分) / 评论数
                 BigDecimal newAvg = currentRating.multiply(BigDecimal.valueOf(commentCount - 1))
                         .add(newRating)
-                        .divide(BigDecimal.valueOf(commentCount), 2, BigDecimal.ROUND_HALF_UP);
+                        .divide(BigDecimal.valueOf(commentCount), 2, RoundingMode.HALF_UP);
                 att.setRating(newAvg);
             } else {
                 att.setRating(newRating);
@@ -161,7 +204,7 @@ public class CommentServiceImpl implements CommentService {
             if (commentCount > 0) {
                 BigDecimal newAvg = currentRating.multiply(BigDecimal.valueOf(commentCount - 1))
                         .add(newRating)
-                        .divide(BigDecimal.valueOf(commentCount), 2, BigDecimal.ROUND_HALF_UP);
+                        .divide(BigDecimal.valueOf(commentCount), 2, RoundingMode.HALF_UP);
                 food.setRating(newAvg);
             } else {
                 food.setRating(newRating);
@@ -173,7 +216,7 @@ public class CommentServiceImpl implements CommentService {
             if (commentCount > 0) {
                 BigDecimal newAvg = currentRating.multiply(BigDecimal.valueOf(commentCount - 1))
                         .add(newRating)
-                        .divide(BigDecimal.valueOf(commentCount), 2, BigDecimal.ROUND_HALF_UP);
+                        .divide(BigDecimal.valueOf(commentCount), 2, RoundingMode.HALF_UP);
                 hotel.setRating(newAvg);
             } else {
                 hotel.setRating(newRating);
@@ -185,7 +228,7 @@ public class CommentServiceImpl implements CommentService {
             if (commentCount > 0) {
                 BigDecimal newAvg = currentRating.multiply(BigDecimal.valueOf(commentCount - 1))
                         .add(newRating)
-                        .divide(BigDecimal.valueOf(commentCount), 2, BigDecimal.ROUND_HALF_UP);
+                        .divide(BigDecimal.valueOf(commentCount), 2, RoundingMode.HALF_UP);
                 culture.setRating(newAvg);
             } else {
                 culture.setRating(newRating);
@@ -197,7 +240,7 @@ public class CommentServiceImpl implements CommentService {
             if (commentCount > 0) {
                 BigDecimal newAvg = currentRating.multiply(BigDecimal.valueOf(commentCount - 1))
                         .add(newRating)
-                        .divide(BigDecimal.valueOf(commentCount), 2, BigDecimal.ROUND_HALF_UP);
+                        .divide(BigDecimal.valueOf(commentCount), 2, RoundingMode.HALF_UP);
                 experience.setRating(newAvg);
             } else {
                 experience.setRating(newRating);
@@ -276,7 +319,11 @@ public class CommentServiceImpl implements CommentService {
         
         // 减少对应实体的评论数
         decreaseTargetCommentCount(comment.getTargetType(), comment.getTargetId());
-        
+
+        LambdaQueryWrapper<CommentReply> replyWrapper = new LambdaQueryWrapper<>();
+        replyWrapper.eq(CommentReply::getCommentId, commentId);
+        commentReplyMapper.delete(replyWrapper);
+
         commentMapper.deleteById(commentId);
     }
     

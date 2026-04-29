@@ -48,7 +48,6 @@ public class HotelController {
     public Result<Hotel> getHotelDetail(@PathVariable Long id, HttpServletRequest request) {
         Hotel hotel = hotelService.getHotelDetail(id);
         
-        // 添加浏览记录（如果用户已登录）
         String token = getTokenFromRequest(request);
         if (token != null) {
             try {
@@ -57,7 +56,6 @@ public class HotelController {
                     browseHistoryService.addBrowseHistory(userId, "hotel", id);
                 }
             } catch (Exception e) {
-                // 忽略Token解析错误
             }
         }
         
@@ -99,4 +97,3 @@ public class HotelController {
         return Result.success(available);
     }
 }
-

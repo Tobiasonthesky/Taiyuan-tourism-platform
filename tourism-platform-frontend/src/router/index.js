@@ -206,13 +206,22 @@ VueRouter.prototype.push = function push(location) {
   })
 }
 
+// 导航状态标志，防止重复导航
+let isNavigating = false
+
 // 路由守卫
 router.beforeEach(async (to, from, next) => {
+  // 如果正在导航中，直接返回
+  if (isNavigating) {
+    return
+  }
+  
   const token = store.getters['user/token']
   let userInfo = store.getters['user/userInfo']
   
   // 如果token存在但userInfo不存在，尝试从服务器获取用户信息
   if (token && !userInfo) {
+    isNavigating = true
     try {
       await store.dispatch('user/getUserInfo')
       userInfo = store.getters['user/userInfo']
@@ -220,11 +229,19 @@ router.beforeEach(async (to, from, next) => {
       // 如果获取用户信息失败（token可能已过期），清除token
       console.error('获取用户信息失败:', error)
       await store.dispatch('user/logout')
+      isNavigating = false
       if (to.path !== '/login') {
         next('/login')
         return
       }
     }
+    isNavigating = false
+  }
+  
+  // 如果已经在登录页面，直接放行（避免重复导航到登录页）
+  if (to.path === '/login') {
+    next()
+    return
   }
   
   const isAdmin = userInfo && userInfo.role === 'admin'

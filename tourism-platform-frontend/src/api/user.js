@@ -35,6 +35,15 @@ export function updateUserInfo(data) {
   })
 }
 
+// 修改密码
+export function updatePassword(data) {
+  return request({
+    url: '/user/password',
+    method: 'put',
+    data
+  })
+}
+
 // ==================== 用户提交内容 ====================
 export function submitAttraction(data) {
   return request({

@@ -1,7 +1,7 @@
 <template>
   <div class="hotel-page">
     <div class="container">
-      <h1 class="page-title">酒店预订</h1>
+      <h1 class="page-title">{{ $t('hotel.title') }}</h1>
       
       <!-- 搜索和筛选 -->
       <el-card class="filter-card">
@@ -9,23 +9,23 @@
           <el-col :span="8">
             <el-input
               v-model="searchKeyword"
-              placeholder="搜索酒店"
+              :placeholder="$t('common.search') + ' ' + $t('hotel.title')"
               prefix-icon="el-icon-search"
               @input="debouncedSearch"
               @keyup.enter.native="handleSearch"
             />
           </el-col>
           <el-col :span="6">
-            <el-select v-model="starLevel" placeholder="选择星级" clearable @change="handleSearch">
-              <el-option label="五星级" :value="5" />
-              <el-option label="四星级" :value="4" />
-              <el-option label="三星级" :value="3" />
-              <el-option label="二星级" :value="2" />
-              <el-option label="一星级" :value="1" />
+            <el-select v-model="starLevel" :placeholder="$t('hotel.starLevel')" clearable @change="handleSearch">
+              <el-option :label="$t('common.fiveStar')" :value="5" />
+              <el-option :label="$t('common.fourStar')" :value="4" />
+              <el-option :label="$t('common.threeStar')" :value="3" />
+              <el-option :label="$t('common.twoStar')" :value="2" />
+              <el-option :label="$t('common.oneStar')" :value="1" />
             </el-select>
           </el-col>
           <el-col :span="4">
-            <el-button type="primary" @click="handleSearch">搜索</el-button>
+            <el-button type="primary" @click="handleSearch">{{ $t('common.search') }}</el-button>
           </el-col>
         </el-row>
       </el-card>
@@ -56,15 +56,15 @@
                       show-score
                       text-color="#ff9900"
                     />
-                    <span class="rating">评分：{{ item.rating }}</span>
+                    <span class="rating">{{ $t('hotel.rating') }}：{{ item.rating }}</span>
                   </div>
                   <p class="address">
                     <i class="el-icon-location"></i> {{ item.address }}
                   </p>
                   <div class="hotel-footer">
-                    <span class="price">¥{{ item.minPrice }}/晚起</span>
+                    <span class="price">¥{{ item.minPrice }}/{{ $t('hotel.minPrice') }}</span>
                     <span class="views">
-                      <i class="el-icon-view"></i> {{ item.viewCount }}
+                      <i class="el-icon-view"></i> {{ item.viewCount }} {{ $t('common.views') }}
                     </span>
                   </div>
                 </div>
@@ -78,8 +78,8 @@
       <EmptyState
         v-else
         icon="el-icon-office-building"
-        title="暂无酒店"
-        description="暂时没有找到相关酒店"
+        :title="$t('common.noData')"
+        :description="$t('common.noData')"
       />
 
       <!-- 分页 -->
@@ -117,7 +117,7 @@ export default {
       searchKeyword: '',
       starLevel: null,
       page: 1,
-      size: 12,
+      size: 10,
       total: 0,
       loading: false
     }

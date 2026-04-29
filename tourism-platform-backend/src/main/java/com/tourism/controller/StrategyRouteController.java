@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 攻略路线控制器
+ * ?
  */
 @RestController
 @RequestMapping("/strategies/{strategyId}/routes")
-@Api(tags = "攻略路线管理")
+@Api(tags = "")
 public class StrategyRouteController {
     
     @Autowired
     private StrategyRouteMapper routeMapper;
     
     @GetMapping
-    @ApiOperation("获取攻略路线列表")
+    @ApiOperation("")
     public Result<List<StrategyRoute>> getRoutes(@PathVariable Long strategyId) {
         LambdaQueryWrapper<StrategyRoute> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(StrategyRoute::getStrategyId, strategyId);

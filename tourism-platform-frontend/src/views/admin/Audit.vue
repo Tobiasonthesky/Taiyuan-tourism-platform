@@ -1,27 +1,29 @@
 <template>
   <div class="admin-audit">
     <el-card>
-      <div slot="header">
-        <span>内容审核</span>
-        <div style="float: right;">
-          <el-button size="small" @click="goBack">返回</el-button>
+      <div slot="header" class="card-header">
+        <span>{{ $t('admin.auditManagement') }}</span>
+        <div class="card-actions">
+          <el-button size="small" @click="goBack">{{ $t('common.back') }}</el-button>
         </div>
       </div>
 
       <!-- 标签页 -->
       <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-        <el-tab-pane label="待审核景点" name="attractions">
+        <el-tab-pane :label="$t('audit.pendingAttractions')" name="attractions">
           <el-table :data="attractions" v-loading="loading" border>
-            <el-table-column prop="id" label="ID" width="80" />
-            <el-table-column prop="name" label="景点名称" width="200" />
-            <el-table-column prop="address" label="地址" width="200" />
-            <el-table-column prop="description" label="描述" show-overflow-tooltip />
-            <el-table-column prop="createTime" label="提交时间" width="180" />
-            <el-table-column label="操作" width="250" fixed="right">
+            <el-table-column prop="id" :label="$t('common.id')" width="80" />
+            <el-table-column prop="name" :label="$t('attraction.name')" width="200" />
+            <el-table-column prop="address" :label="$t('common.address')" width="200" />
+            <el-table-column prop="description" :label="$t('common.description')" show-overflow-tooltip />
+            <el-table-column prop="createTime" :label="$t('audit.submitTime')" width="180" />
+            <el-table-column :label="$t('common.actions')" width="320" fixed="right">
               <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="handleViewDetail(scope.row, 'attraction')">查看详情</el-button>
-                <el-button size="mini" type="success" @click="handleAudit(scope.row, 'attraction', 1)">通过</el-button>
-                <el-button size="mini" type="danger" @click="handleAudit(scope.row, 'attraction', 2)">拒绝</el-button>
+                <div class="audit-actions">
+                  <el-button size="mini" type="primary" @click="handleViewDetail(scope.row, 'attraction')">{{ $t('audit.viewDetail') }}</el-button>
+                  <el-button size="mini" type="success" @click="handleAudit(scope.row, 'attraction', 1)">{{ $t('audit.approve') }}</el-button>
+                  <el-button size="mini" type="danger" @click="handleAudit(scope.row, 'attraction', 2)">{{ $t('audit.reject') }}</el-button>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -34,17 +36,19 @@
           />
         </el-tab-pane>
 
-        <el-tab-pane label="待审核美食" name="foods">
+        <el-tab-pane :label="$t('audit.pendingFoods')" name="foods">
           <el-table :data="foods" v-loading="loading" border>
-            <el-table-column prop="id" label="ID" width="80" />
-            <el-table-column prop="name" label="美食名称" width="200" />
-            <el-table-column prop="description" label="描述" show-overflow-tooltip />
-            <el-table-column prop="createTime" label="提交时间" width="180" />
-            <el-table-column label="操作" width="250" fixed="right">
+            <el-table-column prop="id" :label="$t('common.id')" width="80" />
+            <el-table-column prop="name" :label="$t('food.name')" width="200" />
+            <el-table-column prop="description" :label="$t('common.description')" show-overflow-tooltip />
+            <el-table-column prop="createTime" :label="$t('audit.submitTime')" width="180" />
+            <el-table-column :label="$t('common.actions')" width="320" fixed="right">
               <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="handleViewDetail(scope.row, 'food')">查看详情</el-button>
-                <el-button size="mini" type="success" @click="handleAudit(scope.row, 'food', 1)">通过</el-button>
-                <el-button size="mini" type="danger" @click="handleAudit(scope.row, 'food', 2)">拒绝</el-button>
+                <div class="audit-actions">
+                  <el-button size="mini" type="primary" @click="handleViewDetail(scope.row, 'food')">{{ $t('audit.viewDetail') }}</el-button>
+                  <el-button size="mini" type="success" @click="handleAudit(scope.row, 'food', 1)">{{ $t('audit.approve') }}</el-button>
+                  <el-button size="mini" type="danger" @click="handleAudit(scope.row, 'food', 2)">{{ $t('audit.reject') }}</el-button>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -57,17 +61,19 @@
           />
         </el-tab-pane>
 
-        <el-tab-pane label="待审核文化" name="cultures">
+        <el-tab-pane :label="$t('audit.pendingCultures')" name="cultures">
           <el-table :data="cultures" v-loading="loading" border>
-            <el-table-column prop="id" label="ID" width="80" />
-            <el-table-column prop="name" label="文化名称" width="200" />
-            <el-table-column prop="description" label="描述" show-overflow-tooltip />
-            <el-table-column prop="createTime" label="提交时间" width="180" />
-            <el-table-column label="操作" width="250" fixed="right">
+            <el-table-column prop="id" :label="$t('common.id')" width="80" />
+            <el-table-column prop="name" :label="$t('culture.name')" width="200" />
+            <el-table-column prop="description" :label="$t('common.description')" show-overflow-tooltip />
+            <el-table-column prop="createTime" :label="$t('audit.submitTime')" width="180" />
+            <el-table-column :label="$t('common.actions')" width="320" fixed="right">
               <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="handleViewDetail(scope.row, 'culture')">查看详情</el-button>
-                <el-button size="mini" type="success" @click="handleAudit(scope.row, 'culture', 1)">通过</el-button>
-                <el-button size="mini" type="danger" @click="handleAudit(scope.row, 'culture', 2)">拒绝</el-button>
+                <div class="audit-actions">
+                  <el-button size="mini" type="primary" @click="handleViewDetail(scope.row, 'culture')">{{ $t('audit.viewDetail') }}</el-button>
+                  <el-button size="mini" type="success" @click="handleAudit(scope.row, 'culture', 1)">{{ $t('audit.approve') }}</el-button>
+                  <el-button size="mini" type="danger" @click="handleAudit(scope.row, 'culture', 2)">{{ $t('audit.reject') }}</el-button>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -80,17 +86,19 @@
           />
         </el-tab-pane>
 
-        <el-tab-pane label="待审核攻略" name="strategies">
+        <el-tab-pane :label="$t('audit.pendingStrategies')" name="strategies">
           <el-table :data="strategies" v-loading="loading" border>
-            <el-table-column prop="id" label="ID" width="80" />
-            <el-table-column prop="title" label="攻略标题" width="200" />
-            <el-table-column prop="description" label="描述" show-overflow-tooltip />
-            <el-table-column prop="createTime" label="提交时间" width="180" />
-            <el-table-column label="操作" width="250" fixed="right">
+            <el-table-column prop="id" :label="$t('common.id')" width="80" />
+            <el-table-column prop="title" :label="$t('strategy.title')" width="200" />
+            <el-table-column prop="description" :label="$t('common.description')" show-overflow-tooltip />
+            <el-table-column prop="createTime" :label="$t('audit.submitTime')" width="180" />
+            <el-table-column :label="$t('common.actions')" width="320" fixed="right">
               <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="handleViewDetail(scope.row, 'strategy')">查看详情</el-button>
-                <el-button size="mini" type="success" @click="handleAudit(scope.row, 'strategy', 1)">通过</el-button>
-                <el-button size="mini" type="danger" @click="handleAudit(scope.row, 'strategy', 2)">拒绝</el-button>
+                <div class="audit-actions">
+                  <el-button size="mini" type="primary" @click="handleViewDetail(scope.row, 'strategy')">{{ $t('audit.viewDetail') }}</el-button>
+                  <el-button size="mini" type="success" @click="handleAudit(scope.row, 'strategy', 1)">{{ $t('audit.approve') }}</el-button>
+                  <el-button size="mini" type="danger" @click="handleAudit(scope.row, 'strategy', 2)">{{ $t('audit.reject') }}</el-button>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -116,19 +124,19 @@
         <!-- 景点详情 -->
         <template v-if="currentType === 'attraction'">
           <el-descriptions :column="2" border>
-            <el-descriptions-item label="景点名称">{{ detailData.name }}</el-descriptions-item>
-            <el-descriptions-item label="地址">{{ detailData.address || '未填写' }}</el-descriptions-item>
-            <el-descriptions-item label="门票价格">¥{{ detailData.ticketPrice || 0 }}</el-descriptions-item>
-            <el-descriptions-item label="开放时间">{{ detailData.openingHours || '未填写' }}</el-descriptions-item>
-            <el-descriptions-item label="评分">{{ detailData.rating || '未评分' }}</el-descriptions-item>
-            <el-descriptions-item label="提交时间">{{ detailData.createTime }}</el-descriptions-item>
-            <el-descriptions-item label="封面图片" :span="2">
-              <img v-if="detailData.coverImage" :src="detailData.coverImage" alt="封面" style="max-width: 300px; max-height: 200px;" />
-              <span v-else>无</span>
+            <el-descriptions-item :label="$t('attraction.name')">{{ detailData.name }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('common.address')">{{ detailData.address || $t('common.notFilled') }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('attraction.ticketPrice')">¥{{ detailData.ticketPrice || 0 }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('attraction.openingHours')">{{ detailData.openingHours || $t('common.notFilled') }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('common.rating')">{{ detailData.rating || $t('common.notRated') }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('audit.submitTime')">{{ detailData.createTime }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('common.coverImage')" :span="2">
+              <img v-if="detailData.coverImage" :src="detailData.coverImage" :alt="$t('common.cover')" style="max-width: 300px; max-height: 200px;" />
+              <span v-else>{{ $t('common.none') }}</span>
             </el-descriptions-item>
-            <el-descriptions-item label="描述" :span="2">{{ detailData.description || '无' }}</el-descriptions-item>
-            <el-descriptions-item label="详细内容" :span="2">
-              <div v-html="detailData.content || '无'"></div>
+            <el-descriptions-item :label="$t('common.description')" :span="2">{{ detailData.description || $t('common.none') }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('common.content')" :span="2">
+              <div v-html="detailData.content || $t('common.none')"></div>
             </el-descriptions-item>
           </el-descriptions>
         </template>
@@ -136,18 +144,18 @@
         <!-- 美食详情 -->
         <template v-if="currentType === 'food'">
           <el-descriptions :column="2" border>
-            <el-descriptions-item label="美食名称">{{ detailData.name }}</el-descriptions-item>
-            <el-descriptions-item label="推荐餐厅">{{ detailData.restaurant || '未填写' }}</el-descriptions-item>
-            <el-descriptions-item label="主要食材">{{ detailData.ingredients || '未填写' }}</el-descriptions-item>
-            <el-descriptions-item label="提交时间">{{ detailData.createTime }}</el-descriptions-item>
-            <el-descriptions-item label="封面图片" :span="2">
-              <img v-if="detailData.coverImage" :src="detailData.coverImage" alt="封面" style="max-width: 300px; max-height: 200px;" />
-              <span v-else>无</span>
+            <el-descriptions-item :label="$t('food.name')">{{ detailData.name }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('food.restaurant')">{{ detailData.restaurant || $t('common.notFilled') }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('food.ingredients')">{{ detailData.ingredients || $t('common.notFilled') }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('audit.submitTime')">{{ detailData.createTime }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('common.coverImage')" :span="2">
+              <img v-if="detailData.coverImage" :src="detailData.coverImage" :alt="$t('common.cover')" style="max-width: 300px; max-height: 200px;" />
+              <span v-else>{{ $t('common.none') }}</span>
             </el-descriptions-item>
-            <el-descriptions-item label="描述" :span="2">{{ detailData.description || '无' }}</el-descriptions-item>
-            <el-descriptions-item label="制作方法" :span="2">{{ detailData.cookingMethod || '无' }}</el-descriptions-item>
-            <el-descriptions-item label="详细内容" :span="2">
-              <div v-html="detailData.content || '无'"></div>
+            <el-descriptions-item :label="$t('common.description')" :span="2">{{ detailData.description || $t('common.none') }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('food.cookingMethod')" :span="2">{{ detailData.cookingMethod || $t('common.none') }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('common.content')" :span="2">
+              <div v-html="detailData.content || $t('common.none')"></div>
             </el-descriptions-item>
           </el-descriptions>
         </template>
@@ -155,15 +163,15 @@
         <!-- 文化详情 -->
         <template v-if="currentType === 'culture'">
           <el-descriptions :column="2" border>
-            <el-descriptions-item label="文化名称">{{ detailData.name }}</el-descriptions-item>
-            <el-descriptions-item label="提交时间">{{ detailData.createTime }}</el-descriptions-item>
-            <el-descriptions-item label="封面图片" :span="2">
-              <img v-if="detailData.coverImage" :src="detailData.coverImage" alt="封面" style="max-width: 300px; max-height: 200px;" />
-              <span v-else>无</span>
+            <el-descriptions-item :label="$t('culture.name')">{{ detailData.name }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('audit.submitTime')">{{ detailData.createTime }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('common.coverImage')" :span="2">
+              <img v-if="detailData.coverImage" :src="detailData.coverImage" :alt="$t('common.cover')" style="max-width: 300px; max-height: 200px;" />
+              <span v-else>{{ $t('common.none') }}</span>
             </el-descriptions-item>
-            <el-descriptions-item label="描述" :span="2">{{ detailData.description || '无' }}</el-descriptions-item>
-            <el-descriptions-item label="详细内容" :span="2">
-              <div v-html="detailData.content || '无'"></div>
+            <el-descriptions-item :label="$t('common.description')" :span="2">{{ detailData.description || $t('common.none') }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('common.content')" :span="2">
+              <div v-html="detailData.content || $t('common.none')"></div>
             </el-descriptions-item>
           </el-descriptions>
         </template>
@@ -171,25 +179,25 @@
         <!-- 攻略详情 -->
         <template v-if="currentType === 'strategy'">
           <el-descriptions :column="2" border>
-            <el-descriptions-item label="攻略标题">{{ detailData.title }}</el-descriptions-item>
-            <el-descriptions-item label="主题">{{ detailData.theme || '未填写' }}</el-descriptions-item>
-            <el-descriptions-item label="推荐天数">{{ detailData.recommendedDays || '未填写' }}</el-descriptions-item>
-            <el-descriptions-item label="提交时间">{{ detailData.createTime }}</el-descriptions-item>
-            <el-descriptions-item label="封面图片" :span="2">
-              <img v-if="detailData.coverImage" :src="detailData.coverImage" alt="封面" style="max-width: 300px; max-height: 200px;" />
-              <span v-else>无</span>
+            <el-descriptions-item :label="$t('strategy.title')">{{ detailData.title }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('strategy.theme')">{{ detailData.theme || $t('common.notFilled') }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('strategy.duration')">{{ detailData.recommendedDays || $t('common.notFilled') }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('audit.submitTime')">{{ detailData.createTime }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('common.coverImage')" :span="2">
+              <img v-if="detailData.coverImage" :src="detailData.coverImage" :alt="$t('common.cover')" style="max-width: 300px; max-height: 200px;" />
+              <span v-else>{{ $t('common.none') }}</span>
             </el-descriptions-item>
-            <el-descriptions-item label="描述" :span="2">{{ detailData.description || '无' }}</el-descriptions-item>
-            <el-descriptions-item label="详细内容" :span="2">
-              <div v-html="detailData.content || '无'"></div>
+            <el-descriptions-item :label="$t('common.description')" :span="2">{{ detailData.description || $t('common.none') }}</el-descriptions-item>
+            <el-descriptions-item :label="$t('common.content')" :span="2">
+              <div v-html="detailData.content || $t('common.none')"></div>
             </el-descriptions-item>
           </el-descriptions>
         </template>
       </div>
       <div slot="footer">
-        <el-button @click="detailDialogVisible = false">关闭</el-button>
-        <el-button type="danger" @click="handleAuditFromDetail(2)">拒绝</el-button>
-        <el-button type="success" @click="handleAuditFromDetail(1)">通过</el-button>
+        <el-button @click="detailDialogVisible = false">{{ $t('common.close') }}</el-button>
+        <el-button type="danger" @click="handleAuditFromDetail(2)">{{ $t('audit.reject') }}</el-button>
+        <el-button type="success" @click="handleAuditFromDetail(1)">{{ $t('audit.approve') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -216,7 +224,7 @@ export default {
       size: 10,
       total: 0,
       detailDialogVisible: false,
-      detailDialogTitle: '内容详情',
+      detailDialogTitle: this.$t('audit.contentDetail'),
       detailData: null,
       currentType: '',
       currentRow: null
@@ -263,7 +271,7 @@ export default {
             break
         }
       } catch (error) {
-        this.$message.error('加载数据失败')
+        this.$message.error(this.$t('common.loadFailed'))
       } finally {
         this.loading = false
       }
@@ -288,12 +296,12 @@ export default {
       
       // 设置对话框标题
       const typeMap = {
-        'attraction': '景点详情',
-        'food': '美食详情',
-        'culture': '文化详情',
-        'strategy': '攻略详情'
+        'attraction': this.$t('audit.attractionDetail'),
+        'food': this.$t('audit.foodDetail'),
+        'culture': this.$t('audit.cultureDetail'),
+        'strategy': this.$t('audit.strategyDetail')
       }
-      this.detailDialogTitle = typeMap[type] || '内容详情'
+      this.detailDialogTitle = typeMap[type] || this.$t('audit.contentDetail')
       this.detailDialogVisible = true
     },
     handleDetailDialogClose() {
@@ -309,10 +317,10 @@ export default {
       this.detailDialogVisible = false
     },
     async handleAudit(row, type, status) {
-      const action = status === 1 ? '通过' : '拒绝'
-      this.$confirm(`确定要${action}该内容吗？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      const message = status === 1 ? this.$t('audit.confirmApprove') : this.$t('audit.confirmReject')
+      this.$confirm(message, this.$t('admin.tip'), {
+        confirmButtonText: this.$t('common.confirm'),
+        cancelButtonText: this.$t('common.cancel'),
         type: 'warning'
       }).then(async () => {
         try {
@@ -332,11 +340,12 @@ export default {
               break
           }
           if (res.code === 200) {
-            this.$message.success(`审核${action}成功`)
+            const successMsg = status === 1 ? this.$t('audit.approveSuccess') : this.$t('audit.rejectSuccess')
+            this.$message.success(successMsg)
             this.loadData()
           }
         } catch (error) {
-          this.$message.error('审核失败')
+          this.$message.error(this.$t('audit.auditFailed'))
         }
       }).catch(() => {
         // 用户点击取消
@@ -352,6 +361,17 @@ export default {
 <style scoped>
 .admin-audit {
   padding: 20px;
+}
+
+.audit-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 5px;
+}
+
+.audit-actions .el-button {
+  padding: 7px 10px;
+  font-size: 12px;
 }
 
 .detail-content {

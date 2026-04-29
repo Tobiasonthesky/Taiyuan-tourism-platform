@@ -1,25 +1,27 @@
 <template>
   <div class="profile-page">
     <div class="container">
-      <h1 class="page-title">个人中心</h1>
+      <h1 class="page-title">{{ $t('user.profile') }}</h1>
       
-      <el-card>
+      <!-- 个人信息编辑 -->
+      <el-card class="profile-card">
+        <h2 class="card-title">{{ $t('user.basicInfo') }}</h2>
         <el-form
           ref="profileForm"
           :model="profileForm"
-          label-width="100px"
+          label-width="120px"
           @submit.native.prevent
         >
-          <el-form-item label="用户名">
+          <el-form-item :label="$t('user.username')">
             <el-input v-model="profileForm.username" disabled />
           </el-form-item>
-          <el-form-item label="邮箱">
-            <el-input v-model="profileForm.email" />
+          <el-form-item :label="$t('user.email')">
+            <el-input v-model="profileForm.email" :placeholder="$t('user.pleaseEnterEmail')" />
           </el-form-item>
-          <el-form-item label="手机号">
-            <el-input v-model="profileForm.phone" />
+          <el-form-item :label="$t('user.phone')">
+            <el-input v-model="profileForm.phone" :placeholder="$t('user.pleaseEnterPhone')" />
           </el-form-item>
-          <el-form-item label="头像">
+          <el-form-item :label="$t('user.avatar')">
             <el-upload
               class="avatar-uploader"
               action="#"
@@ -31,7 +33,32 @@
             </el-upload>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="handleUpdate">保存</el-button>
+            <el-button type="primary" @click="handleUpdate">{{ $t('user.saveProfile') }}</el-button>
+          </el-form-item>
+        </el-form>
+      </el-card>
+
+      <!-- 修改密码 -->
+      <el-card class="password-card">
+        <h2 class="card-title">{{ $t('user.changePassword') }}</h2>
+        <el-form
+          ref="passwordForm"
+          :model="passwordForm"
+          label-width="120px"
+          :rules="passwordRules"
+          @submit.native.prevent
+        >
+          <el-form-item :label="$t('user.oldPassword')" prop="oldPassword">
+            <el-input v-model="passwordForm.oldPassword" type="password" :placeholder="$t('user.pleaseEnterOldPassword')" />
+          </el-form-item>
+          <el-form-item :label="$t('user.newPassword')" prop="newPassword">
+            <el-input v-model="passwordForm.newPassword" type="password" :placeholder="$t('user.pleaseEnterNewPassword')" />
+          </el-form-item>
+          <el-form-item :label="$t('user.confirmPassword')" prop="confirmPassword">
+            <el-input v-model="passwordForm.confirmPassword" type="password" :placeholder="$t('user.pleaseConfirmPassword')" />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="handleChangePassword">{{ $t('user.updatePassword') }}</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -40,7 +67,7 @@
 </template>
 
 <script>
-import { getUserInfo } from '@/api/user'
+import { getUserInfo, updatePassword } from '@/api/user'
 import { uploadFile } from '@/api/upload'
 
 export default {
@@ -52,6 +79,24 @@ export default {
         email: '',
         phone: '',
         avatar: ''
+      },
+      passwordForm: {
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      },
+      passwordRules: {
+        oldPassword: [
+          { required: true, message: this.$t('user.oldPasswordRequired'), trigger: 'blur' }
+        ],
+        newPassword: [
+          { required: true, message: this.$t('user.newPasswordRequired'), trigger: 'blur' },
+          { min: 6, message: this.$t('user.passwordMinLength'), trigger: 'blur' }
+        ],
+        confirmPassword: [
+          { required: true, message: this.$t('user.confirmPasswordRequired'), trigger: 'blur' },
+          { validator: this.validateConfirmPassword, trigger: 'blur' }
+        ]
       }
     }
   },
@@ -150,12 +195,44 @@ export default {
           }
         }
         await this.$store.dispatch('user/updateUserInfo', updateData)
-        this.$message.success('更新成功')
+        this.$message.success(this.$t('user.updateSuccess'))
         // 重新加载用户信息以确保显示最新数据
         await this.loadUserInfo()
       } catch (error) {
         console.error('更新失败:', error)
-        this.$message.error('更新失败：' + (error.message || '未知错误'))
+        this.$message.error(this.$t('user.updateFailed') + (error.message || ''))
+      }
+    },
+    validateConfirmPassword(rule, value, callback) {
+      if (value !== this.passwordForm.newPassword) {
+        callback(new Error(this.$t('user.passwordNotMatch')))
+      } else {
+        callback()
+      }
+    },
+    async handleChangePassword() {
+      try {
+        const form = this.$refs.passwordForm
+        await form.validate()
+        
+        const { oldPassword, newPassword } = this.passwordForm
+        const res = await updatePassword({ oldPassword, newPassword })
+        
+        if (res.code === 200) {
+          this.$message.success(this.$t('user.passwordUpdateSuccess'))
+          // 清空密码表单
+          this.passwordForm = {
+            oldPassword: '',
+            newPassword: '',
+            confirmPassword: ''
+          }
+          form.resetFields()
+        } else {
+          this.$message.error(res.message || this.$t('user.passwordUpdateFailed'))
+        }
+      } catch (error) {
+        console.error('修改密码失败:', error)
+        this.$message.error(this.$t('user.passwordUpdateFailed') + (error.message || ''))
       }
     }
   }
@@ -164,7 +241,9 @@ export default {
 
 <style lang="scss" scoped>
 .profile-page {
-  padding: 20px 0;
+  min-height: calc(100vh - 140px);
+  padding: 40px 20px;
+  background-color: #f5f5f7;
 
   .container {
     width: 1200px;
@@ -172,22 +251,97 @@ export default {
     padding: 0 20px;
   }
 
+  .page-title {
+    text-align: center;
+    color: #1d1d1f;
+    margin-bottom: 32px;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .el-card {
+    background: #ffffff;
+    padding: 48px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  .el-form {
+    width: 100%;
+  }
+  
+  .el-form-item {
+    margin-bottom: 20px;
+  }
+  
+  .el-form-item__label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1d1d1f;
+  }
+
+  .el-input {
+    width: 100%;
+  }
+  
+  .el-input__inner {
+    height: 44px;
+    font-size: 16px;
+    border: 1px solid #d2d2d7;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    &:focus {
+      border-color: #0071e3;
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+    }
+  }
+
+  .el-button--primary {
+    width: 100%;
+    height: 44px;
+    font-size: 16px;
+    font-weight: 500;
+    background-color: #0071e3 !important;
+    border-color: #0071e3 !important;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: #0077ed !important;
+      border-color: #0077ed !important;
+    }
+    
+    &:active {
+      background-color: #0066c0 !important;
+      border-color: #0066c0 !important;
+    }
+  }
+
   .avatar-uploader {
     ::v-deep .el-upload {
-      border: 1px dashed #d9d9d9;
-      border-radius: 6px;
+      border: 1px dashed #d2d2d7;
+      border-radius: 8px;
       cursor: pointer;
       position: relative;
       overflow: hidden;
+      transition: all 0.3s ease;
 
       &:hover {
-        border-color: #409eff;
+        border-color: #0071e3;
       }
     }
 
     .avatar-uploader-icon {
       font-size: 28px;
-      color: #8c939d;
+      color: #86868b;
       width: 178px;
       height: 178px;
       line-height: 178px;
@@ -198,7 +352,26 @@ export default {
       width: 178px;
       height: 178px;
       display: block;
+      border-radius: 8px;
     }
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 20px;
+  }
+  
+  .container {
+    width: 100%;
+  }
+  
+  .el-card {
+    padding: 32px;
+  }
+  
+  .page-title {
+    font-size: 20px;
   }
 }
 </style>

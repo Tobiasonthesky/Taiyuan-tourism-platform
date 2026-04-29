@@ -1,49 +1,49 @@
 <template>
   <div class="admin-attractions">
     <el-card>
-      <div slot="header">
-        <span>景点管理</span>
-        <div style="float: right;">
-          <el-button type="primary" size="small" @click="handleAdd">新增景点</el-button>
-          <el-button size="small" @click="goBack">返回</el-button>
+      <div slot="header" class="card-header">
+        <span>{{ $t('admin.attractionManagement') }}</span>
+        <div class="card-actions">
+          <el-button type="primary" size="small" @click="handleAdd">{{ $t('attraction.addAttraction') }}</el-button>
+          <el-button size="small" @click="goBack">{{ $t('common.back') }}</el-button>
         </div>
       </div>
 
       <!-- 搜索栏 -->
       <el-form :inline="true" class="search-form">
-        <el-form-item label="关键词">
-          <el-input v-model="searchKeyword" placeholder="景点名称" clearable @keyup.enter.native="handleSearch" />
+        <el-form-item :label="$t('common.keyword')">
+          <el-input v-model="searchKeyword" :placeholder="$t('attraction.pleaseInputName')" clearable @keyup.enter.native="handleSearch" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">搜索</el-button>
-          <el-button @click="handleReset">重置</el-button>
+          <el-button type="primary" @click="handleSearch">{{ $t('common.search') }}</el-button>
+          <el-button @click="handleReset">{{ $t('common.reset') }}</el-button>
         </el-form-item>
       </el-form>
 
       <!-- 景点列表 -->
       <el-table :data="attractions" v-loading="loading" border>
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="name" label="景点名称" width="200" />
-        <el-table-column prop="categoryName" label="分类" width="120" />
-        <el-table-column prop="address" label="地址" width="200" />
-        <el-table-column prop="ticketPrice" label="门票价格" width="100">
+        <el-table-column prop="id" :label="$t('common.id')" width="80" />
+        <el-table-column prop="name" :label="$t('attraction.name')" width="200" />
+        <el-table-column prop="categoryName" :label="$t('common.category')" width="120" />
+        <el-table-column prop="address" :label="$t('common.address')" width="200" />
+        <el-table-column prop="ticketPrice" :label="$t('attraction.ticketPrice')" width="100">
           <template slot-scope="scope">
             ¥{{ scope.row.ticketPrice }}
           </template>
         </el-table-column>
-        <el-table-column prop="rating" label="评分" width="100" />
-        <el-table-column prop="viewCount" label="浏览次数" width="100" />
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column prop="rating" :label="$t('common.rating')" width="100" />
+        <el-table-column prop="viewCount" :label="$t('common.viewCount')" width="100" />
+        <el-table-column prop="status" :label="$t('common.status')" width="100">
           <template slot-scope="scope">
             <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">
-              {{ scope.row.status === 1 ? '上架' : '下架' }}
+              {{ scope.row.status === 1 ? $t('common.online') : $t('common.offline') }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column :label="$t('common.actions')" width="250" fixed="right">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button size="mini" @click="handleEdit(scope.row)">{{ $t('common.edit') }}</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">{{ $t('common.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -66,11 +66,11 @@
       @close="handleDialogClose"
     >
       <el-form :model="form" label-width="100px" ref="form">
-        <el-form-item label="景点名称" required>
+        <el-form-item :label="$t('attraction.attractionName')" required>
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="分类" required>
-          <el-select v-model="form.categoryId" placeholder="请选择分类" clearable style="width: 100%;">
+        <el-form-item :label="$t('common.category')" required>
+          <el-select v-model="form.categoryId" :placeholder="$t('attraction.selectCategory')" clearable style="width: 100%;">
             <el-option
               v-for="item in categories"
               :key="item.id"
@@ -79,20 +79,20 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="封面图片">
+        <el-form-item :label="$t('attraction.coverImage')">
           <ImageUpload v-model="form.coverImage" />
         </el-form-item>
-        <el-form-item label="多图片管理">
+        <el-form-item :label="$t('attraction.multiImage')">
           <MultiImageUpload v-model="form.images" />
           <div style="margin-top: 8px; color: #909399; font-size: 12px;">
             <i class="el-icon-info"></i>
-            提示：保存内容后，图片会自动关联到该景点
+            {{ $t('attraction.imageTip') }}
           </div>
         </el-form-item>
-        <el-form-item label="地址">
+        <el-form-item :label="$t('attraction.address')">
           <el-input 
             v-model="form.address" 
-            placeholder="请输入详细地址，系统将自动解析经纬度" 
+            :placeholder="$t('attraction.pleaseInputAddress')" 
             @blur="handleAddressBlur"
           >
             <template slot="suffix">
@@ -104,34 +104,34 @@
             <i class="el-icon-success"></i> 已自动获取坐标：{{ form.longitude }}, {{ form.latitude }}
           </div>
         </el-form-item>
-        <el-form-item label="经度" prop="longitude" style="display: none;">
+        <el-form-item :label="$t('attraction.longitude')" prop="longitude" style="display: none;">
           <el-input v-model="form.longitude" />
         </el-form-item>
-        <el-form-item label="纬度" prop="latitude" style="display: none;">
+        <el-form-item :label="$t('attraction.latitude')" prop="latitude" style="display: none;">
           <el-input v-model="form.latitude" />
         </el-form-item>
-        <el-form-item label="门票价格">
+        <el-form-item :label="$t('attraction.ticketPrice')">
           <el-input-number v-model="form.ticketPrice" :min="0" :precision="2" />
         </el-form-item>
-        <el-form-item label="开放时间">
+        <el-form-item :label="$t('attraction.openingHours')">
           <el-input v-model="form.openingHours" />
         </el-form-item>
-        <el-form-item label="描述">
+        <el-form-item :label="$t('common.description')">
           <el-input v-model="form.description" type="textarea" :rows="3" />
         </el-form-item>
-        <el-form-item label="详细内容">
+        <el-form-item :label="$t('common.content')">
           <el-input v-model="form.content" type="textarea" :rows="5" />
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item :label="$t('common.status')">
           <el-radio-group v-model="form.status">
-            <el-radio :label="1">上架</el-radio>
-            <el-radio :label="0">下架</el-radio>
+            <el-radio :label="1">{{ $t('common.online') }}</el-radio>
+            <el-radio :label="0">{{ $t('common.offline') }}</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="dialogVisible = false">{{ $t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{ $t('common.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -163,7 +163,7 @@ export default {
       total: 0,
       loading: false,
       dialogVisible: false,
-      dialogTitle: '新增景点',
+      dialogTitle: this.$t('attraction.addAttraction'),
       AMap: null,
       searchingLocation: false,
       form: {
@@ -220,7 +220,7 @@ export default {
           this.total = res.data?.total || 0
         }
       } catch (error) {
-        this.$message.error('加载景点列表失败')
+        this.$message.error(this.$t('common.operateFailed'))
       } finally {
         this.loading = false
       }
@@ -254,7 +254,7 @@ export default {
       }
     },
     handleAdd() {
-      this.dialogTitle = '新增景点'
+      this.dialogTitle = this.$t('attraction.addAttraction')
       this.form = {
         id: null,
         name: '',
@@ -273,7 +273,7 @@ export default {
       this.dialogVisible = true
     },
     async handleEdit(row) {
-      this.dialogTitle = '编辑景点'
+      this.dialogTitle = this.$t('attraction.editAttraction')
       this.form = { ...row }
       // 加载现有图片
       if (row.id) {
@@ -303,7 +303,7 @@ export default {
           if (res.code === 200) {
             attractionId = this.form.id
           } else {
-            this.$message.error('更新失败')
+            this.$message.error(this.$t('common.updateFailed'))
             return
           }
         } else {
@@ -311,7 +311,7 @@ export default {
           if (res.code === 200 && res.data) {
             attractionId = res.data.id
           } else {
-            this.$message.error('创建失败')
+            this.$message.error(this.$t('common.createFailed'))
             return
           }
         }
@@ -341,31 +341,31 @@ export default {
             }
           } catch (error) {
             console.error('保存图片失败:', error)
-            this.$message.warning('内容保存成功，但图片保存失败')
+            this.$message.warning(this.$t('common.saveSuccess') + '，' + this.$t('common.image') + this.$t('common.operateFailed'))
           }
         }
 
-        this.$message.success(this.form.id ? '更新成功' : '创建成功')
+        this.$message.success(this.form.id ? this.$t('common.updateSuccess') : this.$t('common.createSuccess'))
         this.dialogVisible = false
         this.loadAttractions()
       } catch (error) {
-        this.$message.error('操作失败')
+        this.$message.error(this.$t('common.operateFailed'))
       }
     },
     async handleDelete(row) {
-      this.$confirm('确定要删除该景点吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('admin.confirmDelete').replace('{name}', this.$t('attraction.name')), this.$t('admin.tip'), {
+        confirmButtonText: this.$t('common.confirm'),
+        cancelButtonText: this.$t('common.cancel'),
         type: 'warning'
       }).then(async () => {
         try {
           const res = await deleteAttraction(row.id)
           if (res.code === 200) {
-            this.$message.success('删除成功')
+            this.$message.success(this.$t('common.deleteSuccess'))
             this.loadAttractions()
           }
         } catch (error) {
-          this.$message.error('删除失败')
+          this.$message.error(this.$t('common.deleteFailed'))
         }
       }).catch(() => {
         // 用户取消删除操作，不需要做任何处理

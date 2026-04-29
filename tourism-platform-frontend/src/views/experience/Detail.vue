@@ -2,7 +2,7 @@
   <div class="experience-detail">
     <div class="container" v-if="experience">
       <!-- 返回按钮 -->
-      <el-button icon="el-icon-arrow-left" @click="goBack" style="margin-bottom: 20px;">返回</el-button>
+      <el-button icon="el-icon-arrow-left" @click="goBack" style="margin-bottom: 20px;">{{ $t('common.back') }}</el-button>
       <!-- 基本信息 -->
       <el-card class="detail-card">
         <el-row :gutter="20">
@@ -15,7 +15,7 @@
                 class="detail-video"
                 preload="metadata"
               >
-                您的浏览器不支持视频播放
+                {{ $t('common.browserNotSupportVideo') }}
               </video>
             </div>
             <!-- 图片轮播 -->
@@ -36,19 +36,19 @@
           <el-col :span="12">
             <h1>{{ experience.name }}</h1>
             <div class="info-item">
-              <span class="label">体验时长：</span>
-              <span>{{ experience.duration }}分钟</span>
+              <span class="label">{{ $t('experience.duration') }}：</span>
+              <span>{{ experience.duration }}{{ $t('common.minutes') }}</span>
             </div>
             <div class="info-item">
-              <span class="label">价格：</span>
+              <span class="label">{{ $t('experience.price') }}：</span>
               <span class="price">¥{{ experience.price }}</span>
             </div>
             <div class="info-item">
-              <span class="label">地址：</span>
+              <span class="label">{{ $t('experience.address') }}：</span>
               <span>{{ experience.address }}</span>
             </div>
             <div class="info-item">
-              <span class="label">评分：</span>
+              <span class="label">{{ $t('experience.rating') }}：</span>
               <el-rate
                 :value="experience.rating"
                 disabled
@@ -58,7 +58,7 @@
             </div>
             <div class="actions">
               <el-button type="primary" size="medium" @click="showBookingDialog">
-                立即预订
+                {{ $t('experience.booking') }}
               </el-button>
               <el-button
                 :type="isFavorite ? 'danger' : 'default'"
@@ -66,7 +66,7 @@
                 @click="handleFavorite"
                 :disabled="!isLogin"
               >
-                {{ isFavorite ? '已收藏' : '收藏' }}
+                {{ isFavorite ? $t('experience.favorited') : $t('experience.favorite') }}
               </el-button>
             </div>
           </el-col>
@@ -75,13 +75,13 @@
 
       <!-- 详细介绍 -->
       <el-card class="detail-card">
-        <h2>详细介绍</h2>
+        <h2>{{ $t('common.description') }}</h2>
         <div class="content" v-html="experience.content || experience.description"></div>
       </el-card>
 
       <!-- 评论 -->
       <el-card class="detail-card">
-        <h2>用户评论</h2>
+        <h2>{{ $t('comment.comments') }}</h2>
         <CommentList
           :target-type="'experience'"
           :target-id="experience.id"
@@ -90,68 +90,68 @@
 
       <!-- 预订对话框 -->
       <el-dialog
-        title="体验项目预订"
+        :title="$t('experience.bookingDialog')"
         :visible.sync="bookingDialogVisible"
         width="600px"
         @close="resetBookingForm"
       >
-        <el-form :model="bookingForm" label-width="100px">
-          <el-form-item label="项目名称">
+        <el-form :model="bookingForm" label-width="140px">
+          <el-form-item :label="$t('experience.experienceName')">
             <span>{{ experience?.name }}</span>
           </el-form-item>
-          <el-form-item label="项目价格">
-            <span class="price">¥{{ experience?.price }}/次</span>
+          <el-form-item :label="$t('experience.price')">
+            <span class="price">¥{{ experience?.price }}/{{ $t('experience.times') }}</span>
           </el-form-item>
-          <el-form-item label="体验时长">
-            <span>{{ experience?.duration }}分钟</span>
+          <el-form-item :label="$t('experience.duration')">
+            <span>{{ experience?.duration }}{{ $t('common.minutes') }}</span>
           </el-form-item>
-          <el-form-item label="预订数量" required>
+          <el-form-item :label="$t('experience.bookingQuantity')" required>
             <el-input-number
               v-model="bookingForm.quantity"
               :min="1"
               :max="10"
-              label="次"
+              :label="$t('experience.times')"
             />
           </el-form-item>
-          <el-form-item label="使用日期" required>
+          <el-form-item :label="$t('experience.useDate')" required>
             <el-date-picker
               v-model="bookingForm.useDate"
               type="date"
-              placeholder="选择使用日期"
+              :placeholder="$t('experience.selectUseDate')"
               value-format="yyyy-MM-dd"
               :picker-options="datePickerOptions"
             />
           </el-form-item>
-          <el-form-item label="使用时间" required>
+          <el-form-item :label="$t('experience.useTime')" required>
             <el-time-picker
               v-model="bookingForm.useTime"
-              placeholder="选择使用时间"
+              :placeholder="$t('experience.selectUseTime')"
               value-format="HH:mm"
             />
           </el-form-item>
-          <el-form-item label="联系人" required>
-            <el-input v-model="bookingForm.contactName" placeholder="请输入联系人姓名" />
+          <el-form-item :label="$t('order.contactName')" required>
+            <el-input v-model="bookingForm.contactName" :placeholder="$t('experience.pleaseInputContactName')" />
           </el-form-item>
-          <el-form-item label="联系电话" required>
-            <el-input v-model="bookingForm.contactPhone" placeholder="请输入联系电话" />
+          <el-form-item :label="$t('order.contactPhone')" required>
+            <el-input v-model="bookingForm.contactPhone" :placeholder="$t('experience.pleaseInputContactPhone')" />
           </el-form-item>
-          <el-form-item label="备注">
+          <el-form-item :label="$t('order.remark')">
             <el-input
               v-model="bookingForm.remark"
               type="textarea"
               :rows="3"
-              placeholder="选填"
+              :placeholder="$t('common.optional')"
             />
           </el-form-item>
-          <el-form-item label="订单总额">
+          <el-form-item :label="$t('order.totalAmount')">
             <span class="total-price">
               ¥{{ (experience?.price || 0) * (bookingForm.quantity || 1) }}
             </span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="bookingDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleBooking">确认预订</el-button>
+          <el-button @click="bookingDialogVisible = false">{{ $t('common.cancel') }}</el-button>
+          <el-button type="primary" @click="handleBooking">{{ $t('experience.confirmBooking') }}</el-button>
         </div>
       </el-dialog>
     </div>
@@ -257,7 +257,7 @@ export default {
     },
     async handleFavorite() {
       if (!this.isLogin) {
-        this.$message.warning('请先登录')
+        this.$message.warning(this.$t('common.pleaseLogin'))
         return
       }
 
@@ -265,14 +265,14 @@ export default {
         if (this.isFavorite) {
           await removeFavorite('experience', this.experience.id)
           this.isFavorite = false
-          this.$message.success('取消收藏成功')
+          this.$message.success(this.$t('favorite.removeSuccess'))
         } else {
           await addFavorite({
             targetType: 'experience',
             targetId: this.experience.id
           })
           this.isFavorite = true
-          this.$message.success('收藏成功')
+          this.$message.success(this.$t('favorite.addSuccess'))
         }
       } catch (error) {
         this.$message.error('操作失败')

@@ -1,56 +1,56 @@
 <template>
   <div class="order-page">
     <div class="container">
-      <h1 class="page-title">我的订单</h1>
+      <h1 class="page-title">{{ $t('order.title') }}</h1>
       
       <el-tabs 
         v-model="activeTab" 
         @tab-click="handleTabClick"
       >
-        <el-tab-pane label="全部" name="all"></el-tab-pane>
-        <el-tab-pane label="待支付" name="0"></el-tab-pane>
-        <el-tab-pane label="已支付" name="1"></el-tab-pane>
-        <el-tab-pane label="已使用" name="2"></el-tab-pane>
-        <el-tab-pane label="已取消" name="3"></el-tab-pane>
+        <el-tab-pane :label="$t('order.all')" name="all"></el-tab-pane>
+        <el-tab-pane :label="$t('order.pending')" name="0"></el-tab-pane>
+        <el-tab-pane :label="$t('order.paid')" name="1"></el-tab-pane>
+        <el-tab-pane :label="$t('order.used')" name="2"></el-tab-pane>
+        <el-tab-pane :label="$t('order.cancelled')" name="3"></el-tab-pane>
       </el-tabs>
 
       <el-table :data="orders" style="width: 100%">
-        <el-table-column prop="orderNo" label="订单号" width="200" />
-        <el-table-column prop="orderType" label="订单类型" width="120" />
-        <el-table-column prop="totalAmount" label="总金额" width="120">
+        <el-table-column prop="orderNo" :label="$t('order.orderNo')" width="200" />
+        <el-table-column prop="orderType" :label="$t('order.orderType')" width="120" />
+        <el-table-column prop="totalAmount" :label="$t('order.totalAmount')" width="120">
           <template slot-scope="scope">
             ¥{{ scope.row.totalAmount }}
           </template>
         </el-table-column>
-        <el-table-column prop="orderStatus" label="状态" width="120">
+        <el-table-column prop="orderStatus" :label="$t('order.status')" width="120">
           <template slot-scope="scope">
             <el-tag :type="getStatusType(scope.row.orderStatus)">
               {{ getStatusText(scope.row.orderStatus) }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="创建时间" width="180" />
-        <el-table-column label="操作" width="200">
+        <el-table-column prop="createTime" :label="$t('order.createTime')" width="180" />
+        <el-table-column :label="$t('common.actions')" width="200">
           <template slot-scope="scope">
             <el-button
               type="text"
               @click="viewDetail(scope.row.id)"
             >
-              查看详情
+              {{ $t('order.viewDetail') }}
             </el-button>
             <el-button
               v-if="scope.row.orderStatus === 0"
               type="text"
               @click="payOrder(scope.row.id)"
             >
-              支付
+              {{ $t('order.pay') }}
             </el-button>
             <el-button
               v-if="scope.row.orderStatus === 0"
               type="text"
               @click="cancelOrder(scope.row.id)"
             >
-              取消
+              {{ $t('order.cancel') }}
             </el-button>
           </template>
         </el-table-column>
@@ -196,13 +196,13 @@ export default {
     },
     getStatusText(status) {
       const texts = {
-        0: '待支付',
-        1: '已支付',
-        2: '已使用',
-        3: '已取消',
-        4: '已退款'
+        0: this.$t('order.pending'),
+        1: this.$t('order.paid'),
+        2: this.$t('order.used'),
+        3: this.$t('order.cancelled'),
+        4: this.$t('order.refunded')
       }
-      return texts[status] || '未知'
+      return texts[status] || this.$t('common.unknown')
     }
   }
 }

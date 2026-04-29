@@ -1,7 +1,7 @@
 <template>
   <div class="food-page">
     <div class="container">
-      <h1 class="page-title">美食列表</h1>
+      <h1 class="page-title">{{ $t('food.title') }}</h1>
       
       <!-- 搜索和筛选 -->
       <el-card class="filter-card">
@@ -9,24 +9,24 @@
           <el-col :span="8">
             <el-input
               v-model="searchKeyword"
-              placeholder="搜索美食"
+              :placeholder="$t('common.search') + ' ' + $t('food.title')"
               prefix-icon="el-icon-search"
               @input="debouncedSearch"
               @keyup.enter.native="handleSearch"
             />
           </el-col>
           <el-col :span="6">
-            <el-select v-model="categoryId" placeholder="选择分类" clearable @change="handleSearch">
+            <el-select v-model="categoryId" :placeholder="$t('food.category')" clearable @change="handleSearch">
               <el-option
                 v-for="item in categories"
                 :key="item.id"
-                :label="item.name"
+                :label="getCategoryLabel(item.name)"
                 :value="item.id"
               />
             </el-select>
           </el-col>
           <el-col :span="4">
-            <el-button type="primary" @click="handleSearch">搜索</el-button>
+            <el-button type="primary" @click="handleSearch">{{ $t('common.search') }}</el-button>
           </el-col>
         </el-row>
       </el-card>
@@ -48,7 +48,7 @@
             />
             <div v-else class="card-image-placeholder">
               <i class="el-icon-picture-outline"></i>
-              <span>暂无图片</span>
+              <span>{{ $t('common.noData') }}</span>
             </div>
             <div class="card-content">
               <h3 class="card-title">{{ item.name }}</h3>
@@ -69,8 +69,8 @@
       <EmptyState
         v-else
         icon="el-icon-food"
-        title="暂无美食"
-        description="暂时没有找到相关美食"
+        :title="$t('common.noData')"
+        :description="$t('common.noData')"
       />
 
       <!-- 分页 -->
@@ -108,7 +108,7 @@ export default {
       searchKeyword: '',
       categoryId: null,
       page: 1,
-      size: 12,
+      size: 10,
       total: 0,
       loading: false
     }
@@ -122,6 +122,16 @@ export default {
     this.loadFoods()
   },
   methods: {
+    getCategoryLabel(name) {
+      const categoryMap = {
+        '特色小吃': 'snack',
+        '正餐': 'main',
+        '甜品': 'dessert',
+        '饮品': 'drinks'
+      }
+      const key = categoryMap[name]
+      return key ? this.$t(`food.categories.${key}`) : name
+    },
     async loadCategories() {
       try {
         const res = await getFoodCategories()

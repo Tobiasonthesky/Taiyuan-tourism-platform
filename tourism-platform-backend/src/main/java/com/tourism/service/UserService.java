@@ -35,5 +35,10 @@ public interface UserService {
      * 根据用户名获取用户
      */
     UserVO getUserByUsername(String username);
+    
+    /**
+     * 修改密码
+     */
+    void updatePassword(Long userId, String oldPassword, String newPassword);
 }
 

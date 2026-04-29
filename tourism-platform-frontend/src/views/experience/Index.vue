@@ -1,7 +1,7 @@
 <template>
   <div class="experience-page">
     <div class="container">
-      <h1 class="page-title">特色体验项目</h1>
+      <h1 class="page-title">{{ $t('experience.title') }}</h1>
       
       <!-- 搜索 -->
       <el-card class="filter-card">
@@ -9,14 +9,14 @@
           <el-col :span="8">
             <el-input
               v-model="searchKeyword"
-              placeholder="搜索体验项目"
+              :placeholder="$t('common.search') + ' ' + $t('experience.title')"
               prefix-icon="el-icon-search"
               @input="debouncedSearch"
               @keyup.enter.native="handleSearch"
             />
           </el-col>
           <el-col :span="4">
-            <el-button type="primary" @click="handleSearch">搜索</el-button>
+            <el-button type="primary" @click="handleSearch">{{ $t('common.search') }}</el-button>
           </el-col>
         </el-row>
       </el-card>
@@ -40,7 +40,7 @@
               <div class="card-footer">
                 <span class="price">¥{{ item.price }}</span>
                 <span class="duration">
-                  <i class="el-icon-time"></i> {{ item.duration }}分钟
+                  <i class="el-icon-time"></i> {{ item.duration }}{{ $t('common.minutes') }}
                 </span>
               </div>
             </div>
@@ -52,8 +52,8 @@
       <EmptyState
         v-else
         icon="el-icon-star-on"
-        title="暂无体验项目"
-        description="暂时没有找到相关体验项目"
+        :title="$t('common.noData')"
+        :description="$t('common.noData')"
       />
 
       <!-- 分页 -->
@@ -90,7 +90,7 @@ export default {
       experiences: [],
       searchKeyword: '',
       page: 1,
-      size: 12,
+      size: 10,
       total: 0,
       loading: false
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-box">
-      <h2>用户登录</h2>
+      <h2>{{ $t('user.loginTitle') }}</h2>
       <!-- 隐藏的假输入框，用于欺骗浏览器自动填充 -->
       <input type="text" style="position: absolute; left: -9999px; opacity: 0;" autocomplete="off" tabindex="-1" />
       <input type="password" style="position: absolute; left: -9999px; opacity: 0;" autocomplete="off" tabindex="-1" />
@@ -12,11 +12,11 @@
         label-width="80px"
         autocomplete="off"
       >
-        <el-form-item label="用户名" prop="username">
+        <el-form-item :label="$t('user.username')" prop="username">
           <el-input
             ref="usernameInput"
             v-model="loginForm.username"
-            placeholder="请输入用户名"
+            :placeholder="$t('user.pleaseInputUsername')"
             prefix-icon="el-icon-user"
             autocomplete="off"
             :name="'username-' + Date.now()"
@@ -25,12 +25,12 @@
             @input="handleUsernameInput"
           />
         </el-form-item>
-        <el-form-item label="密码" prop="password">
+        <el-form-item :label="$t('user.password')" prop="password">
           <el-input
             ref="passwordInput"
             v-model="loginForm.password"
             type="password"
-            placeholder="请输入密码"
+            :placeholder="$t('user.pleaseInputPassword')"
             prefix-icon="el-icon-lock"
             autocomplete="new-password"
             :name="'password-' + Date.now()"
@@ -40,20 +40,20 @@
             @keyup.enter.native="handleLogin"
           />
         </el-form-item>
-        <el-form-item>
+        <el-form-item label-width="0">
           <el-button
             type="primary"
             :loading="loading"
             @click="handleLogin"
             style="width: 100%"
           >
-            登录
+            {{ $t('user.login') }}
           </el-button>
         </el-form-item>
-        <el-form-item>
+        <el-form-item label-width="0" style="text-align: center;">
           <div class="register-link">
-            还没有账号？
-            <router-link to="/register">立即注册</router-link>
+            {{ $t('user.noAccount') }}
+            <router-link to="/register">{{ $t('user.register') }}</router-link>
           </div>
         </el-form-item>
       </el-form>
@@ -225,35 +225,123 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #f5f5f7;
   padding: 40px 20px;
 
   .login-box {
     width: 400px;
-    background: #fff;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    padding: 48px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
 
     h2 {
       text-align: center;
-      margin-bottom: 30px;
-      color: #303133;
+      margin-bottom: 32px;
+      font-size: 24px;
+      font-weight: 600;
+      color: #1d1d1f;
+      letter-spacing: -0.02em;
     }
 
     .register-link {
       text-align: center;
-      color: #606266;
+      margin-top: 24px;
+      font-size: 14px;
+      color: #86868b;
 
       a {
-        color: #409eff;
+        color: #0071e3;
         text-decoration: none;
+        font-weight: 500;
 
         &:hover {
           text-decoration: underline;
         }
       }
     }
+  }
+  
+  .el-form {
+    width: 100%;
+  }
+  
+  .el-form-item {
+    margin-bottom: 20px;
+  }
+  
+  .el-form-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .el-form-item__label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1d1d1f;
+  }
+  
+  .el-input {
+    width: 100%;
+  }
+  
+  .el-input__inner {
+    height: 44px;
+    font-size: 16px;
+    border: 1px solid #d2d2d7;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    &:focus {
+      border-color: #0071e3;
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+    }
+  }
+  
+  .el-button--primary {
+    height: 44px;
+    font-size: 16px;
+    font-weight: 500;
+    background-color: #0071e3 !important;
+    border-color: #0071e3 !important;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: #0077ed !important;
+      border-color: #0077ed !important;
+    }
+    
+    &:active {
+      background-color: #0066c0 !important;
+      border-color: #0066c0 !important;
+    }
+  }
+  
+  .el-button--primary.is-loading {
+    background-color: #0071e3 !important;
+    border-color: #0071e3 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    padding: 20px;
+  }
+  
+  .login-box {
+    width: 120%;
+    max-width: 450px;
+    padding: 32px;
+  }
+  
+  h2 {
+    font-size: 20px !important;
   }
 }
 </style>

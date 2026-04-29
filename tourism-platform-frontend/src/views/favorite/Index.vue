@@ -1,15 +1,15 @@
 <template>
   <div class="favorite-page">
     <div class="container">
-      <h1 class="page-title">我的收藏</h1>
+      <h1 class="page-title">{{ $t('favorite.title') }}</h1>
       
       <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-        <el-tab-pane label="景点" name="attraction"></el-tab-pane>
-        <el-tab-pane label="美食" name="food"></el-tab-pane>
-        <el-tab-pane label="文化" name="culture"></el-tab-pane>
-        <el-tab-pane label="攻略" name="strategy"></el-tab-pane>
-        <el-tab-pane label="酒店" name="hotel"></el-tab-pane>
-        <el-tab-pane label="体验项目" name="experience"></el-tab-pane>
+        <el-tab-pane :label="$t('favorite.attraction')" name="attraction"></el-tab-pane>
+        <el-tab-pane :label="$t('favorite.food')" name="food"></el-tab-pane>
+        <el-tab-pane :label="$t('favorite.culture')" name="culture"></el-tab-pane>
+        <el-tab-pane :label="$t('favorite.strategy')" name="strategy"></el-tab-pane>
+        <el-tab-pane :label="$t('favorite.hotel')" name="hotel"></el-tab-pane>
+        <el-tab-pane :label="$t('favorite.experience')" name="experience"></el-tab-pane>
       </el-tabs>
 
       <el-row :gutter="20" v-if="favorites.length > 0">
@@ -26,13 +26,13 @@
                 size="small"
                 @click.stop="removeFavorite(item.targetType, item.targetId)"
               >
-                取消收藏
+                {{ $t('favorite.remove') }}
               </el-button>
             </div>
           </el-card>
         </el-col>
       </el-row>
-      <EmptyState v-else message="暂无收藏内容" />
+      <EmptyState v-else :message="$t('favorite.noFavorites')" />
 
       <Pagination
         v-if="total > 0"
@@ -64,7 +64,7 @@ export default {
       favorites: [],
       activeTab: 'attraction',
       page: 1,
-      size: 12,
+      size: 10,
       total: 0
     }
   },
@@ -108,7 +108,7 @@ export default {
       }).then(async () => {
         try {
           await removeFavorite(targetType, targetId)
-          this.$message.success('取消收藏成功')
+          this.$message.success(this.$t('favorite.removeSuccess'))
           this.loadFavorites()
         } catch (error) {
           this.$message.error('操作失败')

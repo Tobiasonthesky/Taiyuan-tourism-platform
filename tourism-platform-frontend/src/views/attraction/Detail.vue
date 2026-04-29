@@ -2,7 +2,7 @@
   <div class="attraction-detail">
     <div class="container" v-if="attraction">
       <!-- 返回按钮 -->
-      <el-button icon="el-icon-arrow-left" @click="goBack" style="margin-bottom: 20px;">返回</el-button>
+      <el-button icon="el-icon-arrow-left" @click="goBack" style="margin-bottom: 20px;">{{ $t('attraction.back') }}</el-button>
       <!-- 基本信息 -->
       <el-card class="detail-card">
         <el-row :gutter="20">
@@ -15,7 +15,7 @@
                 class="detail-video"
                 preload="metadata"
               >
-                您的浏览器不支持视频播放
+                {{ $t('attraction.browserNotSupportVideo') }}
               </video>
             </div>
             <!-- 图片轮播 -->
@@ -29,33 +29,33 @@
             <!-- 无图片占位符 -->
             <div v-else class="image-placeholder">
               <i class="el-icon-picture-outline"></i>
-              <span>暂无图片</span>
+              <span>{{ $t('attraction.noImage') }}</span>
             </div>
           </el-col>
           <el-col :span="12">
             <h1>{{ attraction.name }}</h1>
             <div class="info-item" v-if="attraction.categoryName">
-              <span class="label">分类：</span>
+              <span class="label">{{ $t('food.category') }}：</span>
               <span>{{ attraction.categoryName }}</span>
             </div>
             <div class="info-item">
-              <span class="label">门票价格：</span>
+              <span class="label">{{ $t('attraction.ticketPrice') }}：</span>
               <span class="price">¥{{ attraction.ticketPrice }}</span>
             </div>
             <div class="info-item" v-if="attraction.openingHours">
-              <span class="label">开放时间：</span>
+              <span class="label">{{ $t('attraction.openingHours') }}：</span>
               <span>{{ attraction.openingHours }}</span>
             </div>
             <div class="info-item" v-if="attraction.address">
-              <span class="label">地址：</span>
+              <span class="label">{{ $t('attraction.address') }}：</span>
               <span>{{ attraction.address }}</span>
             </div>
             <div class="info-item">
-              <span class="label">浏览次数：</span>
+              <span class="label">{{ $t('attraction.viewCount') }}：</span>
               <span>{{ attraction.viewCount }}</span>
             </div>
             <div class="info-item" v-if="attraction.rating">
-              <span class="label">评分：</span>
+              <span class="label">{{ $t('attraction.rating') }}：</span>
               <el-rate
                 :value="attraction.rating"
                 disabled
@@ -65,7 +65,7 @@
             </div>
             <div class="actions">
               <el-button type="primary" size="medium" @click="showBookingDialog">
-                立即预订
+                {{ $t('attraction.booking') }}
               </el-button>
               <el-button
                 type="success"
@@ -74,7 +74,7 @@
                 @click="viewOnMap"
                 v-if="attraction.longitude && attraction.latitude"
               >
-                查看地图
+                {{ $t('attraction.viewOnMap') }}
               </el-button>
               <el-button
                 :type="isFavorite ? 'danger' : 'default'"
@@ -82,7 +82,7 @@
                 @click="handleFavorite"
                 :disabled="!isLogin"
               >
-                {{ isFavorite ? '已收藏' : '收藏' }}
+                {{ isFavorite ? $t('attraction.favorited') : $t('attraction.favorite') }}
               </el-button>
             </div>
           </el-col>
@@ -91,13 +91,13 @@
 
       <!-- 详细介绍 -->
       <el-card class="detail-card">
-        <h2>详细介绍</h2>
+        <h2>{{ $t('attraction.description') }}</h2>
         <div class="content" v-html="attraction.description"></div>
       </el-card>
 
       <!-- 评论 -->
       <el-card class="detail-card">
-        <h2>用户评论</h2>
+        <h2>{{ $t('attraction.comments') }}</h2>
         <CommentList
           :target-type="'attraction'"
           :target-id="attraction.id"
@@ -107,58 +107,58 @@
 
       <!-- 预订对话框 -->
       <el-dialog
-        title="门票预订"
+        :title="$t('attraction.bookingDialog')"
         :visible.sync="bookingDialogVisible"
         width="600px"
         @close="resetBookingForm"
       >
-        <el-form :model="bookingForm" label-width="100px">
-          <el-form-item label="景点名称">
+        <el-form :model="bookingForm" label-width="140px">
+          <el-form-item :label="$t('attraction.attractionName')">
             <span>{{ attraction?.name }}</span>
           </el-form-item>
-          <el-form-item label="门票价格">
-            <span class="price">¥{{ attraction?.ticketPrice }}/张</span>
+          <el-form-item :label="$t('attraction.ticketPrice')">
+            <span class="price">¥{{ attraction?.ticketPrice }}/{{ $t('attraction.ticketPrice') }}</span>
           </el-form-item>
-          <el-form-item label="预订数量" required>
+          <el-form-item :label="$t('attraction.bookingQuantity')" required>
             <el-input-number
               v-model="bookingForm.quantity"
               :min="1"
               :max="10"
-              label="张"
+              :label="$t('attraction.ticketPrice')"
             />
           </el-form-item>
-          <el-form-item label="使用日期" required>
+          <el-form-item :label="$t('attraction.useDate')" required>
             <el-date-picker
               v-model="bookingForm.useDate"
               type="date"
-              placeholder="选择使用日期"
+              :placeholder="$t('attraction.selectUseDate')"
               value-format="yyyy-MM-dd"
               :picker-options="datePickerOptions"
             />
           </el-form-item>
-          <el-form-item label="联系人" required>
-            <el-input v-model="bookingForm.contactName" placeholder="请输入联系人姓名" />
+          <el-form-item :label="$t('attraction.contactName')" required>
+            <el-input v-model="bookingForm.contactName" :placeholder="$t('attraction.pleaseInputContactName')" />
           </el-form-item>
-          <el-form-item label="联系电话" required>
-            <el-input v-model="bookingForm.contactPhone" placeholder="请输入联系电话" />
+          <el-form-item :label="$t('attraction.contactPhone')" required>
+            <el-input v-model="bookingForm.contactPhone" :placeholder="$t('attraction.pleaseInputContactPhone')" />
           </el-form-item>
-          <el-form-item label="备注">
+          <el-form-item :label="$t('attraction.remark')">
             <el-input
               v-model="bookingForm.remark"
               type="textarea"
               :rows="3"
-              placeholder="选填"
+              :placeholder="$t('attraction.optional')"
             />
           </el-form-item>
-          <el-form-item label="订单总额">
+          <el-form-item :label="$t('attraction.totalAmount')">
             <span class="total-price">
               ¥{{ (attraction?.ticketPrice || 0) * (bookingForm.quantity || 1) }}
             </span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="bookingDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleBooking">确认预订</el-button>
+          <el-button @click="bookingDialogVisible = false">{{ $t('common.cancel') }}</el-button>
+          <el-button type="primary" @click="handleBooking">{{ $t('attraction.confirmBooking') }}</el-button>
         </div>
       </el-dialog>
     </div>
@@ -259,7 +259,7 @@ export default {
     },
     async handleFavorite() {
       if (!this.isLogin) {
-        this.$message.warning('请先登录')
+        this.$message.warning(this.$t('common.pleaseLogin'))
         return
       }
 
@@ -267,14 +267,14 @@ export default {
         if (this.isFavorite) {
           await removeFavorite('attraction', this.attraction.id)
           this.isFavorite = false
-          this.$message.success('取消收藏成功')
+          this.$message.success(this.$t('favorite.removeSuccess'))
         } else {
           await addFavorite({
             targetType: 'attraction',
             targetId: this.attraction.id
           })
           this.isFavorite = true
-          this.$message.success('收藏成功')
+          this.$message.success(this.$t('favorite.addSuccess'))
         }
       } catch (error) {
         this.$message.error('操作失败')

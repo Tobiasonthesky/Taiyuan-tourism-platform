@@ -1,44 +1,44 @@
 <template>
   <div class="admin-foods">
     <el-card>
-      <div slot="header">
-        <span>美食管理</span>
-        <div style="float: right;">
-          <el-button type="primary" size="small" @click="handleAdd">新增美食</el-button>
-          <el-button size="small" @click="goBack">返回</el-button>
+      <div slot="header" class="card-header">
+        <span>{{ $t('admin.foodManagement') }}</span>
+        <div class="card-actions">
+          <el-button type="primary" size="small" @click="handleAdd">{{ $t('admin.addFood') }}</el-button>
+          <el-button size="small" @click="goBack">{{ $t('common.back') }}</el-button>
         </div>
       </div>
 
       <!-- 搜索栏 -->
       <el-form :inline="true" class="search-form">
-        <el-form-item label="关键词">
-          <el-input v-model="searchKeyword" placeholder="美食名称" clearable @keyup.enter.native="handleSearch" />
+        <el-form-item :label="$t('common.keyword')">
+          <el-input v-model="searchKeyword" :placeholder="$t('food.name')" clearable @keyup.enter.native="handleSearch" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">搜索</el-button>
-          <el-button @click="handleReset">重置</el-button>
+          <el-button type="primary" @click="handleSearch">{{ $t('common.search') }}</el-button>
+          <el-button @click="handleReset">{{ $t('common.reset') }}</el-button>
         </el-form-item>
       </el-form>
 
       <!-- 美食列表 -->
       <el-table :data="foods" v-loading="loading" border>
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="name" label="美食名称" width="200" />
-        <el-table-column prop="categoryName" label="分类" width="120" />
-        <el-table-column prop="restaurant" label="推荐餐厅" width="200" />
-        <el-table-column prop="address" label="地址" width="300" show-overflow-tooltip />
-        <el-table-column prop="description" label="描述" width="300" show-overflow-tooltip />
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column prop="id" :label="$t('common.id')" width="80" />
+        <el-table-column prop="name" :label="$t('food.name')" width="200" />
+        <el-table-column prop="categoryName" :label="$t('common.category')" width="120" />
+        <el-table-column prop="restaurant" :label="$t('food.restaurant')" width="200" />
+        <el-table-column prop="address" :label="$t('common.address')" width="300" show-overflow-tooltip />
+        <el-table-column prop="description" :label="$t('common.description')" width="300" show-overflow-tooltip />
+        <el-table-column prop="status" :label="$t('common.status')" width="100">
           <template slot-scope="scope">
             <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">
-              {{ scope.row.status === 1 ? '上架' : '下架' }}
+              {{ scope.row.status === 1 ? $t('admin.online') : $t('admin.offline') }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column :label="$t('common.actions')" width="250" fixed="right">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button size="mini" @click="handleEdit(scope.row)">{{ $t('common.edit') }}</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">{{ $t('common.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -61,11 +61,11 @@
       @close="handleDialogClose"
     >
       <el-form :model="form" label-width="100px" ref="form">
-        <el-form-item label="美食名称" required>
+        <el-form-item :label="$t('food.name')" required>
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="分类" required>
-          <el-select v-model="form.categoryId" placeholder="请选择分类" clearable style="width: 100%;">
+        <el-form-item :label="$t('common.category')" required>
+          <el-select v-model="form.categoryId" :placeholder="$t('food.selectCategory')" clearable style="width: 100%;">
             <el-option
               v-for="item in categories"
               :key="item.id"
@@ -74,23 +74,23 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="封面图片">
+        <el-form-item :label="$t('food.coverImage')">
           <ImageUpload v-model="form.coverImage" />
         </el-form-item>
-        <el-form-item label="多图片管理">
+        <el-form-item :label="$t('food.multiImage')">
           <MultiImageUpload v-model="form.images" />
           <div style="margin-top: 8px; color: #909399; font-size: 12px;">
             <i class="el-icon-info"></i>
-            提示：保存内容后，图片会自动关联到该美食
+            {{ $t('food.imageTip') }}
           </div>
         </el-form-item>
-        <el-form-item label="推荐餐厅">
+        <el-form-item :label="$t('food.restaurant')">
           <el-input v-model="form.restaurant" />
         </el-form-item>
-        <el-form-item label="地址">
+        <el-form-item :label="$t('common.address')">
           <el-input 
             v-model="form.address" 
-            placeholder="请输入餐厅详细地址，系统将自动解析经纬度" 
+            :placeholder="$t('food.pleaseInputAddress')" 
             @blur="handleAddressBlur"
           >
             <template slot="suffix">
@@ -99,37 +99,37 @@
             </template>
           </el-input>
           <div v-if="form.longitude && form.latitude" style="margin-top: 5px; color: #67C23A; font-size: 12px;">
-            <i class="el-icon-success"></i> 已自动获取坐标：{{ form.longitude }}, {{ form.latitude }}
+            <i class="el-icon-success"></i> {{ $t('common.autoLocated') }}：{{ form.longitude }}, {{ form.latitude }}
           </div>
         </el-form-item>
-        <el-form-item label="经度" prop="longitude" style="display: none;">
+        <el-form-item :label="$t('common.longitude')" prop="longitude" style="display: none;">
           <el-input v-model="form.longitude" />
         </el-form-item>
-        <el-form-item label="纬度" prop="latitude" style="display: none;">
+        <el-form-item :label="$t('common.latitude')" prop="latitude" style="display: none;">
           <el-input v-model="form.latitude" />
         </el-form-item>
-        <el-form-item label="描述">
+        <el-form-item :label="$t('common.description')">
           <el-input v-model="form.description" type="textarea" :rows="3" />
         </el-form-item>
-        <el-form-item label="主要食材">
+        <el-form-item :label="$t('food.ingredients')">
           <el-input v-model="form.ingredients" />
         </el-form-item>
-        <el-form-item label="制作方法">
+        <el-form-item :label="$t('food.cookingMethod')">
           <el-input v-model="form.cookingMethod" type="textarea" :rows="5" />
         </el-form-item>
-        <el-form-item label="详细内容">
+        <el-form-item :label="$t('common.content')">
           <el-input v-model="form.content" type="textarea" :rows="5" />
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item :label="$t('common.status')">
           <el-radio-group v-model="form.status">
-            <el-radio :label="1">上架</el-radio>
-            <el-radio :label="0">下架</el-radio>
+            <el-radio :label="1">{{ $t('admin.online') }}</el-radio>
+            <el-radio :label="0">{{ $t('admin.offline') }}</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="dialogVisible = false">{{ $t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{ $t('common.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -161,7 +161,7 @@ export default {
       total: 0,
       loading: false,
       dialogVisible: false,
-      dialogTitle: '新增美食',
+      dialogTitle: this.$t('admin.addFood'),
       searchingLocation: false,
       form: {
         id: null,
@@ -225,7 +225,7 @@ export default {
           }
         }
       } catch (error) {
-        this.$message.error('加载美食列表失败')
+        this.$message.error(this.$t('common.operateFailed'))
         console.error('加载美食列表错误:', error)
       } finally {
         this.loading = false
@@ -260,7 +260,7 @@ export default {
       }
     },
     handleAdd() {
-      this.dialogTitle = '新增美食'
+      this.dialogTitle = this.$t('admin.addFood')
       this.form = {
         id: null,
         name: '',
@@ -280,7 +280,7 @@ export default {
       this.dialogVisible = true
     },
     async handleEdit(row) {
-      this.dialogTitle = '编辑美食'
+      this.dialogTitle = this.$t('admin.editFood')
       console.log('编辑美食数据:', row)
       console.log('编辑时的餐厅字段:', row.restaurant)
       console.log('编辑时的地址字段:', row.address)
@@ -309,9 +309,9 @@ export default {
       try {
         // 验证：如果有地址但没有经纬度，提示用户（但不阻止提交，因为地址本身也是有用的）
         if (this.form.address && (!this.form.longitude || !this.form.latitude)) {
-          const confirmed = await this.$confirm('地址没有经纬度，地图上可能无法显示该餐厅。是否继续保存？', '提示', {
-            confirmButtonText: '继续保存',
-            cancelButtonText: '取消',
+          const confirmed = await this.$confirm(this.$t('common.address') + this.$t('common.no') + this.$t('common.longitude') + this.$t('common.latitude') + '，' + this.$t('common.map') + this.$t('common.no') + this.$t('common.show') + this.$t('food.restaurant') + '。' + this.$t('common.continue') + this.$t('common.save') + '？', this.$t('common.tip'), {
+            confirmButtonText: this.$t('common.continue') + this.$t('common.save'),
+            cancelButtonText: this.$t('common.cancel'),
             type: 'warning'
           }).catch(() => false)
           if (!confirmed) {
@@ -346,7 +346,7 @@ export default {
             console.log('更新返回的数据 - restaurant:', res.data?.restaurant)
             console.log('更新返回的数据 - address:', res.data?.address)
           } else {
-            this.$message.error('更新失败')
+            this.$message.error(this.$t('common.operateFailed'))
             console.log('更新失败响应:', res)
             return
           }
@@ -360,7 +360,7 @@ export default {
             console.log('创建返回的数据 - restaurant:', res.data?.restaurant)
             console.log('创建返回的数据 - address:', res.data?.address)
           } else {
-            this.$message.error('创建失败')
+            this.$message.error(this.$t('common.operateFailed'))
             console.log('创建失败响应:', res)
             return
           }
@@ -391,32 +391,32 @@ export default {
             }
           } catch (error) {
             console.error('保存图片失败:', error)
-            this.$message.warning('内容保存成功，但图片保存失败')
+            this.$message.warning(this.$t('common.saveSuccess') + '，' + this.$t('common.image') + this.$t('common.operateFailed'))
           }
         }
 
-        this.$message.success(this.form.id ? '更新成功' : '创建成功')
+        this.$message.success(this.form.id ? this.$t('common.updateSuccess') : this.$t('common.createSuccess'))
         this.dialogVisible = false
         this.loadFoods()
       } catch (error) {
-        this.$message.error('操作失败')
+        this.$message.error(this.$t('common.operateFailed'))
         console.error('操作失败错误:', error)
       }
     },
     async handleDelete(row) {
-      this.$confirm('确定要删除该美食吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('admin.confirmDelete').replace('{name}', this.$t('food.name')), this.$t('admin.tip'), {
+        confirmButtonText: this.$t('common.confirm'),
+        cancelButtonText: this.$t('common.cancel'),
         type: 'warning'
       }).then(async () => {
         try {
           const res = await deleteFood(row.id)
           if (res.code === 200) {
-            this.$message.success('删除成功')
+            this.$message.success(this.$t('common.deleteSuccess'))
             this.loadFoods()
           }
         } catch (error) {
-          this.$message.error('删除失败')
+          this.$message.error(this.$t('common.deleteFailed'))
         }
       }).catch(() => {
         // 用户取消删除操作，不需要做任何处理

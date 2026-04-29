@@ -1,72 +1,77 @@
 <template>
   <div class="order-detail-page">
     <div class="container" v-if="order">
-      <h1 class="page-title">订单详情</h1>
+      <h1 class="page-title">{{ $t('order.orderDetail') }}</h1>
       
       <el-card class="order-info">
-        <h2>订单信息</h2>
+        <h2>{{ $t('order.orderInfo') }}</h2>
         <el-descriptions :column="2" border>
-          <el-descriptions-item label="订单号">{{ order.orderNo }}</el-descriptions-item>
-          <el-descriptions-item label="订单类型">{{ order.orderType }}</el-descriptions-item>
-          <el-descriptions-item label="订单状态">
+          <el-descriptions-item :label="$t('order.orderNo')">{{ order.orderNo }}</el-descriptions-item>
+          <el-descriptions-item :label="$t('order.orderType')">
+            <el-tag v-if="order.orderType === 'ticket'">{{ $t('order.ticket') }}</el-tag>
+            <el-tag v-else-if="order.orderType === 'hotel'" type="success">{{ $t('order.hotel') }}</el-tag>
+            <el-tag v-else-if="order.orderType === 'experience'" type="warning">{{ $t('order.experience') }}</el-tag>
+            <span v-else>{{ order.orderType }}</span>
+          </el-descriptions-item>
+          <el-descriptions-item :label="$t('order.status')">
             <el-tag :type="getStatusType(order.orderStatus)">
               {{ getStatusText(order.orderStatus) }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="总金额">¥{{ order.totalAmount }}</el-descriptions-item>
-          <el-descriptions-item label="联系人">{{ order.contactName }}</el-descriptions-item>
-          <el-descriptions-item label="联系电话">{{ order.contactPhone }}</el-descriptions-item>
-          <el-descriptions-item label="创建时间">{{ order.createTime }}</el-descriptions-item>
-          <el-descriptions-item label="备注" :span="2">{{ order.remark || '无' }}</el-descriptions-item>
+          <el-descriptions-item :label="$t('order.totalAmount')">¥{{ order.totalAmount }}</el-descriptions-item>
+          <el-descriptions-item :label="$t('order.contactName')">{{ order.contactName }}</el-descriptions-item>
+          <el-descriptions-item :label="$t('order.contactPhone')">{{ order.contactPhone }}</el-descriptions-item>
+          <el-descriptions-item :label="$t('order.createTime')">{{ order.createTime }}</el-descriptions-item>
+          <el-descriptions-item :label="$t('order.remark')" :span="2">{{ order.remark || $t('common.none') }}</el-descriptions-item>
         </el-descriptions>
       </el-card>
 
       <el-card class="order-items">
-        <h2>订单项</h2>
+        <h2>{{ $t('order.items') }}</h2>
         <el-table :data="orderItems" style="width: 100%">
-          <el-table-column prop="itemName" label="项目名称" width="200" />
-          <el-table-column prop="itemType" label="类型" width="100">
+          <el-table-column prop="itemName" :label="$t('order.itemName')" width="200" />
+          <el-table-column prop="itemType" :label="$t('common.category')" width="100">
             <template slot-scope="scope">
-              <el-tag v-if="scope.row.itemType === 'ticket'" type="success">门票</el-tag>
-              <el-tag v-else-if="scope.row.itemType === 'hotel'" type="warning">酒店</el-tag>
-              <el-tag v-else-if="scope.row.itemType === 'experience'" type="info">体验</el-tag>
+              <el-tag v-if="scope.row.itemType === 'ticket'" type="success">{{ $t('order.ticket') }}</el-tag>
+              <el-tag v-else-if="scope.row.itemType === 'hotel'" type="warning">{{ $t('order.hotel') }}</el-tag>
+              <el-tag v-else-if="scope.row.itemType === 'experience'" type="info">{{ $t('order.experience') }}</el-tag>
               <span v-else>{{ scope.row.itemType }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="详细信息" width="350">
+          <el-table-column :label="$t('order.detailInfo')" width="350">
             <template slot-scope="scope">
               <!-- 酒店订单显示房间信息 -->
               <div v-if="scope.row.itemType === 'hotel' && (scope.row.roomType || scope.row.roomName)">
-                <div><strong>房间类型：</strong>{{ scope.row.roomType || '-' }}</div>
-                <div><strong>房间名称：</strong>{{ scope.row.roomName || '-' }}</div>
+                <div><strong>{{ $t('hotel.roomType') }}：</strong>{{ scope.row.roomType || '-' }}</div>
+                <div><strong>{{ $t('hotel.roomName') }}：</strong>{{ scope.row.roomName || '-' }}</div>
                 <div v-if="scope.row.checkInDate || scope.row.checkOutDate">
-                  <strong>入住日期：</strong>{{ scope.row.checkInDate || '-' }}<br>
-                  <strong>退房日期：</strong>{{ scope.row.checkOutDate || '-' }}
+                  <strong>{{ $t('hotel.checkIn') }}：</strong>{{ scope.row.checkInDate || '-' }}<br>
+                  <strong>{{ $t('hotel.checkOut') }}：</strong>{{ scope.row.checkOutDate || '-' }}
                 </div>
               </div>
               <!-- 门票订单显示使用日期 -->
               <div v-else-if="scope.row.itemType === 'ticket' && scope.row.useDate">
-                <div><strong>使用日期：</strong>{{ formatDate(scope.row.useDate) }}</div>
+                <div><strong>{{ $t('attraction.useDate') }}：</strong>{{ formatDate(scope.row.useDate) }}</div>
               </div>
               <!-- 体验项目显示使用日期和时间 -->
               <div v-else-if="scope.row.itemType === 'experience'">
                 <div v-if="scope.row.useDate">
-                  <strong>使用日期：</strong>{{ formatDate(scope.row.useDate) }}
+                  <strong>{{ $t('experience.useDate') }}：</strong>{{ formatDate(scope.row.useDate) }}
                 </div>
                 <div v-if="scope.row.useTime">
-                  <strong>使用时间：</strong>{{ scope.row.useTime }}
+                  <strong>{{ $t('experience.useTime') }}：</strong>{{ scope.row.useTime }}
                 </div>
               </div>
               <span v-else>-</span>
             </template>
           </el-table-column>
-          <el-table-column prop="quantity" label="数量" width="80" align="center" />
-          <el-table-column label="单价" width="120" align="right">
+          <el-table-column prop="quantity" :label="$t('order.quantity')" width="80" align="center" />
+          <el-table-column :label="$t('order.unitPrice')" width="120" align="right">
             <template slot-scope="scope">
               ¥{{ scope.row.unitPrice || scope.row.roomPrice || scope.row.price || 0 }}
             </template>
           </el-table-column>
-          <el-table-column label="小计" width="120" align="right">
+          <el-table-column :label="$t('order.subtotal')" width="120" align="right">
             <template slot-scope="scope">
               ¥{{ scope.row.totalPrice || scope.row.subtotal || 0 }}
             </template>
@@ -80,15 +85,15 @@
           type="primary"
           @click="handlePay"
         >
-          立即支付
+          {{ $t('order.payNow') }}
         </el-button>
         <el-button
           v-if="order.orderStatus === 0"
           @click="handleCancel"
         >
-          取消订单
+          {{ $t('order.cancel') }}
         </el-button>
-        <el-button @click="$router.back()">返回</el-button>
+        <el-button @click="$router.back()">{{ $t('common.back') }}</el-button>
       </div>
     </div>
   </div>
@@ -152,15 +157,15 @@ export default {
     },
     async handleCancel() {
       try {
-        await this.$confirm('确定要取消订单吗？', '提示', {
+        await this.$confirm(this.$t('order.confirmCancel'), this.$t('admin.tip'), {
           type: 'warning'
         })
         await cancelOrder(this.order.id)
-        this.$message.success('订单已取消')
+        this.$message.success(this.$t('order.cancelSuccess'))
         this.loadDetail()
       } catch (error) {
         if (error !== 'cancel') {
-          this.$message.error('取消订单失败')
+          this.$message.error(this.$t('order.cancelFailed'))
         }
       }
     },
@@ -174,13 +179,13 @@ export default {
     },
     getStatusText(status) {
       const texts = {
-        0: '待支付',
-        1: '已支付',
-        2: '已使用',
-        3: '已取消',
-        4: '已退款'
+        0: this.$t('order.pending'),
+        1: this.$t('order.paid'),
+        2: this.$t('order.used'),
+        3: this.$t('order.cancelled'),
+        4: this.$t('order.refunded')
       }
-      return texts[status] || '未知'
+      return texts[status] || this.$t('common.unknown')
     },
     formatDate(date) {
       if (!date) return '-'

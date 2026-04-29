@@ -1,7 +1,7 @@
 <template>
   <div class="culture-page">
     <div class="container">
-      <h1 class="page-title">民俗文化</h1>
+      <h1 class="page-title">{{ $t('culture.title') }}</h1>
       
       <el-row :gutter="20">
         <el-col :span="6" v-for="item in cultures" :key="item.id">
@@ -9,7 +9,7 @@
             <img v-if="item.coverImage" :src="item.coverImage" class="card-image" />
             <div v-else class="card-image-placeholder">
               <i class="el-icon-picture-outline"></i>
-              <span>暂无图片</span>
+              <span>{{ $t('common.noImage') }}</span>
             </div>
             <div class="card-content">
               <h3>{{ item.name }}</h3>
@@ -43,7 +43,7 @@ export default {
     return {
       cultures: [],
       page: 1,
-      size: 12,
+      size: 10,
       total: 0
     }
   },

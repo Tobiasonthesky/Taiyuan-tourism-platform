@@ -11,7 +11,7 @@
       <!-- 热门景点 / 为你推荐 -->
       <section class="section">
         <div class="section-header">
-          <h2 class="section-title">{{ isLogin ? '为你推荐-景点' : '热门景点' }}</h2>
+          <h2 class="section-title">{{ isLogin ? $t('common.recommendations') + '-' + $t('common.attraction') : $t('common.hotAttractions') }}</h2>
           <el-button 
             v-if="isLogin" 
             type="text" 
@@ -20,7 +20,7 @@
             @click="refreshRecommendations"
             class="refresh-btn"
           >
-            刷新推荐
+            {{ $t('common.refresh') }}
           </el-button>
         </div>
         <Skeleton v-if="loading" type="card" :count="4" />
@@ -40,20 +40,20 @@
                 <div class="card-footer">
                   <span class="price">¥{{ item.ticketPrice }}</span>
                   <span class="views">
-                    <i class="el-icon-view"></i> {{ item.viewCount }}
+                    <i class="el-icon-view"></i> {{ item.viewCount }} {{ $t('common.views') }}
                   </span>
                 </div>
               </div>
             </el-card>
           </el-col>
         </el-row>
-        <EmptyState v-else icon="el-icon-picture-outline" :title="isLogin ? '暂无推荐内容' : '暂无热门景点'" />
+        <EmptyState v-else icon="el-icon-picture-outline" :title="isLogin ? $t('common.noRecommendations') : $t('common.noHotAttractions')" />
       </section>
 
       <!-- 特色美食 / 为你推荐 -->
       <section class="section">
         <div class="section-header">
-          <h2 class="section-title">{{ isLogin ? '为你推荐-美食' : '特色美食' }}</h2>
+          <h2 class="section-title">{{ isLogin ? $t('common.recommendations') + '-' + $t('common.food') : $t('common.featuredFood') }}</h2>
         </div>
         <Skeleton v-if="loading" type="card" :count="4" />
         <el-row :gutter="20" v-else-if="hotFoods.length > 0">
@@ -73,12 +73,12 @@
             </el-card>
           </el-col>
         </el-row>
-        <EmptyState v-else icon="el-icon-food" :title="isLogin ? '暂无推荐内容' : '暂无特色美食'" />
+        <EmptyState v-else icon="el-icon-food" :title="isLogin ? $t('common.noRecommendations') : $t('common.noHotFoods')" />
       </section>
 
       <!-- 活动公告 -->
       <section class="section">
-        <h2 class="section-title">活动公告</h2>
+        <h2 class="section-title">{{ $t('common.announcements') }}</h2>
         <el-timeline>
           <el-timeline-item
             v-for="item in announcements"
@@ -88,10 +88,34 @@
           >
             <el-card  > 
               <h4>{{ item.title }}</h4>
-              <p>{{ item.content }}</p>
+              <p class="announcement-content">{{ item.content }}</p>
+              <div class="announcement-footer">
+                <el-button 
+                  type="text" 
+                  size="small" 
+                  @click="showAnnouncementDetail(item)"
+                >
+                  {{ $t('common.viewDetail') }}
+                </el-button>
+              </div>
             </el-card>
           </el-timeline-item>
         </el-timeline>
+        
+        <!-- 活动公告详情弹窗 -->
+        <el-dialog
+          :title="currentAnnouncement?.title"
+          :visible.sync="dialogVisible"
+          width="500px"
+        >
+          <div class="announcement-detail">
+            <div class="announcement-detail-time">{{ currentAnnouncement?.createTime }}</div>
+            <div class="announcement-detail-content">{{ currentAnnouncement?.content }}</div>
+          </div>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">{{ $t('common.close') }}</el-button>
+          </span>
+        </el-dialog>
       </section>
     </div>
   </div>
@@ -123,7 +147,9 @@ export default {
       hotFoods: [],
       announcements: [],
       loading: true,
-      refreshing: false
+      refreshing: false,
+      dialogVisible: false,
+      currentAnnouncement: null
     }
   },
   computed: {
@@ -226,15 +252,13 @@ export default {
       // 加载个性化推荐（景点和美食）
       const recRes = await getPersonalizedRecommendations(4, forceRefresh)
       if (recRes.code === 200 && recRes.data) {
-        // 保存旧数据用于对比
-        const oldAttractions = [...this.hotAttractions]
-        const oldFoods = [...this.hotFoods]
-        
         // 先清空数据，确保UI更新
         this.hotAttractions = []
         this.hotFoods = []
         // 使用 $nextTick 确保DOM更新
         await this.$nextTick()
+        // 等待一小段时间，让用户看到刷新的视觉效果
+        await new Promise(resolve => setTimeout(resolve, 300))
         // 设置新数据
         const newAttractions = recRes.data.attractions || []
         const newFoods = recRes.data.foods || []
@@ -242,11 +266,7 @@ export default {
         this.hotAttractions = newAttractions
         this.hotFoods = newFoods
         
-        // 返回是否数据有变化
-        const attractionsChanged = JSON.stringify(oldAttractions.map(a => a.id)) !== JSON.stringify(newAttractions.map(a => a.id))
-        const foodsChanged = JSON.stringify(oldFoods.map(f => f.id)) !== JSON.stringify(newFoods.map(f => f.id))
-        
-        return attractionsChanged || foodsChanged
+        return true
       }
       return false
     },
@@ -259,12 +279,9 @@ export default {
       this.refreshing = true
       try {
         // 强制刷新，添加时间戳避免缓存
-        const hasChanged = await this.loadPersonalizedRecommendations(true)
-        if (hasChanged) {
-          this.$message.success('推荐内容已刷新')
-        } else {
-          this.$message.info('推荐内容暂无变化，请稍后再试')
-        }
+        await this.loadPersonalizedRecommendations(true)
+        // 无论是否有变化，都显示刷新成功的消息
+        this.$message.success('推荐内容已刷新')
       } catch (error) {
         console.error('刷新推荐失败:', error)
         this.$message.error('刷新失败，请稍后重试')
@@ -274,6 +291,10 @@ export default {
     },
     goToDetail(type, id) {
       this.$router.push(`/${type}/${id}`)
+    },
+    showAnnouncementDetail(announcement) {
+      this.currentAnnouncement = announcement
+      this.dialogVisible = true
     }
   }
 }
@@ -527,10 +548,41 @@ export default {
 }
 
 .home >>> .el-timeline .el-card p {
-  color: #606266;
-  line-height: 1.7;
-  font-size: 14px;
-}
+    color: #606266;
+    line-height: 1.7;
+    font-size: 14px;
+  }
+  
+  .home .announcement-content {
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .home .announcement-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+  
+  .home .announcement-detail {
+    padding: 10px 0;
+  }
+  
+  .home .announcement-detail-time {
+    color: #909399;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  
+  .home .announcement-detail-content {
+    color: #606266;
+    line-height: 1.8;
+    font-size: 14px;
+    white-space: pre-wrap;
+  }
 
 /* 响应式设计 - 平板 */
 @media (max-width: 992px) {

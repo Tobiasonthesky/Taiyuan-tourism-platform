@@ -1,51 +1,51 @@
 <template>
   <div class="admin-hotels">
     <el-card>
-      <div slot="header">
-        <span>酒店管理</span>
-        <div style="float: right;">
-          <el-button type="primary" size="small" @click="handleAdd">新增酒店</el-button>
-          <el-button size="small" @click="goBack">返回</el-button>
+      <div slot="header" class="card-header">
+        <span>{{ $t('admin.hotelManagement') }}</span>
+        <div class="card-actions">
+          <el-button type="primary" size="small" @click="handleAdd">{{ $t('admin.addHotel') }}</el-button>
+          <el-button size="small" @click="goBack">{{ $t('common.back') }}</el-button>
         </div>
       </div>
 
       <!-- 搜索栏 -->
       <el-form :inline="true" class="search-form">
-        <el-form-item label="关键词">
-          <el-input v-model="searchKeyword" placeholder="酒店名称" clearable @keyup.enter.native="handleSearch" />
+        <el-form-item :label="$t('common.keyword')">
+          <el-input v-model="searchKeyword" :placeholder="$t('hotel.name')" clearable @keyup.enter.native="handleSearch" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">搜索</el-button>
-          <el-button @click="handleReset">重置</el-button>
+          <el-button type="primary" @click="handleSearch">{{ $t('common.search') }}</el-button>
+          <el-button @click="handleReset">{{ $t('common.reset') }}</el-button>
         </el-form-item>
       </el-form>
 
       <!-- 酒店列表 -->
       <el-table :data="hotels" v-loading="loading" border>
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="name" label="酒店名称" width="200" />
-        <el-table-column prop="address" label="地址" width="200" />
-        <el-table-column prop="starLevel" label="星级" width="100">
+        <el-table-column prop="id" :label="$t('common.id')" width="80" />
+        <el-table-column prop="name" :label="$t('hotel.name')" width="200" />
+        <el-table-column prop="address" :label="$t('common.address')" width="200" />
+        <el-table-column prop="starLevel" :label="$t('hotel.starLevel')" width="100">
           <template slot-scope="scope">
             <el-rate :value="scope.row.starLevel" disabled />
           </template>
         </el-table-column>
-        <el-table-column prop="minPrice" label="最低价格" width="120">
+        <el-table-column prop="minPrice" :label="$t('hotel.minPrice')" width="120">
           <template slot-scope="scope">
-            ¥{{ scope.row.minPrice }}/晚
+            ¥{{ scope.row.minPrice }}/{{ $t('hotel.perNight') }}
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column prop="status" :label="$t('common.status')" width="100">
           <template slot-scope="scope">
             <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">
-              {{ scope.row.status === 1 ? '上架' : '下架' }}
+              {{ scope.row.status === 1 ? $t('admin.online') : $t('admin.offline') }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column :label="$t('common.actions')" width="250" fixed="right">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button size="mini" @click="handleEdit(scope.row)">{{ $t('common.edit') }}</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">{{ $t('common.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -68,23 +68,23 @@
       @close="handleDialogClose"
     >
       <el-form :model="form" label-width="100px" ref="form">
-        <el-form-item label="酒店名称" required>
+        <el-form-item :label="$t('hotel.name')" required>
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="封面图片">
+        <el-form-item :label="$t('hotel.coverImage')">
           <ImageUpload v-model="form.coverImage" />
         </el-form-item>
-        <el-form-item label="多图片管理">
+        <el-form-item :label="$t('hotel.multiImage')">
           <MultiImageUpload v-model="form.images" />
           <div style="margin-top: 8px; color: #909399; font-size: 12px;">
             <i class="el-icon-info"></i>
-            提示：保存内容后，图片会自动关联到该酒店
+            {{ $t('hotel.imageTip') }}
           </div>
         </el-form-item>
-        <el-form-item label="地址">
+        <el-form-item :label="$t('common.address')">
           <el-input 
             v-model="form.address" 
-            placeholder="请输入详细地址，系统将自动解析经纬度" 
+            :placeholder="$t('hotel.pleaseInputAddress')" 
             @blur="handleAddressBlur"
           >
             <template slot="suffix">
@@ -93,60 +93,60 @@
             </template>
           </el-input>
           <div v-if="form.longitude && form.latitude" style="margin-top: 5px; color: #67C23A; font-size: 12px;">
-            <i class="el-icon-success"></i> 已自动获取坐标：{{ form.longitude }}, {{ form.latitude }}
+            <i class="el-icon-success"></i> {{ $t('common.autoLocated') }}：{{ form.longitude }}, {{ form.latitude }}
           </div>
         </el-form-item>
-        <el-form-item label="经度" prop="longitude" style="display: none;">
+        <el-form-item :label="$t('common.longitude')" prop="longitude" style="display: none;">
           <el-input v-model="form.longitude" />
         </el-form-item>
-        <el-form-item label="纬度" prop="latitude" style="display: none;">
+        <el-form-item :label="$t('common.latitude')" prop="latitude" style="display: none;">
           <el-input v-model="form.latitude" />
         </el-form-item>
-        <el-form-item label="星级">
+        <el-form-item :label="$t('hotel.starLevel')">
           <el-rate v-model="form.starLevel" :max="5" />
         </el-form-item>
-        <el-form-item label="联系电话">
+        <el-form-item :label="$t('hotel.phone')">
           <el-input v-model="form.phone" />
         </el-form-item>
-        <el-form-item label="描述">
+        <el-form-item :label="$t('common.description')">
           <el-input v-model="form.description" type="textarea" :rows="3" />
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item :label="$t('common.status')">
           <el-radio-group v-model="form.status">
-            <el-radio :label="1">上架</el-radio>
-            <el-radio :label="0">下架</el-radio>
+            <el-radio :label="1">{{ $t('admin.online') }}</el-radio>
+            <el-radio :label="0">{{ $t('admin.offline') }}</el-radio>
           </el-radio-group>
         </el-form-item>
         
         <!-- 房间信息 -->
-        <el-divider>房间信息</el-divider>
+        <el-divider>{{ $t('hotel.roomInfo') }}</el-divider>
         <el-form-item>
-          <el-button type="primary" size="small" @click="handleAddRoom">添加房间</el-button>
+          <el-button type="primary" size="small" @click="handleAddRoom">{{ $t('hotel.addRoom') }}</el-button>
         </el-form-item>
         <el-table :data="form.rooms" border style="width: 100%" v-if="form.rooms && form.rooms.length > 0">
-          <el-table-column prop="roomName" label="房间名称" width="150" />
-          <el-table-column prop="roomType" label="房间类型" width="120" />
-          <el-table-column prop="price" label="价格" width="100">
+          <el-table-column prop="roomName" :label="$t('hotel.roomName')" width="150" />
+          <el-table-column prop="roomType" :label="$t('hotel.roomType')" width="120" />
+          <el-table-column prop="price" :label="$t('common.price')" width="100">
             <template slot-scope="scope">
-              ¥{{ scope.row.price }}/晚
+              ¥{{ scope.row.price }}/{{ $t('hotel.perNight') }}
             </template>
           </el-table-column>
-          <el-table-column prop="area" label="面积(㎡)" width="100" />
-          <el-table-column prop="bedType" label="床型" width="120" />
-          <el-table-column prop="maxOccupancy" label="最大入住" width="100" />
-          <el-table-column prop="stock" label="库存" width="80" />
-          <el-table-column label="操作" width="150" fixed="right">
+          <el-table-column prop="area" :label="$t('hotel.area')" width="100" />
+          <el-table-column prop="bedType" :label="$t('hotel.bedType')" width="120" />
+          <el-table-column prop="maxOccupancy" :label="$t('hotel.maxOccupancy')" width="100" />
+          <el-table-column prop="stock" :label="$t('hotel.stock')" width="80" />
+          <el-table-column :label="$t('common.actions')" width="150" fixed="right">
             <template slot-scope="scope">
-              <el-button size="mini" @click="handleEditRoom(scope.$index)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDeleteRoom(scope.$index)">删除</el-button>
+              <el-button size="mini" @click="handleEditRoom(scope.$index)">{{ $t('common.edit') }}</el-button>
+              <el-button size="mini" type="danger" @click="handleDeleteRoom(scope.$index)">{{ $t('common.delete') }}</el-button>
             </template>
           </el-table-column>
         </el-table>
-        <el-empty v-else description="暂无房间信息" :image-size="80" />
+        <el-empty v-else :description="$t('hotel.noRoomInfo')" :image-size="80" />
       </el-form>
       <div slot="footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="dialogVisible = false">{{ $t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{ $t('common.confirm') }}</el-button>
       </div>
     </el-dialog>
 
@@ -158,50 +158,50 @@
       @close="handleRoomDialogClose"
     >
       <el-form :model="roomForm" label-width="100px" ref="roomForm">
-        <el-form-item label="房间名称" required>
-          <el-input v-model="roomForm.roomName" placeholder="如：豪华大床房" />
+        <el-form-item :label="$t('hotel.roomName')" required>
+          <el-input v-model="roomForm.roomName" :placeholder="$t('hotel.roomNamePlaceholder')" />
         </el-form-item>
-        <el-form-item label="房间类型" required>
-          <el-select v-model="roomForm.roomType" placeholder="请选择房间类型" style="width: 100%">
-            <el-option label="标准间" value="标准间" />
-            <el-option label="大床房" value="大床房" />
-            <el-option label="双床房" value="双床房" />
-            <el-option label="套房" value="套房" />
-            <el-option label="豪华间" value="豪华间" />
-            <el-option label="行政间" value="行政间" />
+        <el-form-item :label="$t('hotel.roomType')" required>
+          <el-select v-model="roomForm.roomType" :placeholder="$t('hotel.selectRoomType')" style="width: 100%">
+            <el-option :label="$t('hotel.standardRoom')" :value="$t('hotel.standardRoom')" />
+            <el-option :label="$t('hotel.doubleRoom')" :value="$t('hotel.doubleRoom')" />
+            <el-option :label="$t('hotel.twinRoom')" :value="$t('hotel.twinRoom')" />
+            <el-option :label="$t('hotel.suite')" :value="$t('hotel.suite')" />
+            <el-option :label="$t('hotel.deluxeRoom')" :value="$t('hotel.deluxeRoom')" />
+            <el-option :label="$t('hotel.executiveRoom')" :value="$t('hotel.executiveRoom')" />
           </el-select>
         </el-form-item>
-        <el-form-item label="价格(元/晚)" required>
+        <el-form-item :label="$t('hotel.price')" required>
           <el-input-number v-model="roomForm.price" :min="0" :precision="2" style="width: 100%" />
         </el-form-item>
-        <el-form-item label="面积(㎡)">
+        <el-form-item :label="$t('hotel.area')">
           <el-input-number v-model="roomForm.area" :min="0" :precision="2" style="width: 100%" />
         </el-form-item>
-        <el-form-item label="床型">
-          <el-input v-model="roomForm.bedType" placeholder="如：1.8米大床" />
+        <el-form-item :label="$t('hotel.bedType')">
+          <el-input v-model="roomForm.bedType" :placeholder="$t('hotel.bedTypePlaceholder')" />
         </el-form-item>
-        <el-form-item label="最大入住人数">
+        <el-form-item :label="$t('hotel.maxOccupancy')">
           <el-input-number v-model="roomForm.maxOccupancy" :min="1" :max="10" style="width: 100%" />
         </el-form-item>
-        <el-form-item label="库存数量">
+        <el-form-item :label="$t('hotel.stock')">
           <el-input-number v-model="roomForm.stock" :min="0" style="width: 100%" />
         </el-form-item>
-        <el-form-item label="房间图片">
+        <el-form-item :label="$t('hotel.roomImage')">
           <ImageUpload v-model="roomForm.image" />
         </el-form-item>
-        <el-form-item label="房间描述">
+        <el-form-item :label="$t('hotel.roomDescription')">
           <el-input v-model="roomForm.description" type="textarea" :rows="3" />
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item :label="$t('common.status')">
           <el-radio-group v-model="roomForm.status">
-            <el-radio :label="1">上架</el-radio>
-            <el-radio :label="0">下架</el-radio>
+            <el-radio :label="1">{{ $t('admin.online') }}</el-radio>
+            <el-radio :label="0">{{ $t('admin.offline') }}</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="roomDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleRoomSubmit">确定</el-button>
+        <el-button @click="roomDialogVisible = false">{{ $t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleRoomSubmit">{{ $t('common.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -232,7 +232,7 @@ export default {
       total: 0,
       loading: false,
       dialogVisible: false,
-      dialogTitle: '新增酒店',
+      dialogTitle: this.$t('admin.addHotel'),
       form: {
         id: null,
         name: '',
@@ -247,7 +247,7 @@ export default {
         rooms: []
       },
       roomDialogVisible: false,
-      roomDialogTitle: '添加房间',
+      roomDialogTitle: this.$t('hotel.addRoom'),
       roomForm: {
         roomName: '',
         roomType: '',
@@ -300,7 +300,7 @@ export default {
           this.total = res.data?.total || 0
         }
       } catch (error) {
-        this.$message.error('加载酒店列表失败')
+        this.$message.error(this.$t('common.operateFailed'))
       } finally {
         this.loading = false
       }
@@ -324,7 +324,7 @@ export default {
       this.loadHotels()
     },
     handleAdd() {
-      this.dialogTitle = '新增酒店'
+      this.dialogTitle = this.$t('admin.addHotel')
       this.form = {
         id: null,
         name: '',
@@ -343,7 +343,7 @@ export default {
       this.dialogVisible = true
     },
     async handleEdit(row) {
-      this.dialogTitle = '编辑酒店'
+      this.dialogTitle = this.$t('admin.editHotel')
       this.form = { ...row }
       // 加载现有图片
       if (row.id) {
@@ -380,7 +380,7 @@ export default {
       this.dialogVisible = true
     },
     handleAddRoom() {
-      this.roomDialogTitle = '添加房间'
+      this.roomDialogTitle = this.$t('hotel.addRoom')
       this.editingRoomIndex = -1
       this.roomForm = {
         roomName: '',
@@ -397,26 +397,26 @@ export default {
       this.roomDialogVisible = true
     },
     handleEditRoom(index) {
-      this.roomDialogTitle = '编辑房间'
+      this.roomDialogTitle = this.$t('hotel.editRoom')
       this.editingRoomIndex = index
       this.roomForm = { ...this.form.rooms[index] }
       this.roomDialogVisible = true
     },
     handleDeleteRoom(index) {
-      this.$confirm('确定要删除该房间吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('admin.confirmDeleteAnnouncement').replace('公告', this.$t('hotel.roomName')), this.$t('common.tip'), {
+        confirmButtonText: this.$t('common.confirm'),
+        cancelButtonText: this.$t('common.cancel'),
         type: 'warning'
       }).then(() => {
         this.form.rooms.splice(index, 1)
-        this.$message.success('删除成功')
+        this.$message.success(this.$t('common.deleteSuccess'))
       }).catch(() => {
         // 用户点击取消，不需要处理
       })
     },
     handleRoomSubmit() {
       if (!this.roomForm.roomName || !this.roomForm.roomType || !this.roomForm.price) {
-        this.$message.warning('请填写房间名称、类型和价格')
+        this.$message.warning(this.$t('hotel.roomName') + '、' + this.$t('hotel.roomType') + this.$t('common.price'))
         return
       }
       if (!this.form.rooms) {
@@ -430,7 +430,7 @@ export default {
         this.form.rooms.push({ ...this.roomForm })
       }
       this.roomDialogVisible = false
-      this.$message.success(this.editingRoomIndex >= 0 ? '更新成功' : '添加成功')
+      this.$message.success(this.editingRoomIndex >= 0 ? this.$t('common.updateSuccess') : this.$t('common.createSuccess'))
     },
     handleRoomDialogClose() {
       this.$refs.roomForm?.resetFields()
@@ -451,7 +451,7 @@ export default {
           if (res.code === 200) {
             hotelId = this.form.id
           } else {
-            this.$message.error('更新失败')
+            this.$message.error(this.$t('common.operateFailed'))
             return
           }
         } else {
@@ -459,7 +459,7 @@ export default {
           if (res.code === 200 && res.data && res.data.id) {
             hotelId = res.data.id
           } else {
-            this.$message.error('创建失败')
+            this.$message.error(this.$t('common.operateFailed'))
             return
           }
         }
@@ -494,11 +494,11 @@ export default {
             }
           } catch (error) {
             console.error('保存图片失败:', error)
-            this.$message.warning('内容保存成功，但图片保存失败')
+            this.$message.warning(this.$t('common.saveSuccess') + '，' + this.$t('common.image') + this.$t('common.operateFailed'))
           }
         }
 
-        this.$message.success(this.form.id ? '更新成功' : '创建成功')
+        this.$message.success(this.form.id ? this.$t('common.updateSuccess') : this.$t('common.createSuccess'))
         this.dialogVisible = false
         this.loadHotels()
       } catch (error) {
@@ -538,19 +538,19 @@ export default {
       }
     },
     async handleDelete(row) {
-      this.$confirm('确定要删除该酒店吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('admin.confirmDeleteAnnouncement').replace('公告', this.$t('hotel.name')), this.$t('common.tip'), {
+        confirmButtonText: this.$t('common.confirm'),
+        cancelButtonText: this.$t('common.cancel'),
         type: 'warning'
       }).then(async () => {
         try {
           const res = await deleteHotel(row.id)
           if (res.code === 200) {
-            this.$message.success('删除成功')
+            this.$message.success(this.$t('common.deleteSuccess'))
             this.loadHotels()
           }
         } catch (error) {
-          this.$message.error('删除失败')
+          this.$message.error(this.$t('common.deleteFailed'))
         }
       }).catch(() => {
         // 用户点击取消，不需要处理

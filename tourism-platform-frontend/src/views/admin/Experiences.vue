@@ -1,51 +1,51 @@
 <template>
   <div class="admin-experiences">
     <el-card>
-      <div slot="header">
-        <span>体验项目管理</span>
-        <div style="float: right;">
-          <el-button type="primary" size="small" @click="handleAdd">新增体验项目</el-button>
-          <el-button size="small" @click="goBack">返回</el-button>
+      <div slot="header" class="card-header">
+        <span>{{ $t('admin.experienceManagement') }}</span>
+        <div class="card-actions">
+          <el-button type="primary" size="small" @click="handleAdd">{{ $t('admin.addExperience') }}</el-button>
+          <el-button size="small" @click="goBack">{{ $t('common.back') }}</el-button>
         </div>
       </div>
 
       <!-- 搜索栏 -->
       <el-form :inline="true" class="search-form">
-        <el-form-item label="关键词">
-          <el-input v-model="searchKeyword" placeholder="项目名称" clearable @keyup.enter.native="handleSearch" />
+        <el-form-item :label="$t('common.keyword')">
+          <el-input v-model="searchKeyword" :placeholder="$t('experience.name')" clearable @keyup.enter.native="handleSearch" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">搜索</el-button>
-          <el-button @click="handleReset">重置</el-button>
+          <el-button type="primary" @click="handleSearch">{{ $t('common.search') }}</el-button>
+          <el-button @click="handleReset">{{ $t('common.reset') }}</el-button>
         </el-form-item>
       </el-form>
 
       <!-- 体验项目列表 -->
       <el-table :data="experiences" v-loading="loading" border>
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="name" label="项目名称" width="200" />
-        <el-table-column prop="duration" label="时长" width="100">
+        <el-table-column prop="id" :label="$t('common.id')" width="80" />
+        <el-table-column prop="name" :label="$t('experience.name')" width="200" />
+        <el-table-column prop="duration" :label="$t('experience.duration')" width="100">
           <template slot-scope="scope">
-            {{ scope.row.duration }}分钟
+            {{ scope.row.duration }}{{ $t('experience.minutes') }}
           </template>
         </el-table-column>
-        <el-table-column prop="price" label="价格" width="120">
+        <el-table-column prop="price" :label="$t('common.price')" width="120">
           <template slot-scope="scope">
             ¥{{ scope.row.price }}
           </template>
         </el-table-column>
-        <el-table-column prop="address" label="地址" width="200" />
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column prop="address" :label="$t('common.address')" width="200" />
+        <el-table-column prop="status" :label="$t('common.status')" width="100">
           <template slot-scope="scope">
             <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">
-              {{ scope.row.status === 1 ? '上架' : '下架' }}
+              {{ scope.row.status === 1 ? $t('admin.online') : $t('admin.offline') }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column :label="$t('common.actions')" width="250" fixed="right">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button size="mini" @click="handleEdit(scope.row)">{{ $t('common.edit') }}</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">{{ $t('common.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -68,44 +68,44 @@
       @close="handleDialogClose"
     >
       <el-form :model="form" label-width="100px" ref="form">
-        <el-form-item label="项目名称" required>
+        <el-form-item :label="$t('experience.name')" required>
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="封面图片">
+        <el-form-item :label="$t('experience.coverImage')">
           <ImageUpload v-model="form.coverImage" />
         </el-form-item>
-        <el-form-item label="多图片管理">
+        <el-form-item :label="$t('experience.multiImage')">
           <MultiImageUpload v-model="form.images" />
           <div style="margin-top: 8px; color: #909399; font-size: 12px;">
             <i class="el-icon-info"></i>
-            提示：保存内容后，图片会自动关联到该体验项目
+            {{ $t('experience.imageTip') }}
           </div>
         </el-form-item>
-        <el-form-item label="体验时长（分钟）">
+        <el-form-item :label="$t('experience.duration')">
           <el-input-number v-model="form.duration" :min="1" />
         </el-form-item>
-        <el-form-item label="价格">
+        <el-form-item :label="$t('common.price')">
           <el-input-number v-model="form.price" :min="0" :precision="2" />
         </el-form-item>
-        <el-form-item label="地址">
+        <el-form-item :label="$t('common.address')">
           <el-input v-model="form.address" />
         </el-form-item>
-        <el-form-item label="描述">
+        <el-form-item :label="$t('common.description')">
           <el-input v-model="form.description" type="textarea" :rows="3" />
         </el-form-item>
-        <el-form-item label="详细内容">
+        <el-form-item :label="$t('common.content')">
           <el-input v-model="form.content" type="textarea" :rows="5" />
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item :label="$t('common.status')">
           <el-radio-group v-model="form.status">
-            <el-radio :label="1">上架</el-radio>
-            <el-radio :label="0">下架</el-radio>
+            <el-radio :label="1">{{ $t('admin.online') }}</el-radio>
+            <el-radio :label="0">{{ $t('admin.offline') }}</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="dialogVisible = false">{{ $t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{ $t('common.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -134,7 +134,7 @@ export default {
       total: 0,
       loading: false,
       dialogVisible: false,
-      dialogTitle: '新增体验项目',
+      dialogTitle: this.$t('admin.addExperience'),
       form: {
         id: null,
         name: '',
@@ -170,7 +170,7 @@ export default {
           this.total = res.data?.total || 0
         }
       } catch (error) {
-        this.$message.error('加载体验项目列表失败')
+        this.$message.error(this.$t('common.operateFailed'))
       } finally {
         this.loading = false
       }
@@ -194,7 +194,7 @@ export default {
       this.loadExperiences()
     },
     handleAdd() {
-      this.dialogTitle = '新增体验项目'
+      this.dialogTitle = this.$t('admin.addExperience')
       this.form = {
         id: null,
         name: '',
@@ -210,7 +210,7 @@ export default {
       this.dialogVisible = true
     },
     async handleEdit(row) {
-      this.dialogTitle = '编辑体验项目'
+      this.dialogTitle = this.$t('admin.editExperience')
       this.form = { ...row }
       // 加载现有图片
       if (row.id) {
@@ -240,7 +240,7 @@ export default {
           if (res.code === 200) {
             experienceId = this.form.id
           } else {
-            this.$message.error('更新失败')
+            this.$message.error(this.$t('common.operateFailed'))
             return
           }
         } else {
@@ -248,7 +248,7 @@ export default {
           if (res.code === 200 && res.data) {
             experienceId = res.data.id
           } else {
-            this.$message.error('创建失败')
+            this.$message.error(this.$t('common.operateFailed'))
             return
           }
         }
@@ -278,31 +278,31 @@ export default {
             }
           } catch (error) {
             console.error('保存图片失败:', error)
-            this.$message.warning('内容保存成功，但图片保存失败')
+            this.$message.warning(this.$t('common.saveSuccess') + '，' + this.$t('common.image') + this.$t('common.operateFailed'))
           }
         }
 
-        this.$message.success(this.form.id ? '更新成功' : '创建成功')
+        this.$message.success(this.form.id ? this.$t('common.updateSuccess') : this.$t('common.createSuccess'))
         this.dialogVisible = false
         this.loadExperiences()
       } catch (error) {
-        this.$message.error('操作失败')
+        this.$message.error(this.$t('common.operateFailed'))
       }
     },
     async handleDelete(row) {
-      this.$confirm('确定要删除该体验项目吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('admin.confirmDeleteAnnouncement').replace('公告', this.$t('experience.name')), this.$t('common.tip'), {
+        confirmButtonText: this.$t('common.confirm'),
+        cancelButtonText: this.$t('common.cancel'),
         type: 'warning'
       }).then(async () => {
         try {
           const res = await deleteExperience(row.id)
           if (res.code === 200) {
-            this.$message.success('删除成功')
+            this.$message.success(this.$t('common.deleteSuccess'))
             this.loadExperiences()
           }
         } catch (error) {
-          this.$message.error('删除失败')
+          this.$message.error(this.$t('common.deleteFailed'))
         }
       }).catch(() => {
         // 用户取消删除操作，不需要做任何处理

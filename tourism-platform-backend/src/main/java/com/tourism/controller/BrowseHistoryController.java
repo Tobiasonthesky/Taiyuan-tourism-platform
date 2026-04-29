@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 浏览记录控制器
+ * ?
  */
 @RestController
 @RequestMapping("/browse-history")
-@Api(tags = "浏览记录管理")
+@Api(tags = "")
 public class BrowseHistoryController {
     
     @Autowired
@@ -27,7 +27,7 @@ public class BrowseHistoryController {
     private JwtUtil jwtUtil;
     
     @PostMapping
-    @ApiOperation("添加浏览记录")
+    @ApiOperation("")
     public Result<?> addBrowseHistory(
             @RequestParam String targetType,
             @RequestParam Long targetId,
@@ -35,11 +35,11 @@ public class BrowseHistoryController {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);
         browseHistoryService.addBrowseHistory(userId, targetType, targetId);
-        return Result.success("记录成功");
+        return Result.success("");
     }
     
     @GetMapping
-    @ApiOperation("获取浏览记录列表")
+    @ApiOperation("")
     public Result<PageVO<BrowseHistory>> getBrowseHistory(
             @RequestParam(required = false) String targetType,
             @RequestParam(required = false, defaultValue = "1") Integer page,

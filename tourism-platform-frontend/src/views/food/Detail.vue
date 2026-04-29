@@ -2,7 +2,7 @@
   <div class="food-detail">
     <div class="container" v-if="food">
       <!-- 返回按钮 -->
-      <el-button icon="el-icon-arrow-left" @click="goBack" style="margin-bottom: 20px;">返回</el-button>
+      <el-button icon="el-icon-arrow-left" @click="goBack" style="margin-bottom: 20px;">{{ $t('food.back') }}</el-button>
       <el-card class="detail-card">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -14,30 +14,59 @@
                 class="detail-video"
                 preload="metadata"
               >
-                您的浏览器不支持视频播放
+                {{ $t('food.browserNotSupportVideo') }}
               </video>
             </div>
             <!-- 图片轮播 -->
-            <el-carousel v-else height="400px">
+            <el-carousel v-else-if="images.length > 0" height="400px">
               <el-carousel-item v-for="(img, index) in images" :key="index">
                 <img :src="img.imageUrl" class="detail-image" />
               </el-carousel-item>
             </el-carousel>
+            <!-- 封面图片 -->
+            <div v-else-if="food.coverImage" class="image-section">
+              <img :src="food.coverImage" class="detail-image" />
+            </div>
+            <!-- 占位图 -->
+            <div v-else class="image-placeholder">
+              <i class="el-icon-picture-outline"></i>
+            </div>
           </el-col>
           <el-col :span="12">
             <h1>{{ food.name }}</h1>
+            
+            <!-- 评分 -->
+            <div class="rating-section">
+              <span class="rating">{{ food.rating || '0' }}</span>
+              <span class="rating-label">{{ $t('food.rating') }}</span>
+            </div>
+            
             <div class="info-item">
-              <span class="label">分类：</span>
+              <span class="label">{{ $t('food.category') }}：</span>
               <span>{{ food.categoryName }}</span>
             </div>
             <div class="info-item" v-if="food.restaurant">
-              <span class="label">推荐餐厅：</span>
+              <span class="label">{{ $t('food.restaurant') }}：</span>
               <span>{{ food.restaurant }}</span>
             </div>
             <div class="info-item" v-if="food.address">
-              <span class="label">地址：</span>
+              <span class="label">{{ $t('food.address') }}：</span>
               <span>{{ food.address }}</span>
             </div>
+            
+            <!-- 标签 -->
+            <div class="tags-section" v-if="food.tags">
+              <span class="label">{{ $t('food.tags') }}：</span>
+              <el-tag
+                v-for="tag in food.tags.split(',')"
+                :key="tag"
+                size="small"
+                type="info"
+              >
+                {{ tag.trim() }}
+              </el-tag>
+            </div>
+            
             <div class="actions">
               <el-button
                 :type="isFavorite ? 'danger' : 'default'"
@@ -45,7 +74,7 @@
                 @click="handleFavorite"
                 :disabled="!isLogin"
               >
-                {{ isFavorite ? '已收藏' : '收藏' }}
+                {{ isFavorite ? $t('food.favorited') : $t('food.favorite') }}
               </el-button>
             </div>
           </el-col>
@@ -54,19 +83,29 @@
 
       <!-- 详细介绍 -->
       <el-card class="detail-card">
-        <h2>详细介绍</h2>
-        <div class="content" v-html="food.description"></div>
+        <h2>{{ $t('food.description') }}</h2>
+        <div class="content" v-html="food.content || food.description"></div>
+      </el-card>
+
+      <!-- 主要食材 -->
+      <el-card class="detail-card" v-if="food.ingredients">
+        <h2>{{ $t('food.ingredients') }}</h2>
+        <div class="content">
+          <span v-for="(ingredient, index) in food.ingredients.split(',')" :key="index" class="ingredient-tag">
+            {{ ingredient.trim() }}
+          </span>
+        </div>
       </el-card>
 
       <!-- 制作方法 -->
-      <el-card class="detail-card" v-if="food.recipe">
-        <h2>制作方法</h2>
-        <div class="content" v-html="food.recipe"></div>
+      <el-card class="detail-card" v-if="food.cookingMethod">
+        <h2>{{ $t('food.recipe') }}</h2>
+        <div class="content" v-html="food.cookingMethod"></div>
       </el-card>
 
       <!-- 评论 -->
       <el-card class="detail-card">
-        <h2>用户评论</h2>
+        <h2>{{ $t('food.comments') }}</h2>
         <CommentList
           :target-type="'food'"
           :target-id="food.id"
@@ -149,7 +188,7 @@ export default {
     },
     async handleFavorite() {
       if (!this.isLogin) {
-        this.$message.warning('请先登录')
+        this.$message.warning(this.$t('common.pleaseLogin'))
         return
       }
 
@@ -157,14 +196,14 @@ export default {
         if (this.isFavorite) {
           await removeFavorite('food', this.food.id)
           this.isFavorite = false
-          this.$message.success('取消收藏成功')
+          this.$message.success(this.$t('favorite.removeSuccess'))
         } else {
           await addFavorite({
             targetType: 'food',
             targetId: this.food.id
           })
           this.isFavorite = true
-          this.$message.success('收藏成功')
+          this.$message.success(this.$t('favorite.addSuccess'))
         }
       } catch (error) {
         this.$message.error('操作失败')
@@ -215,8 +254,50 @@ export default {
       border-radius: 4px;
     }
 
+    .image-section {
+      height: 400px;
+    }
+
+    .image-placeholder {
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+      color: #ccc;
+      font-size: 48px;
+    }
+
     .info-item {
       margin-bottom: 15px;
+      font-size: 16px;
+
+      .label {
+        color: #909399;
+        margin-right: 10px;
+      }
+    }
+
+    .rating-section {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: baseline;
+
+      .rating {
+        font-size: 36px;
+        font-weight: bold;
+        color: #f5a623;
+        margin-right: 4px;
+      }
+
+      .rating-label {
+        font-size: 14px;
+        color: #909399;
+      }
+    }
+
+    .tags-section {
+      margin-bottom: 20px;
       font-size: 16px;
 
       .label {
@@ -232,6 +313,17 @@ export default {
     .content {
       line-height: 1.8;
       color: #606266;
+
+      .ingredient-tag {
+        display: inline-block;
+        background: #f0f5ff;
+        color: #409eff;
+        padding: 4px 12px;
+        border-radius: 4px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
     }
   }
 }

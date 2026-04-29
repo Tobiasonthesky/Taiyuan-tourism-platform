@@ -11,53 +11,52 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 地图控制器
- */
+ * ? */
 @RestController
 @RequestMapping("/map")
-@Api(tags = "地图服务")
+@Api(tags = "")
 public class MapController {
     
     @Autowired
     private MapService mapService;
     
     @GetMapping("/attractions")
-    @ApiOperation("获取景点地图数据")
+    @ApiOperation("")
     public Result<List<Map<String, Object>>> getAttractionMapData() {
         List<Map<String, Object>> mapData = mapService.getAttractionMapData();
         return Result.success(mapData);
     }
     
     @GetMapping("/restaurants")
-    @ApiOperation("获取餐厅地图数据")
+    @ApiOperation("")
     public Result<List<Map<String, Object>>> getRestaurantMapData() {
         List<Map<String, Object>> mapData = mapService.getRestaurantMapData();
         return Result.success(mapData);
     }
     
     @GetMapping("/hotels")
-    @ApiOperation("获取酒店地图数据")
+    @ApiOperation("")
     public Result<List<Map<String, Object>>> getHotelMapData() {
         List<Map<String, Object>> mapData = mapService.getHotelMapData();
         return Result.success(mapData);
     }
     
     @GetMapping("/cultures")
-    @ApiOperation("获取文化地图数据")
+    @ApiOperation("")
     public Result<List<Map<String, Object>>> getCultureMapData() {
         List<Map<String, Object>> mapData = mapService.getCultureMapData();
         return Result.success(mapData);
     }
     
     @GetMapping("/all")
-    @ApiOperation("获取所有地图数据（景点、餐厅、酒店、文化）")
+    @ApiOperation("")
     public Result<Map<String, List<Map<String, Object>>>> getAllMapData() {
         Map<String, List<Map<String, Object>>> mapData = mapService.getAllMapData();
         return Result.success(mapData);
     }
     
     @PostMapping("/route")
-    @ApiOperation("路线规划")
+    @ApiOperation("")
     public Result<Map<String, Object>> planRoute(
             @RequestParam Double originLng,
             @RequestParam Double originLat,
@@ -69,7 +68,7 @@ public class MapController {
     }
     
     @GetMapping("/search")
-    @ApiOperation("地点搜索")
+    @ApiOperation("")
     public Result<List<Map<String, Object>>> searchPlace(
             @RequestParam String keyword,
             @RequestParam(required = false) String city) {

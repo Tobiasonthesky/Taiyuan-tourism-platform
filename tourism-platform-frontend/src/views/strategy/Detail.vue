@@ -2,12 +2,12 @@
   <div class="strategy-detail">
     <div class="container" v-if="strategy">
       <!-- 返回按钮 -->
-      <el-button icon="el-icon-arrow-left" @click="goBack" style="margin-bottom: 20px;">返回</el-button>
+      <el-button icon="el-icon-arrow-left" @click="goBack" style="margin-bottom: 20px;">{{ $t('common.back') }}</el-button>
       <el-card class="detail-card">
         <h1>{{ strategy.title }}</h1>
         <div class="meta">
-          <span>时长：{{ strategy.duration }}天</span>
-          <span>主题：{{ strategy.theme }}</span>
+          <span>{{ $t('strategy.duration') }}：{{ strategy.duration }}{{ $t('common.day') }}</span>
+          <span>{{ $t('strategy.theme') }}：{{ strategy.theme }}</span>
         </div>
         <!-- 图片轮播 -->
         <el-carousel v-if="images.length > 0" height="500px" class="image-carousel">
@@ -20,43 +20,43 @@
         
         <!-- 攻略描述 -->
         <div v-if="strategy.description" class="description">
-          <h2>攻略简介</h2>
+          <h2>{{ $t('strategy.description') }}</h2>
           <div class="content-text" v-html="formatContent(strategy.description)"></div>
         </div>
         
         <!-- 详细攻略内容 -->
         <div v-if="strategy.content" class="content-section">
-          <h2>详细攻略</h2>
+          <h2>{{ $t('strategy.content') }}</h2>
           <div class="content-text" v-html="formatContent(strategy.content)"></div>
         </div>
         
         <!-- 注意事项 -->
         <div v-if="strategy.tips" class="tips-section">
-          <h2>注意事项</h2>
+          <h2>{{ $t('strategy.tips') }}</h2>
           <div class="content-text" v-html="formatContent(strategy.tips)"></div>
         </div>
         
         <!-- 其他信息 -->
         <div v-if="strategy.budget || strategy.bestSeason" class="info-section">
-          <h2>其他信息</h2>
+          <h2>{{ $t('strategy.otherInfo') }}</h2>
           <div class="info-items">
             <div v-if="strategy.budget" class="info-item">
-              <strong>预算：</strong>{{ strategy.budget }}元
+              <strong>{{ $t('strategy.budget') }}：</strong>{{ strategy.budget }}{{ $t('strategy.yuan') }}
             </div>
             <div v-if="strategy.bestSeason" class="info-item">
-              <strong>最佳季节：</strong>{{ strategy.bestSeason }}
+              <strong>{{ $t('strategy.bestSeason') }}：</strong>{{ strategy.bestSeason }}
             </div>
           </div>
         </div>
         
         <!-- 路线规划 -->
         <div class="routes" v-if="routes.length > 0">
-          <h2>路线规划</h2>
+          <h2>{{ $t('strategy.routePlan') }}</h2>
           <el-timeline>
             <el-timeline-item
               v-for="(route, index) in routes"
               :key="route.id"
-              :timestamp="`第${index + 1}天`"
+              :timestamp="$t('strategy.day') + (index + 1)"
             >
               <h4>{{ route.title }}</h4>
               <p>{{ route.description }}</p>
@@ -196,8 +196,9 @@ export default {
       line-height: 1.8;
       color: #606266;
       font-size: 15px;
-      white-space: pre-wrap;
       word-wrap: break-word;
+      padding: 10px 0;
+      overflow: visible;
     }
 
     .info-section {
