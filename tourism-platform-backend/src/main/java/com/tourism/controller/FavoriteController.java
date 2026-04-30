@@ -1,5 +1,6 @@
 package com.tourism.controller;
 
+import com.tourism.annotation.OperationLog;
 import com.tourism.entity.Favorite;
 import com.tourism.service.FavoriteService;
 import com.tourism.utils.JwtUtil;
@@ -28,6 +29,7 @@ public class FavoriteController {
     
     @PostMapping
     @ApiOperation("添加收藏")
+    @OperationLog(operationType = "新增", module = "收藏管理", description = "添加收藏")
     public Result<?> addFavorite(
             @RequestParam String targetType,
             @RequestParam Long targetId,
@@ -40,6 +42,7 @@ public class FavoriteController {
     
     @DeleteMapping
     @ApiOperation("取消收藏")
+    @OperationLog(operationType = "删除", module = "收藏管理", description = "取消收藏")
     public Result<?> removeFavorite(
             @RequestParam String targetType,
             @RequestParam Long targetId,

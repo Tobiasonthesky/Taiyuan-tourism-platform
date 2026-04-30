@@ -1,5 +1,6 @@
 package com.tourism.controller;
 
+import com.tourism.annotation.OperationLog;
 import com.tourism.entity.Attraction;
 import com.tourism.mapper.AttractionMapper;
 import com.tourism.service.AttractionService;
@@ -40,6 +41,7 @@ public class AttractionController {
     @PostMapping("/submit")
     @PreAuthorize("hasRole('USER')")
     @ApiOperation("用户提交景点（待审核）")
+    @OperationLog(operationType = "新增", module = "景点管理", description = "用户提交景点")
     public Result<Attraction> submitAttraction(@RequestBody Map<String, Object> attractionData, HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);

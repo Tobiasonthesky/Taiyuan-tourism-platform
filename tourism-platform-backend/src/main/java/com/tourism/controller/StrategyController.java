@@ -1,5 +1,6 @@
 package com.tourism.controller;
 
+import com.tourism.annotation.OperationLog;
 import com.tourism.dto.StrategyGenerateDTO;
 import com.tourism.entity.Strategy;
 import com.tourism.entity.User;
@@ -49,6 +50,7 @@ public class StrategyController {
 
     @PostMapping("/generate")
     @ApiOperation("AI生成攻略")
+    @OperationLog(operationType = "新增", module = "攻略管理", description = "AI生成攻略")
     public Result<Strategy> generateStrategy(@Validated @RequestBody StrategyGenerateDTO dto,
                                              HttpServletRequest request) {
         String token = getTokenFromRequest(request);
@@ -68,6 +70,7 @@ public class StrategyController {
     @PostMapping("/submit")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @ApiOperation("提交攻略（管理员直接通过，用户待审核）")
+    @OperationLog(operationType = "新增", module = "攻略管理", description = "提交攻略")
     public Result<Strategy> submitStrategy(@RequestBody Strategy strategy, HttpServletRequest request) {
         try {
             String token = getTokenFromRequest(request);

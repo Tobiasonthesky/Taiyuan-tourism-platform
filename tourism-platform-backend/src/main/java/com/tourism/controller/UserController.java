@@ -1,5 +1,6 @@
 package com.tourism.controller;
 
+import com.tourism.annotation.OperationLog;
 import com.tourism.dto.PasswordUpdateDTO;
 import com.tourism.dto.UserLoginDTO;
 import com.tourism.dto.UserRegisterDTO;
@@ -34,6 +35,7 @@ public class UserController {
     
     @PostMapping("/register")
     @ApiOperation("")
+    @OperationLog(operationType = "新增", module = "用户管理", description = "用户注册")
     public Result<UserVO> register(@Validated @RequestBody UserRegisterDTO dto) {
         UserVO userVO = userService.register(dto);
         return Result.success("", userVO);
@@ -41,6 +43,7 @@ public class UserController {
     
     @PostMapping("/login")
     @ApiOperation("")
+    @OperationLog(operationType = "登录", module = "用户管理", description = "用户登录")
     public Result<LoginVO> login(@Validated @RequestBody UserLoginDTO dto) {
         LoginVO loginVO = userService.login(dto);
         return Result.success("", loginVO);
@@ -66,6 +69,7 @@ public class UserController {
     
     @PutMapping("/password")
     @ApiOperation("")
+    @OperationLog(operationType = "修改", module = "用户管理", description = "修改密码")
     public Result<String> updatePassword(@Validated @RequestBody PasswordUpdateDTO dto, HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);

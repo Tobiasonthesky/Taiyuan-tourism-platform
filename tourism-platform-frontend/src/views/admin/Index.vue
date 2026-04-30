@@ -43,6 +43,26 @@
         </el-card>
       </div>
 
+      <!-- 图表区域 -->
+      <div class="charts-grid">
+        <el-card class="chart-card">
+          <h3 class="chart-title">{{ $t('admin.contentDistribution') }}</h3>
+          <div ref="contentPieRef" class="chart-container"></div>
+        </el-card>
+        <el-card class="chart-card">
+          <h3 class="chart-title">{{ $t('admin.hotAttractions') }}</h3>
+          <div ref="hotAttractionsRef" class="chart-container"></div>
+        </el-card>
+        <el-card class="chart-card">
+          <h3 class="chart-title">{{ $t('admin.orderDistribution') }}</h3>
+          <div ref="orderPieRef" class="chart-container"></div>
+        </el-card>
+        <el-card class="chart-card">
+          <h3 class="chart-title">{{ $t('admin.commentStatistics') }}</h3>
+          <div ref="commentBarRef" class="chart-container"></div>
+        </el-card>
+      </div>
+
       <!-- 功能菜单 -->
       <el-card class="menu-card">
         <h2 class="menu-title">{{ $t('admin.functionManagement') }}</h2>
@@ -117,6 +137,13 @@
             <h3>{{ $t('admin.contentAudit') }}</h3>
             <p>{{ $t('admin.contentAuditDesc') }}</p>
           </el-card>
+          <el-card class="menu-item" @click.native="goToManage('systemLogs')">
+            <div class="menu-icon-wrapper">
+              <i class="el-icon-document-copy"></i>
+            </div>
+            <h3>{{ $t('admin.systemLogManagement') }}</h3>
+            <p>{{ $t('admin.systemLogManagementDesc') }}</p>
+          </el-card>
         </div>
       </el-card>
     </div>
@@ -124,7 +151,8 @@
 </template>
 
 <script>
-import { getStatistics } from '@/api/admin'
+import * as echarts from 'echarts'
+import { getStatistics, getChartData } from '@/api/admin'
 
 export default {
   name: 'AdminIndex',
@@ -137,25 +165,38 @@ export default {
         orderCount: 0,
         foodCount: 0,
         pendingCount: 0
-      }
+      },
+      chartData: null,
+      charts: []
     }
   },
   mounted() {
     this.loadStatistics()
+    this.loadChartData()
+    window.addEventListener('resize', this.handleResize)
+    this.$i18n.on('localeChanged', this.handleLocaleChange)
   },
   activated() {
-    // 当从其他页面返回时刷新统计数据（keep-alive 组件）
     this.loadStatistics()
+    this.loadChartData()
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleResize)
+    this.$i18n.off('localeChanged', this.handleLocaleChange)
+    this.disposeCharts()
   },
   watch: {
-    // 监听路由变化，当从审核页面返回时刷新统计数据
     '$route'(to, from) {
       if (from && from.path === '/admin/audit' && to.path === '/admin') {
         this.loadStatistics()
+        this.loadChartData()
       }
     }
   },
   methods: {
+    handleLocaleChange() {
+      this.loadChartData()
+    },
     async loadStatistics() {
       try {
         const res = await getStatistics()
@@ -165,6 +206,217 @@ export default {
       } catch (error) {
         console.error('加载统计数据失败:', error)
       }
+    },
+    async loadChartData() {
+      try {
+        const res = await getChartData()
+        if (res.code === 200) {
+          this.chartData = res.data
+          this.initCharts()
+        }
+      } catch (error) {
+        console.error('加载图表数据失败:', error)
+      }
+    },
+    initCharts() {
+      this.disposeCharts()
+      
+      if (!this.chartData) return
+      
+      const translateLabel = (label) => {
+        const labelMap = {
+          'attraction': this.$t('common.attraction'),
+          'food': this.$t('common.food'),
+          'culture': this.$t('common.culture'),
+          'strategy': this.$t('common.strategy'),
+          'hotel': this.$t('common.hotel'),
+          'experience': this.$t('common.experience'),
+          'ticket': this.$t('order.ticket')
+        }
+        return labelMap[label] || label
+      }
+      
+      // 内容分布饼图
+      const contentPieChart = echarts.init(this.$refs.contentPieRef)
+      contentPieChart.setOption({
+        tooltip: {
+          trigger: 'item',
+          formatter: '{b}: {c} ({d}%)'
+        },
+        legend: {
+          orient: 'vertical',
+          right: '5%',
+          top: 'center'
+        },
+        series: [{
+          type: 'pie',
+          radius: ['40%', '70%'],
+          avoidLabelOverlap: false,
+          itemStyle: {
+            borderRadius: 8,
+            borderColor: '#fff',
+            borderWidth: 2
+          },
+          label: {
+            show: false
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: 14,
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: false
+          },
+          data: this.chartData.contentPie.labels.map((label, index) => ({
+            value: this.chartData.contentPie.values[index],
+            name: translateLabel(label),
+            itemStyle: {
+              color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272'][index]
+            }
+          }))
+        }]
+      })
+      this.charts.push(contentPieChart)
+      
+      // 热门景点柱状图
+      const hotAttractionsChart = echarts.init(this.$refs.hotAttractionsRef)
+      hotAttractionsChart.setOption({
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: this.chartData.hotAttractionsBar.names,
+          axisLabel: {
+            interval: 0,
+            rotate: 30,
+            fontSize: 11
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: this.$t('common.viewCount')
+        },
+        series: [{
+          type: 'bar',
+          data: this.chartData.hotAttractionsBar.viewCounts,
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#83bff6' },
+              { offset: 0.5, color: '#188df0' },
+              { offset: 1, color: '#188df0' }
+            ]),
+            borderRadius: [4, 4, 0, 0]
+          }
+        }]
+      })
+      this.charts.push(hotAttractionsChart)
+      
+      // 订单分布饼图
+      const orderPieChart = echarts.init(this.$refs.orderPieRef)
+      orderPieChart.setOption({
+        tooltip: {
+          trigger: 'item',
+          formatter: '{b}: {c} ({d}%)'
+        },
+        legend: {
+          orient: 'vertical',
+          right: '5%',
+          top: 'center'
+        },
+        series: [{
+          type: 'pie',
+          radius: ['40%', '70%'],
+          avoidLabelOverlap: false,
+          itemStyle: {
+            borderRadius: 8,
+            borderColor: '#fff',
+            borderWidth: 2
+          },
+          label: {
+            show: false
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: 14,
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: false
+          },
+          data: this.chartData.orderPie.labels.map((label, index) => ({
+            value: this.chartData.orderPie.values[index],
+            name: translateLabel(label),
+            itemStyle: {
+              color: ['#5470c6', '#91cc75', '#fac858'][index]
+            }
+          }))
+        }]
+      })
+      this.charts.push(orderPieChart)
+      
+      // 评论统计柱状图
+      const commentBarChart = echarts.init(this.$refs.commentBarRef)
+      commentBarChart.setOption({
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: this.chartData.commentBar.labels.map(label => translateLabel(label))
+        },
+        yAxis: {
+          type: 'value',
+          name: this.$t('comment.comments')
+        },
+        series: [{
+          type: 'bar',
+          data: this.chartData.commentBar.values,
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#ee6666' },
+              { offset: 0.5, color: '#ff9999' },
+              { offset: 1, color: '#ffcccc' }
+            ]),
+            borderRadius: [4, 4, 0, 0]
+          }
+        }]
+      })
+      this.charts.push(commentBarChart)
+    },
+    handleResize() {
+      this.charts.forEach(chart => {
+        chart.resize()
+      })
+    },
+    disposeCharts() {
+      this.charts.forEach(chart => {
+        chart.dispose()
+      })
+      this.charts = []
     },
     goToManage(type) {
       const routes = {
@@ -177,7 +429,8 @@ export default {
         experiences: '/admin/experiences',
         orders: '/admin/orders',
         announcements: '/admin/announcements',
-        audit: '/admin/audit'
+        audit: '/admin/audit',
+        systemLogs: '/admin/system-logs'
       }
       if (routes[type]) {
         this.$router.push(routes[type])
@@ -213,6 +466,32 @@ export default {
     grid-template-columns: repeat(6, 1fr);
     gap: 20px;
     margin-bottom: 30px;
+  }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .chart-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #303133;
+      margin: 16px 20px 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .chart-container {
+      width: 100%;
+      height: 280px;
+    }
   }
 
   .pending-card {

@@ -8,6 +8,14 @@ export function getStatistics() {
   })
 }
 
+// 获取图表数据
+export function getChartData() {
+  return request({
+    url: '/admin/chart-data',
+    method: 'get'
+  })
+}
+
 // 获取用户列表
 export function getUsers(params) {
   return request({

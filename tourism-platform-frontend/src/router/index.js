@@ -186,6 +186,12 @@ const routes = [
     name: 'AdminAudit',
     component: () => import('@/views/admin/Audit.vue'),
     meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+    path: '/admin/system-logs',
+    name: 'AdminSystemLogs',
+    component: () => import('@/views/admin/SystemLogs.vue'),
+    meta: { requiresAuth: true, requiresAdmin: true }
   }
 ]
 

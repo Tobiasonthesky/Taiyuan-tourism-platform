@@ -1,5 +1,6 @@
 package com.tourism.controller;
 
+import com.tourism.annotation.OperationLog;
 import com.tourism.service.AiAssistantService;
 import com.tourism.vo.Result;
 import io.swagger.annotations.Api;
@@ -24,6 +25,7 @@ public class AiAssistantController {
     
     @PostMapping("/chat")
     @ApiOperation("AI助手对话")
+    @OperationLog(operationType = "其他", module = "AI助手", description = "AI助手对话")
     public Result<String> chat(@RequestBody Map<String, Object> request, HttpServletRequest httpRequest) {
         try {
             String message = (String) request.get("message");

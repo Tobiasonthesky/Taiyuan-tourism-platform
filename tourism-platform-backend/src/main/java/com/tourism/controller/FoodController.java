@@ -3,6 +3,7 @@ package com.tourism.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.tourism.annotation.OperationLog;
 import com.tourism.entity.Food;
 import com.tourism.mapper.FoodMapper;
 import com.tourism.service.FoodService;
@@ -43,6 +44,7 @@ public class FoodController {
     @PostMapping("/submit")
     @PreAuthorize("hasRole('USER')")
     @ApiOperation("用户提交美食（待审核）")
+    @OperationLog(operationType = "新增", module = "美食管理", description = "用户提交美食")
     public Result<Food> submitFood(@RequestBody Map<String, Object> foodData, HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);

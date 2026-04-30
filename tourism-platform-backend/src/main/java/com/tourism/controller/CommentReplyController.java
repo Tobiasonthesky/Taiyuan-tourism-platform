@@ -1,5 +1,6 @@
 package com.tourism.controller;
 
+import com.tourism.annotation.OperationLog;
 import com.tourism.dto.CommentReplyAddDTO;
 import com.tourism.entity.CommentReply;
 import com.tourism.service.CommentReplyService;
@@ -16,11 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * ?
+ * 评论回复控制器
  */
 @RestController
 @RequestMapping("/comments/{commentId}/replies")
-@Api(tags = "")
+@Api(tags = "评论回复管理")
 public class CommentReplyController {
     
     @Autowired
@@ -30,7 +31,8 @@ public class CommentReplyController {
     private JwtUtil jwtUtil;
     
     @PostMapping
-    @ApiOperation("")
+    @ApiOperation("添加评论回复")
+    @OperationLog(operationType = "新增", module = "评论管理", description = "添加评论回复")
     public Result<CommentReply> addReply(
             @PathVariable Long commentId,
             @Validated @RequestBody CommentReplyAddDTO dto,
@@ -39,23 +41,24 @@ public class CommentReplyController {
         Long userId = jwtUtil.getUserIdFromToken(token);
         
         CommentReply reply = replyService.addReply(commentId, userId, dto.getReplyToId(), dto.getContent());
-        return Result.success("", reply);
+        return Result.success("回复成功", reply);
     }
     
     @GetMapping
-    @ApiOperation("")
+    @ApiOperation("获取评论回复列表")
     public Result<List<CommentReplyVO>> getReplies(@PathVariable Long commentId) {
         List<CommentReplyVO> replies = replyService.getReplyList(commentId);
         return Result.success(replies);
     }
     
     @DeleteMapping("/{id}")
-    @ApiOperation("")
+    @ApiOperation("删除评论回复")
+    @OperationLog(operationType = "删除", module = "评论管理", description = "删除评论回复")
     public Result<?> deleteReply(@PathVariable Long commentId, @PathVariable Long id, HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);
         replyService.deleteReply(commentId, id, userId);
-        return Result.success("");
+        return Result.success("删除成功");
     }
     
     private String getTokenFromRequest(HttpServletRequest request) {

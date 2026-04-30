@@ -1,5 +1,6 @@
 package com.tourism.controller;
 
+import com.tourism.annotation.OperationLog;
 import com.tourism.dto.OrderCreateDTO;
 import com.tourism.entity.OrderEntity;
 import com.tourism.service.OrderService;
@@ -33,6 +34,7 @@ public class OrderController {
 
     @PostMapping
     @ApiOperation("创建订单")
+    @OperationLog(operationType = "新增", module = "订单管理", description = "创建订单")
     public Result<OrderEntity> createOrder(@Validated @RequestBody OrderCreateDTO dto, HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);
@@ -83,6 +85,7 @@ public class OrderController {
 
     @PutMapping("/{id}/cancel")
     @ApiOperation("取消订单")
+    @OperationLog(operationType = "修改", module = "订单管理", description = "取消订单")
     public Result<?> cancelOrder(@PathVariable Long id, HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);
@@ -92,6 +95,7 @@ public class OrderController {
 
     @PostMapping("/{id}/pay")
     @ApiOperation("支付订单")
+    @OperationLog(operationType = "修改", module = "订单管理", description = "支付订单")
     public Result<?> payOrder(@PathVariable Long id, @RequestParam String payMethod, HttpServletRequest request) {
         orderService.payOrder(id, payMethod);
         return Result.success("支付成功");

@@ -1,5 +1,6 @@
 package com.tourism.controller;
 
+import com.tourism.annotation.OperationLog;
 import com.tourism.dto.CommentAddDTO;
 import com.tourism.entity.Comment;
 import com.tourism.service.CommentService;
@@ -31,6 +32,7 @@ public class CommentController {
     
     @PostMapping
     @ApiOperation("添加评论")
+    @OperationLog(operationType = "新增", module = "评论管理", description = "添加评论")
     public Result<Comment> addComment(@Validated @RequestBody CommentAddDTO dto, HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);
@@ -60,6 +62,7 @@ public class CommentController {
     
     @DeleteMapping("/{id}")
     @ApiOperation("删除评论")
+    @OperationLog(operationType = "删除", module = "评论管理", description = "删除评论")
     public Result<?> deleteComment(@PathVariable Long id, HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);

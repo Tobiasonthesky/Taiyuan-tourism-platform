@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tourism.annotation.OperationLog;
 import com.tourism.entity.*;
 import com.tourism.mapper.*;
 import com.tourism.service.HotelService;
@@ -116,6 +117,7 @@ public class AdminController {
     
     @PutMapping("/users/{id}/role")
     @ApiOperation("修改用户角色")
+    @OperationLog(operationType = "修改", module = "用户管理", description = "修改用户角色")
     public Result<?> updateUserRole(@PathVariable("id") Long id, @RequestParam("role") String role) {
         User user = userMapper.selectById(id);
         if (user == null) {
@@ -133,6 +135,7 @@ public class AdminController {
     
     @PutMapping("/users/{id}/status")
     @ApiOperation("修改用户状态")
+    @OperationLog(operationType = "修改", module = "用户管理", description = "修改用户状态")
     public Result<?> updateUserStatus(@PathVariable("id") Long id, @RequestParam("status") Integer status) {
         User user = userMapper.selectById(id);
         if (user == null) {
@@ -150,6 +153,7 @@ public class AdminController {
 
     @DeleteMapping("/users/{id}")
     @ApiOperation("删除用户")
+    @OperationLog(operationType = "删除", module = "用户管理", description = "删除用户")
     @org.springframework.transaction.annotation.Transactional(rollbackFor = Exception.class)
     public Result<?> deleteUser(@PathVariable("id") Long id) {
         // 检查用户是否存在
@@ -273,6 +277,7 @@ public class AdminController {
     
     @PostMapping("/attractions")
     @ApiOperation("创建景点")
+    @OperationLog(operationType = "新增", module = "景点管理", description = "创建景点")
     public Result<Attraction> createAttraction(@RequestBody Attraction attraction) {
         attractionMapper.insert(attraction);
         return Result.success(attraction);
@@ -280,6 +285,7 @@ public class AdminController {
     
     @PutMapping("/attractions/{id}")
     @ApiOperation("更新景点")
+    @OperationLog(operationType = "修改", module = "景点管理", description = "更新景点")
     public Result<Attraction> updateAttraction(@PathVariable("id") Long id, @RequestBody Attraction attraction) {
         attraction.setId(id);
         attractionMapper.updateById(attraction);
@@ -288,6 +294,7 @@ public class AdminController {
     
     @DeleteMapping("/attractions/{id}")
     @ApiOperation("删除景点")
+    @OperationLog(operationType = "删除", module = "景点管理", description = "删除景点")
     public Result<?> deleteAttraction(@PathVariable("id") Long id) {
         attractionMapper.deleteById(id);
         return Result.success("删除成功");
@@ -295,6 +302,7 @@ public class AdminController {
     
     @PutMapping("/attractions/{id}/audit")
     @ApiOperation("审核景点")
+    @OperationLog(operationType = "修改", module = "景点管理", description = "审核景点")
     public Result<?> auditAttraction(@PathVariable("id") Long id, @RequestParam("status") Integer status) {
         Attraction attraction = attractionMapper.selectById(id);
         if (attraction == null) {
@@ -328,6 +336,7 @@ public class AdminController {
     
     @PostMapping("/foods")
     @ApiOperation("创建美食")
+    @OperationLog(operationType = "新增", module = "美食管理", description = "创建美食")
     public Result<Food> createFood(@RequestBody Map<String, Object> foodData) {
         System.out.println("创建美食 - 接收到的数据: " + JSON.toJSONString(foodData));
         Food food = convertMapToFood(foodData);
@@ -344,6 +353,7 @@ public class AdminController {
     
     @PutMapping("/foods/{id}")
     @ApiOperation("更新美食")
+    @OperationLog(operationType = "修改", module = "美食管理", description = "更新美食")
     public Result<Food> updateFood(@PathVariable("id") Long id, @RequestBody Map<String, Object> foodData) {
         System.out.println("更新美食 - ID: " + id + ", 接收到的数据: " + JSON.toJSONString(foodData));
         
@@ -606,6 +616,7 @@ public class AdminController {
     
     @DeleteMapping("/foods/{id}")
     @ApiOperation("删除美食")
+    @OperationLog(operationType = "删除", module = "美食管理", description = "删除美食")
     public Result<?> deleteFood(@PathVariable("id") Long id) {
         foodMapper.deleteById(id);
         return Result.success("删除成功");
@@ -613,6 +624,7 @@ public class AdminController {
     
     @PutMapping("/foods/{id}/audit")
     @ApiOperation("审核美食")
+    @OperationLog(operationType = "修改", module = "美食管理", description = "审核美食")
     public Result<?> auditFood(@PathVariable("id") Long id, @RequestParam("status") Integer status) {
         Food food = foodMapper.selectById(id);
         if (food == null) {
@@ -664,6 +676,7 @@ public class AdminController {
     
     @PostMapping("/cultures")
     @ApiOperation("创建文化")
+    @OperationLog(operationType = "新增", module = "文化管理", description = "创建文化")
     public Result<Culture> createCulture(@RequestBody Map<String, Object> cultureData) {
         System.out.println("创建文化 - 接收到的数据: " + JSON.toJSONString(cultureData));
         Culture culture = convertMapToCulture(cultureData);
@@ -676,6 +689,7 @@ public class AdminController {
     
     @PutMapping("/cultures/{id}")
     @ApiOperation("更新文化")
+    @OperationLog(operationType = "修改", module = "文化管理", description = "更新文化")
     public Result<Culture> updateCulture(@PathVariable("id") Long id, @RequestBody Map<String, Object> cultureData) {
         System.out.println("更新文化 - ID: " + id + ", 接收到的数据: " + JSON.toJSONString(cultureData));
         
@@ -836,6 +850,7 @@ public class AdminController {
     
     @DeleteMapping("/cultures/{id}")
     @ApiOperation("删除文化")
+    @OperationLog(operationType = "删除", module = "文化管理", description = "删除文化")
     public Result<?> deleteCulture(@PathVariable("id") Long id) {
         cultureMapper.deleteById(id);
         return Result.success("删除成功");
@@ -843,6 +858,7 @@ public class AdminController {
     
     @PutMapping("/cultures/{id}/audit")
     @ApiOperation("审核文化")
+    @OperationLog(operationType = "修改", module = "文化管理", description = "审核文化")
     public Result<?> auditCulture(@PathVariable("id") Long id, @RequestParam("status") Integer status) {
         Culture culture = cultureMapper.selectById(id);
         if (culture == null) {
@@ -876,6 +892,7 @@ public class AdminController {
     
     @PostMapping("/hotels")
     @ApiOperation("创建酒店")
+    @OperationLog(operationType = "新增", module = "酒店管理", description = "创建酒店")
     public Result<Hotel> createHotel(@RequestBody Hotel hotel) {
         hotelMapper.insert(hotel);
         return Result.success(hotel);
@@ -883,6 +900,7 @@ public class AdminController {
     
     @PutMapping("/hotels/{id}")
     @ApiOperation("更新酒店")
+    @OperationLog(operationType = "修改", module = "酒店管理", description = "更新酒店")
     public Result<Hotel> updateHotel(@PathVariable("id") Long id, @RequestBody Hotel hotel) {
         hotel.setId(id);
         hotelMapper.updateById(hotel);
@@ -891,6 +909,7 @@ public class AdminController {
     
     @DeleteMapping("/hotels/{id}")
     @ApiOperation("删除酒店")
+    @OperationLog(operationType = "删除", module = "酒店管理", description = "删除酒店")
     public Result<?> deleteHotel(@PathVariable("id") Long id) {
         hotelMapper.deleteById(id);
         return Result.success("删除成功");
@@ -906,6 +925,7 @@ public class AdminController {
     
     @PostMapping("/hotel-rooms")
     @ApiOperation("创建酒店房间")
+    @OperationLog(operationType = "新增", module = "酒店管理", description = "创建酒店房间")
     public Result<HotelRoom> createHotelRoom(@RequestBody HotelRoom room) {
         hotelRoomMapper.insert(room);
         // 创建房型后，更新酒店最低价格
@@ -973,6 +993,7 @@ public class AdminController {
     
     @PostMapping("/announcements")
     @ApiOperation("创建活动公告")
+    @OperationLog(operationType = "新增", module = "公告管理", description = "创建公告")
     public Result<Announcement> createAnnouncement(@RequestBody Announcement announcement) {
         announcementMapper.insert(announcement);
         return Result.success(announcement);
@@ -980,6 +1001,7 @@ public class AdminController {
     
     @PutMapping("/announcements/{id}")
     @ApiOperation("更新活动公告")
+    @OperationLog(operationType = "修改", module = "公告管理", description = "更新公告")
     public Result<Announcement> updateAnnouncement(@PathVariable("id") Long id, @RequestBody Announcement announcement) {
         announcement.setId(id);
         announcementMapper.updateById(announcement);
@@ -988,6 +1010,7 @@ public class AdminController {
     
     @DeleteMapping("/announcements/{id}")
     @ApiOperation("删除活动公告")
+    @OperationLog(operationType = "删除", module = "公告管理", description = "删除公告")
     public Result<?> deleteAnnouncement(@PathVariable("id") Long id) {
         announcementMapper.deleteById(id);
         return Result.success("删除成功");
@@ -1033,6 +1056,7 @@ public class AdminController {
     
     @PostMapping("/strategies")
     @ApiOperation("创建攻略")
+    @OperationLog(operationType = "新增", module = "攻略管理", description = "创建攻略")
     public Result<Strategy> createStrategy(@RequestBody Strategy strategy) {
         // 限制 bestSeason 字段长度（数据库字段限制为50字符）
         if (strategy.getBestSeason() != null && strategy.getBestSeason().length() > 50) {
@@ -1044,6 +1068,7 @@ public class AdminController {
     
     @PutMapping("/strategies/{id}")
     @ApiOperation("更新攻略")
+    @OperationLog(operationType = "修改", module = "攻略管理", description = "更新攻略")
     public Result<Strategy> updateStrategy(@PathVariable("id") Long id, @RequestBody Strategy strategy) {
         strategy.setId(id);
         // 限制 bestSeason 字段长度（数据库字段限制为50字符）
@@ -1056,6 +1081,7 @@ public class AdminController {
     
     @DeleteMapping("/strategies/{id}")
     @ApiOperation("删除攻略")
+    @OperationLog(operationType = "删除", module = "攻略管理", description = "删除攻略")
     public Result<?> deleteStrategy(@PathVariable("id") Long id) {
         strategyMapper.deleteById(id);
         return Result.success("删除成功");
@@ -1063,6 +1089,7 @@ public class AdminController {
     
     @PutMapping("/strategies/{id}/audit")
     @ApiOperation("审核攻略")
+    @OperationLog(operationType = "修改", module = "攻略管理", description = "审核攻略")
     public Result<?> auditStrategy(@PathVariable("id") Long id, @RequestParam("status") Integer status) {
         Strategy strategy = strategyMapper.selectById(id);
         if (strategy == null) {
@@ -1309,6 +1336,7 @@ public class AdminController {
     
     @PostMapping("/experiences")
     @ApiOperation("创建体验项目")
+    @OperationLog(operationType = "新增", module = "体验项目管理", description = "创建体验项目")
     public Result<Experience> createExperience(@RequestBody Experience experience) {
         experienceMapper.insert(experience);
         return Result.success(experience);
@@ -1316,6 +1344,7 @@ public class AdminController {
     
     @PutMapping("/experiences/{id}")
     @ApiOperation("更新体验项目")
+    @OperationLog(operationType = "修改", module = "体验项目管理", description = "更新体验项目")
     public Result<Experience> updateExperience(@PathVariable("id") Long id, @RequestBody Experience experience) {
         experience.setId(id);
         experienceMapper.updateById(experience);
@@ -1324,6 +1353,7 @@ public class AdminController {
     
     @DeleteMapping("/experiences/{id}")
     @ApiOperation("删除体验项目")
+    @OperationLog(operationType = "删除", module = "体验项目管理", description = "删除体验项目")
     public Result<?> deleteExperience(@PathVariable("id") Long id) {
         experienceMapper.deleteById(id);
         return Result.success("删除成功");
@@ -1440,6 +1470,82 @@ public class AdminController {
         statistics.put("pendingCommentReplyCount", pendingCommentReplyCount);
         
         return Result.success(statistics);
+    }
+    
+    @GetMapping("/chart-data")
+    @ApiOperation("获取图表数据")
+    public Result<?> getChartData() {
+        Map<String, Object> chartData = new HashMap<>();
+        
+        // 内容分类统计（饼图数据）
+        long attractionCount = attractionMapper.selectCount(null);
+        long foodCount = foodMapper.selectCount(null);
+        long cultureCount = cultureMapper.selectCount(null);
+        long strategyCount = strategyMapper.selectCount(null);
+        long hotelCount = hotelMapper.selectCount(null);
+        long experienceCount = experienceMapper.selectCount(null);
+        
+        Map<String, Object> contentPie = new HashMap<>();
+        contentPie.put("labels", new String[]{"attraction", "food", "culture", "strategy", "hotel", "experience"});
+        contentPie.put("values", new long[]{attractionCount, foodCount, cultureCount, strategyCount, hotelCount, experienceCount});
+        chartData.put("contentPie", contentPie);
+        
+        // 热门景点（柱状图数据）- 按浏览量排序取前10
+        List<Attraction> hotAttractions = attractionMapper.selectList(
+            new LambdaQueryWrapper<Attraction>()
+                .orderByDesc(Attraction::getViewCount)
+                .last("LIMIT 10")
+        );
+        List<String> attractionNames = new java.util.ArrayList<>();
+        List<Integer> viewCounts = new java.util.ArrayList<>();
+        for (Attraction a : hotAttractions) {
+            attractionNames.add(a.getName());
+            viewCounts.add(a.getViewCount() != null ? a.getViewCount() : 0);
+        }
+        Map<String, Object> hotAttractionsBar = new HashMap<>();
+        hotAttractionsBar.put("names", attractionNames);
+        hotAttractionsBar.put("viewCounts", viewCounts);
+        chartData.put("hotAttractionsBar", hotAttractionsBar);
+        
+        // 订单类型分布（饼图数据）
+        long ticketOrderCount = orderMapper.selectCount(
+            new LambdaQueryWrapper<OrderEntity>().eq(OrderEntity::getOrderType, "ticket")
+        );
+        long hotelOrderCount = orderMapper.selectCount(
+            new LambdaQueryWrapper<OrderEntity>().eq(OrderEntity::getOrderType, "hotel")
+        );
+        long experienceOrderCount = orderMapper.selectCount(
+            new LambdaQueryWrapper<OrderEntity>().eq(OrderEntity::getOrderType, "experience")
+        );
+        
+        Map<String, Object> orderPie = new HashMap<>();
+        orderPie.put("labels", new String[]{"ticket", "hotel", "experience"});
+        orderPie.put("values", new long[]{ticketOrderCount, hotelOrderCount, experienceOrderCount});
+        chartData.put("orderPie", orderPie);
+        
+        // 评论统计（柱状图数据）- 各模块评论数
+        long attractionCommentCount = commentMapper.selectCount(
+            new LambdaQueryWrapper<Comment>().eq(Comment::getTargetType, "attraction")
+        );
+        long foodCommentCount = commentMapper.selectCount(
+            new LambdaQueryWrapper<Comment>().eq(Comment::getTargetType, "food")
+        );
+        long hotelCommentCount = commentMapper.selectCount(
+            new LambdaQueryWrapper<Comment>().eq(Comment::getTargetType, "hotel")
+        );
+        long cultureCommentCount = commentMapper.selectCount(
+            new LambdaQueryWrapper<Comment>().eq(Comment::getTargetType, "culture")
+        );
+        long experienceCommentCount = commentMapper.selectCount(
+            new LambdaQueryWrapper<Comment>().eq(Comment::getTargetType, "experience")
+        );
+        
+        Map<String, Object> commentBar = new HashMap<>();
+        commentBar.put("labels", new String[]{"attraction", "food", "hotel", "culture", "experience"});
+        commentBar.put("values", new long[]{attractionCommentCount, foodCommentCount, hotelCommentCount, cultureCommentCount, experienceCommentCount});
+        chartData.put("commentBar", commentBar);
+        
+        return Result.success(chartData);
     }
 }
 

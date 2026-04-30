@@ -1,5 +1,6 @@
 package com.tourism.controller;
 
+import com.tourism.annotation.OperationLog;
 import com.tourism.utils.FileUtil;
 import com.tourism.vo.Result;
 import io.swagger.annotations.Api;
@@ -25,6 +26,7 @@ public class UploadController {
     
     @PostMapping("/image")
     @ApiOperation("上传图片")
+    @OperationLog(operationType = "新增", module = "文件管理", description = "上传图片")
     public Result<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
             // 检查文件类型
@@ -43,6 +45,7 @@ public class UploadController {
     
     @PostMapping("/video")
     @ApiOperation("上传视频")
+    @OperationLog(operationType = "新增", module = "文件管理", description = "上传视频")
     public Result<Map<String, String>> uploadVideo(@RequestParam("file") MultipartFile file) {
         try {
             // 检查文件类型

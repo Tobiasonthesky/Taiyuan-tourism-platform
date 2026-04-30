@@ -1,5 +1,6 @@
 package com.tourism.controller;
 
+import com.tourism.annotation.OperationLog;
 import com.tourism.entity.Culture;
 import com.tourism.mapper.CultureMapper;
 import com.tourism.service.CultureService;
@@ -40,6 +41,7 @@ public class CultureController {
     @PostMapping("/submit")
     @PreAuthorize("hasRole('USER')")
     @ApiOperation("用户提交文化（待审核）")
+    @OperationLog(operationType = "新增", module = "文化管理", description = "用户提交文化")
     public Result<Culture> submitCulture(@RequestBody Map<String, Object> cultureData, HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);
