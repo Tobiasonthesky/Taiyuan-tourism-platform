@@ -444,53 +444,53 @@ export default {
 
 <style lang="scss" scoped>
 .admin-page {
-  padding: 20px 0;
-  min-height: calc(100vh - 140px);
+  padding: 20px;
+  background: #f5f7fa;
 
   .container {
-    width: 1200px;
-    max-width: 100%;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 20px;
   }
 
   .page-title {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
     color: #303133;
+    padding-left: 12px;
+    border-left: 4px solid #409eff;
   }
 
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 20px;
-    margin-bottom: 30px;
+    gap: 16px;
+    margin-bottom: 24px;
   }
 
   .charts-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-bottom: 30px;
+    gap: 16px;
+    margin-bottom: 24px;
   }
 
   .chart-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 
     .chart-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       color: #303133;
-      margin: 16px 20px 10px;
-      padding-bottom: 10px;
+      margin: 14px 16px 10px;
+      padding-bottom: 8px;
       border-bottom: 1px solid #f0f0f0;
     }
 
     .chart-container {
       width: 100%;
-      height: 280px;
+      height: 300px;
     }
   }
 
@@ -502,63 +502,64 @@ export default {
 
   .stat-card {
     transition: all 0.3s;
-    border-radius: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 
     &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
     }
 
     .stat-content {
       text-align: center;
-      padding: 20px;
+      padding: 16px;
 
       .stat-value {
-        font-size: 36px;
+        font-size: 32px;
         font-weight: bold;
         color: #409eff;
-        margin-bottom: 10px;
-        line-height: 1;
+        margin-bottom: 8px;
+        line-height: 1.2;
       }
 
       .stat-label {
-        font-size: 14px;
+        font-size: 13px;
         color: #909399;
       }
     }
   }
 
   .menu-card {
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 
     .menu-title {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 30px;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
       color: #303133;
-      padding-bottom: 15px;
-      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e0e0e0;
     }
 
     .menu-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 20px;
+      gap: 16px;
     }
 
     .menu-item {
       cursor: pointer;
       text-align: center;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 12px;
-      border: 1px solid #EBEEF5;
+      border-radius: 8px;
+      border: 1px solid #e8e8e8;
       height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      min-height: 180px;
+      justify-content: center;
+      min-height: 160px;
       position: relative;
 
       ::v-deep .el-card__body {
@@ -566,44 +567,44 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: flex-start;
-        padding: 24px 16px;
+        justify-content: center;
+        padding: 20px 12px;
       }
 
       &:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 24px rgba(64, 158, 255, 0.15);
+        transform: translateY(-6px);
+        box-shadow: 0 8px 20px rgba(64, 158, 255, 0.12);
         border-color: #409eff;
-        background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+        background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
       }
 
       .menu-icon-wrapper {
-        width: 64px;
-        height: 64px;
-        min-width: 64px;
-        min-height: 64px;
-        max-width: 64px;
-        max-height: 64px;
-        border-radius: 16px;
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        min-height: 56px;
+        max-width: 56px;
+        max-height: 56px;
+        border-radius: 12px;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 16px auto;
+        margin: 0 auto 12px auto;
         transition: all 0.3s;
         flex-shrink: 0;
         position: relative;
         box-sizing: border-box;
 
         i {
-          font-size: 32px;
+          font-size: 28px;
           color: #ffffff;
           line-height: 1;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          width: 32px;
-          height: 32px;
+          width: 28px;
+          height: 28px;
           position: absolute;
           top: 50%;
           left: 50%;
@@ -613,23 +614,23 @@ export default {
       }
 
       &:hover .menu-icon-wrapper {
-        transform: scale(1.1) rotate(5deg);
-        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        transform: scale(1.08) rotate(3deg);
+        box-shadow: 0 6px 14px rgba(102, 126, 234, 0.25);
         
         i {
-          transform: translate(-50%, -50%) scale(1.05);
+          transform: translate(-50%, -50%) scale(1.03);
         }
       }
 
       h3 {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
-        margin: 0 0 8px 0;
+        margin: 0 0 6px 0;
         color: #303133;
         line-height: 1.4;
         width: 100%;
         text-align: center;
-        min-height: 44px;
+        min-height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -637,12 +638,12 @@ export default {
 
       p {
         color: #909399;
-        font-size: 13px;
-        line-height: 1.5;
+        font-size: 12px;
+        line-height: 1.4;
         margin: 0;
         width: 100%;
         text-align: center;
-        min-height: 39px;
+        min-height: 34px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -653,106 +654,87 @@ export default {
 
 /* 响应式设计 - 平板 */
 @media (max-width: 992px) {
-  .admin-page .container {
-    padding: 0 16px;
-  }
-
   .admin-page .stats-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    gap: 12px;
+  }
+
+  .admin-page .charts-grid {
+    grid-template-columns: 1fr;
   }
 
   .admin-page .menu-card .menu-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    gap: 12px;
   }
 }
 
 /* 响应式设计 - 手机 */
 @media (max-width: 768px) {
   .admin-page {
-    padding: 15px 0;
-  }
-
-  .admin-page .container {
-    padding: 0 12px;
+    padding: 15px;
   }
 
   .admin-page .page-title {
-    font-size: 22px;
-    margin-bottom: 20px;
+    font-size: 20px;
+    margin-bottom: 16px;
   }
 
   .admin-page .stats-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: 16px;
   }
 
   .admin-page .stat-card .stat-content {
-    padding: 15px;
+    padding: 12px;
   }
 
   .admin-page .stat-card .stat-content .stat-value {
-    font-size: 28px;
-  }
-
-  .admin-page .menu-card {
-    padding: 16px;
+    font-size: 24px;
   }
 
   .admin-page .menu-card .menu-title {
-    font-size: 20px;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
+    font-size: 18px;
+    margin-bottom: 16px;
   }
 
   .admin-page .menu-card .menu-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
   }
 
   .admin-page .menu-card .menu-item {
-    min-height: 160px;
+    min-height: 140px;
 
     ::v-deep .el-card__body {
-      padding: 20px 12px;
+      padding: 16px 10px;
     }
   }
 
   .admin-page .menu-card .menu-item .menu-icon-wrapper {
-    width: 56px;
-    height: 56px;
-    min-width: 56px;
-    min-height: 56px;
-    max-width: 56px;
-    max-height: 56px;
-    margin: 0 auto 12px auto;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    max-width: 48px;
+    max-height: 48px;
+    margin: 0 auto 10px auto;
 
     i {
-      font-size: 28px;
-      width: 28px;
-      height: 28px;
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
     }
   }
 
   .admin-page .menu-card .menu-item h3 {
-    min-height: 40px;
-    font-size: 15px;
+    font-size: 14px;
+    margin-bottom: 4px;
   }
 
   .admin-page .menu-card .menu-item p {
-    min-height: 36px;
-    font-size: 12px;
-  }
-
-  .admin-page .menu-card .menu-item h3 {
-    font-size: 15px;
-    margin-bottom: 6px;
-  }
-
-  .admin-page .menu-card .menu-item p {
-    font-size: 12px;
+    font-size: 11px;
   }
 }
 
@@ -760,16 +742,12 @@ export default {
 @media (max-width: 480px) {
   .admin-page .stats-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
   }
 
   .admin-page .menu-card .menu-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .admin-page .menu-card .menu-item {
-    min-height: 140px;
+    gap: 10px;
   }
 }
 </style>

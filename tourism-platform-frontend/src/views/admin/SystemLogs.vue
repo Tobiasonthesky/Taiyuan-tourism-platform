@@ -263,8 +263,7 @@ export default {
 
 <style lang="scss" scoped>
 .system-logs {
-  padding: 20px 0;
-  min-height: calc(100vh - 140px);
+  padding: 20px;
 
   .card-header {
     display: flex;

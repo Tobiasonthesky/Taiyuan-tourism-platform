@@ -80,13 +80,45 @@ public class OperationLogAspect {
             
             // 记录请求参数
             try {
-                String params = JSON.toJSONString(joinPoint.getArgs());
+                Object[] args = joinPoint.getArgs();
+                StringBuilder paramsBuilder = new StringBuilder();
+                paramsBuilder.append("[");
+                for (int i = 0; i < args.length; i++) {
+                    if (i > 0) {
+                        paramsBuilder.append(",");
+                    }
+                    Object arg = args[i];
+                    if (arg == null) {
+                        paramsBuilder.append("null");
+                    } else if (arg instanceof String) {
+                        String strArg = (String) arg;
+                        if (strArg.length() > 200) {
+                            strArg = strArg.substring(0, 200) + "...";
+                        }
+                        paramsBuilder.append("\"").append(strArg.replace("\"", "\\\"")).append("\"");
+                    } else if (arg instanceof Number || arg instanceof Boolean) {
+                        paramsBuilder.append(arg.toString());
+                    } else {
+                        try {
+                            String jsonArg = JSON.toJSONString(arg);
+                            if (jsonArg.length() > 500) {
+                                jsonArg = jsonArg.substring(0, 500) + "...";
+                            }
+                            paramsBuilder.append(jsonArg);
+                        } catch (Exception ex) {
+                            paramsBuilder.append("{\"type\":\"").append(arg.getClass().getName()).append("\",\"value\":\"无法序列化\"}");
+                        }
+                    }
+                }
+                paramsBuilder.append("]");
+                String params = paramsBuilder.toString();
                 if (params.length() > 2000) {
                     params = params.substring(0, 2000) + "...(已截断)";
                 }
                 systemLog.setRequestParams(params);
             } catch (Exception e) {
-                systemLog.setRequestParams("参数序列化失败");
+                systemLog.setRequestParams("参数序列化失败：" + e.getMessage());
+                System.err.println("参数序列化失败：" + e.getMessage());
             }
             
             // 执行目标方法

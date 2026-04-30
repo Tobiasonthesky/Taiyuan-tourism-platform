@@ -198,7 +198,11 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  routes,
+  scrollBehavior(_to, _from, _savedPosition) {
+    // 始终滚动到页面顶部，禁用浏览器的滚动位置恢复
+    return { x: 0, y: 0 }
+  }
 })
 
 // 重写 push 方法，统一处理重复导航错误
