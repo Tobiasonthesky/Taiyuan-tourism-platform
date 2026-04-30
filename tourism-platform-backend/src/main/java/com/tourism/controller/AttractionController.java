@@ -55,9 +55,6 @@ public class AttractionController {
         attraction.setCommentCount(0);
         attraction.setFavoriteCount(0);
         
-        System.out.println("用户提交景点 - 接收到的数据: " + attractionData);
-        System.out.println("用户提交景点 - 地址: " + attraction.getAddress() + ", 经度: " + attraction.getLongitude() + ", 纬度: " + attraction.getLatitude());
-        
         attractionMapper.insert(attraction);
         
         return Result.success(attraction);
@@ -146,14 +143,14 @@ public class AttractionController {
             try {
                 attraction.setLongitude(new BigDecimal(longitude));
             } catch (Exception e) {
-                System.err.println("转换经度失败: " + longitude);
+                // 转换经度失败
             }
         }
         if (latitude != null && !latitude.isEmpty()) {
             try {
                 attraction.setLatitude(new BigDecimal(latitude));
             } catch (Exception e) {
-                System.err.println("转换纬度失败: " + latitude);
+                // 转换纬度失败
             }
         }
         

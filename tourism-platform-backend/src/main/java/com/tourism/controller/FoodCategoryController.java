@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * ?
+ * 美食分类控制器
  */
 @RestController
 @RequestMapping("/foods/categories")
-@Api(tags = "")
+@Api(tags = "美食分类管理")
 public class FoodCategoryController {
     
     @Autowired
     private FoodCategoryMapper categoryMapper;
     
     @GetMapping
-    @ApiOperation("")
+    @ApiOperation("获取美食分类列表")
     public Result<List<FoodCategory>> getCategories() {
         LambdaQueryWrapper<FoodCategory> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(FoodCategory::getStatus, 1);

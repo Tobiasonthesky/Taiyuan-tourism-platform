@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * ?
+ * 攻略图片控制器
  */
 @RestController
 @RequestMapping("/strategies/{strategyId}/images")
-@Api(tags = "")
+@Api(tags = "攻略图片管理")
 public class StrategyImageController {
     
     @Autowired
     private StrategyImageMapper imageMapper;
     
     @GetMapping
-    @ApiOperation("")
+    @ApiOperation("获取攻略图片列表")
     public Result<List<StrategyImage>> getImages(@PathVariable Long strategyId) {
         LambdaQueryWrapper<StrategyImage> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(StrategyImage::getStrategyId, strategyId);
@@ -32,6 +32,4 @@ public class StrategyImageController {
         return Result.success(images);
     }
 }
-
-
 

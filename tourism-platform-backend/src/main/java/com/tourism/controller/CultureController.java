@@ -55,9 +55,6 @@ public class CultureController {
         culture.setCommentCount(0);
         culture.setFavoriteCount(0);
         
-        System.out.println("用户提交文化 - 接收到的数据: " + cultureData);
-        System.out.println("用户提交文化 - 活动地点: " + culture.getActivityLocation() + ", 经度: " + culture.getLongitude() + ", 纬度: " + culture.getLatitude());
-        
         cultureMapper.insert(culture);
         
         return Result.success(culture);
@@ -142,14 +139,14 @@ public class CultureController {
             try {
                 culture.setLongitude(new BigDecimal(longitude));
             } catch (Exception e) {
-                System.err.println("转换经度失败: " + longitude);
+                // 转换经度失败
             }
         }
         if (latitude != null && !latitude.isEmpty()) {
             try {
                 culture.setLatitude(new BigDecimal(latitude));
             } catch (Exception e) {
-                System.err.println("转换纬度失败: " + latitude);
+                // 转换纬度失败
             }
         }
         

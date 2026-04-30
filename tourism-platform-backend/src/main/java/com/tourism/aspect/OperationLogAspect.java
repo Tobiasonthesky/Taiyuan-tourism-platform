@@ -47,7 +47,6 @@ public class OperationLogAspect {
      */
     @Around("operationLogPointcut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-        System.out.println("===== AOP拦截器被触发 =====");
         long startTime = System.currentTimeMillis();
         
         HttpServletRequest request = getRequest();
@@ -65,8 +64,6 @@ public class OperationLogAspect {
         systemLog.setUserAgent(request.getHeader("User-Agent"));
         systemLog.setCreateTime(LocalDateTime.now());
         
-        System.out.println("准备记录日志: type=" + annotation.operationType() + ", module=" + annotation.module());
-        
         try {
             // 获取当前用户信息
             String token = getTokenFromRequest(request);
@@ -75,7 +72,6 @@ public class OperationLogAspect {
                 String username = jwtUtil.getUsernameFromToken(token);
                 systemLog.setUserId(userId);
                 systemLog.setUsername(username);
-                System.out.println("用户信息: userId=" + userId + ", username=" + username);
             }
             
             // 记录请求参数
@@ -118,7 +114,6 @@ public class OperationLogAspect {
                 systemLog.setRequestParams(params);
             } catch (Exception e) {
                 systemLog.setRequestParams("参数序列化失败：" + e.getMessage());
-                System.err.println("参数序列化失败：" + e.getMessage());
             }
             
             // 执行目标方法
@@ -142,7 +137,6 @@ public class OperationLogAspect {
             systemLog.setErrorMsg(errorMsg);
             systemLog.setResult("失败"); // 简化，数据库字段只有50
             
-            System.err.println("操作执行失败: " + e.getMessage());
             throw e;
             
         } finally {
@@ -156,17 +150,9 @@ public class OperationLogAspect {
      */
     private void saveLog(SystemLog systemLog) {
         try {
-            System.out.println("===== 开始保存日志 =====");
-            System.out.println("operationType: " + systemLog.getOperationType());
-            System.out.println("operationModule: " + systemLog.getOperationModule());
-            System.out.println("operationDesc: " + systemLog.getOperationDesc());
-            System.out.println("username: " + systemLog.getUsername());
-            System.out.println("===== 正在调用Service =====");
             systemLogService.recordSystemLog(systemLog);
-            System.out.println("===== 日志保存成功 =====");
         } catch (Exception e) {
-            System.err.println("===== 保存操作日志失败 =====");
-            e.printStackTrace();
+            // 日志保存失败
         }
     }
     

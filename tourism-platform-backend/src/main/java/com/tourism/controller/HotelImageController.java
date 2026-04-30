@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * ?
+ * 酒店图片控制器
  */
 @RestController
 @RequestMapping("/hotels/{hotelId}/images")
-@Api(tags = "")
+@Api(tags = "酒店图片管理")
 public class HotelImageController {
     
     @Autowired
     private HotelImageMapper imageMapper;
     
     @GetMapping
-    @ApiOperation("")
+    @ApiOperation("获取酒店图片列表")
     public Result<List<HotelImage>> getImages(@PathVariable Long hotelId) {
         LambdaQueryWrapper<HotelImage> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(HotelImage::getHotelId, hotelId);
@@ -32,6 +32,4 @@ public class HotelImageController {
         return Result.success(images);
     }
 }
-
-
 

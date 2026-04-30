@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * ?
+ * 用户控制器
  */
 @RestController
 @RequestMapping("/user")
-@Api(tags = "")
+@Api(tags = "用户管理")
 public class UserController {
     
     @Autowired
@@ -34,7 +34,7 @@ public class UserController {
     private JwtUtil jwtUtil;
     
     @PostMapping("/register")
-    @ApiOperation("")
+    @ApiOperation("用户注册")
     @OperationLog(operationType = "新增", module = "用户管理", description = "用户注册")
     public Result<UserVO> register(@Validated @RequestBody UserRegisterDTO dto) {
         UserVO userVO = userService.register(dto);
@@ -42,7 +42,7 @@ public class UserController {
     }
     
     @PostMapping("/login")
-    @ApiOperation("")
+    @ApiOperation("用户登录")
     @OperationLog(operationType = "登录", module = "用户管理", description = "用户登录")
     public Result<LoginVO> login(@Validated @RequestBody UserLoginDTO dto) {
         LoginVO loginVO = userService.login(dto);
@@ -50,7 +50,7 @@ public class UserController {
     }
     
     @GetMapping("/info")
-    @ApiOperation("")
+    @ApiOperation("获取用户信息")
     public Result<UserVO> getUserInfo(HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);
@@ -59,7 +59,7 @@ public class UserController {
     }
     
     @PutMapping("/info")
-    @ApiOperation("")
+    @ApiOperation("更新用户信息")
     public Result<UserVO> updateUserInfo(@Validated @RequestBody UserUpdateDTO dto, HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long userId = jwtUtil.getUserIdFromToken(token);
@@ -68,7 +68,7 @@ public class UserController {
     }
     
     @PutMapping("/password")
-    @ApiOperation("")
+    @ApiOperation("修改密码")
     @OperationLog(operationType = "修改", module = "用户管理", description = "修改密码")
     public Result<String> updatePassword(@Validated @RequestBody PasswordUpdateDTO dto, HttpServletRequest request) {
         String token = getTokenFromRequest(request);
