@@ -28,7 +28,7 @@
           <el-col :span="6" v-for="item in hotAttractions" :key="item.id">
             <el-card class="card-item" @click.native="goToDetail('attraction', item.id)">
               <LazyImage
-                :src="item.coverImage || 'https://via.placeholder.com/300x200?text=暂无图片'"
+                :src="item.coverImage || 'https://images.pexels.com/photos/14686356/pexels-photo-14686356.jpeg'"
                 :alt="item.name"
                 width="100%"
                 height="200px"
@@ -60,7 +60,7 @@
           <el-col :span="6" v-for="item in hotFoods" :key="item.id">
             <el-card class="card-item" @click.native="goToDetail('food', item.id)">
               <LazyImage
-                :src="item.coverImage || 'https://via.placeholder.com/300x200?text=暂无图片'"
+                :src="item.coverImage || 'https://images.pexels.com/photos/14686356/pexels-photo-14686356.jpeg'"
                 :alt="item.name"
                 width="100%"
                 height="200px"
@@ -139,9 +139,9 @@ export default {
   data() {
     return {
       banners: [
-        { title: '家乡美景', image: 'https://via.placeholder.com/1200x400' },
-        { title: '特色美食', image: 'https://via.placeholder.com/1200x400' },
-        { title: '民俗文化', image: 'https://via.placeholder.com/1200x400' }
+        { title: '家乡美景', image: 'https://images.pexels.com/photos/35464172/pexels-photo-35464172.jpeg' },
+        { title: '特色美食', image: 'https://images.pexels.com/photos/35199314/pexels-photo-35199314.jpeg' },
+        { title: '民俗文化', image: 'https://images.pexels.com/photos/16197273/pexels-photo-16197273.jpeg' }
       ],
       hotAttractions: [],
       hotFoods: [],
@@ -214,24 +214,24 @@ export default {
           // 将公告数据转换为轮播图格式
           this.banners = res.data.map(item => ({
             title: item.title,
-            image: item.coverImage || 'https://via.placeholder.com/1200x400',
+            image: item.coverImage || 'https://images.pexels.com/photos/35464172/pexels-photo-35464172.jpeg',
             id: item.id
           }))
         } else {
-          // 如果没有轮播图，使用默认占位图
+          // 如果没有轮播图，使用默认图片
           this.banners = [
-            { title: '家乡美景', image: 'https://via.placeholder.com/1200x400' },
-            { title: '特色美食', image: 'https://via.placeholder.com/1200x400' },
-            { title: '民俗文化', image: 'https://via.placeholder.com/1200x400' }
+            { title: '家乡美景', image: 'https://images.pexels.com/photos/35464172/pexels-photo-35464172.jpeg' },
+            { title: '特色美食', image: 'https://images.pexels.com/photos/35199314/pexels-photo-35199314.jpeg' },
+            { title: '民俗文化', image: 'https://images.pexels.com/photos/16197273/pexels-photo-16197273.jpeg' }
           ]
         }
       } catch (error) {
         console.error('加载轮播图失败:', error)
-        // 加载失败时使用默认占位图
+        // 加载失败时使用默认图片
         this.banners = [
-          { title: '家乡美景', image: 'https://via.placeholder.com/1200x400' },
-          { title: '特色美食', image: 'https://via.placeholder.com/1200x400' },
-          { title: '民俗文化', image: 'https://via.placeholder.com/1200x400' }
+          { title: '家乡美景', image: 'https://images.pexels.com/photos/35464172/pexels-photo-35464172.jpeg' },
+          { title: '特色美食', image: 'https://images.pexels.com/photos/35199314/pexels-photo-35199314.jpeg' },
+          { title: '民俗文化', image: 'https://images.pexels.com/photos/16197273/pexels-photo-16197273.jpeg' }
         ]
       }
     },
