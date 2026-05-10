@@ -361,6 +361,23 @@ export default {
       activeHelpItem: 'basic' // 当前展开的帮助项
     }
   },
+  watch: {
+    // 监听路由参数变化
+    '$route.query': {
+      handler(newQuery, oldQuery) {
+        // 只有当有新的定位参数时才处理
+        if (newQuery.lng && newQuery.lat && 
+            (newQuery.lng !== oldQuery?.lng || newQuery.lat !== oldQuery?.lat)) {
+          this.checkLocationParams()
+          // 如果地图已初始化，直接处理定位
+          if (this.map && this.AMap) {
+            this.handleLocationParams()
+          }
+        }
+      },
+      deep: true
+    }
+  },
   mounted() {
     // 检查是否是页面刷新
     // 使用 performance API 检测页面加载类型
@@ -385,17 +402,13 @@ export default {
       isPageRefresh = false
     }
     
-    // 如果是页面刷新，清除所有状态
+    // 无论是否刷新，都检查URL参数（从详情页跳转过来或刷新后重新定位）
+    this.checkLocationParams()
+    
+    // 如果是页面刷新，只清除部分状态（不清除定位参数）
     if (isPageRefresh) {
-      console.log('检测到页面刷新，清除地图状态')
+      console.log('检测到页面刷新，清除部分地图状态')
       this.resetMapState()
-      // 清除URL参数（如果有）
-      if (this.$route.query.lng || this.$route.query.lat || this.$route.query.type || this.$route.query.id) {
-        this.$router.replace({ path: this.$route.path })
-      }
-    } else {
-      // 不是刷新，检查URL参数（可能是从其他页面跳转过来）
-      this.checkLocationParams()
     }
     
     this.initMap()
@@ -1954,11 +1967,20 @@ Key: ${mapKey || '未设置'}
         this.map.setCenter([lng, lat])
         this.map.setZoom(16)
         
+        // 获取类型对应的颜色
+        const colorMap = {
+          attraction: '#409EFF',
+          restaurant: '#67C23A',
+          hotel: '#E6A23C',
+          culture: '#F56C6C'
+        }
+        const color = colorMap[type] || colorMap.attraction
+        
         // 创建并显示标记
         const marker = new this.AMap.Marker({
           position: [lng, lat],
           title: name,
-          icon: this.createMarkerIcon(type || 'attraction')
+          icon: this.createMarkerIcon(type || 'attraction', color)
         })
         
         marker.setMap(this.map)
@@ -2191,8 +2213,7 @@ Key: ${mapKey || '未设置'}
         this.route = null
       }
       
-      // 清除定位参数
-      this.locationParams = null
+      // 注意：不清除 locationParams，保留定位参数以便刷新后重新定位
       
       // 清除所有标记和信息窗口（如果地图已初始化）
       if (this.map) {
