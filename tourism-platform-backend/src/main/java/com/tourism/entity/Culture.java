@@ -30,6 +30,12 @@ public class Culture {
     private Long categoryId;
     
     /**
+     * 分类名称（临时字段，用于前端显示，不持久化）
+     */
+    @TableField(exist = false)
+    private String categoryName;
+    
+    /**
      * 创建用户ID（可为空，系统创建）
      */
     private Long userId;

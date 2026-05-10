@@ -3,7 +3,7 @@
     <!-- 轮播图 -->
     <el-carousel :interval="4000" type="card" height="400px" class="banner">
       <el-carousel-item v-for="(item, index) in banners" :key="index">
-        <img :src="item.image" :alt="item.title" />
+        <img :src="item.image" :alt="item.title" @click="handleBannerClick(item)" class="banner-image" />
       </el-carousel-item>
     </el-carousel>
 
@@ -123,7 +123,7 @@
 
 <script>
 import { getHotRecommendations, getPersonalizedRecommendations } from '@/api/recommendation'
-import { getAnnouncements, getBanners } from '@/api/announcement'
+import { getAnnouncements, getBanners, getAnnouncementDetail } from '@/api/announcement'
 import { mapGetters } from 'vuex'
 import LazyImage from '@/components/common/LazyImage'
 import Skeleton from '@/components/common/Skeleton'
@@ -295,6 +295,21 @@ export default {
     showAnnouncementDetail(announcement) {
       this.currentAnnouncement = announcement
       this.dialogVisible = true
+    },
+    async handleBannerClick(banner) {
+      if (!banner.id) {
+        // 如果是默认图片，没有id，不处理
+        return
+      }
+      try {
+        const res = await getAnnouncementDetail(banner.id)
+        if (res.code === 200 && res.data) {
+          this.currentAnnouncement = res.data
+          this.dialogVisible = true
+        }
+      } catch (error) {
+        console.error('获取公告详情失败:', error)
+      }
     }
   }
 }
@@ -323,6 +338,10 @@ export default {
 
 .home .banner >>> .el-carousel__item:hover img {
   transform: scale(1.05);
+}
+
+.home .banner >>> .banner-image {
+  cursor: pointer;
 }
 
 .home .banner >>> .el-carousel__indicators {
