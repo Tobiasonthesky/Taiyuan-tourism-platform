@@ -94,7 +94,7 @@ map:
 ai:
   deepseek:
     enabled: true # 是否启用AI功能，设置为true启用
-    api-key: sk-e7923f25d8824785b0ed59254875b79e # DeepSeek API密钥
+    api-key: sk-fca8973ba27740ec881443a544e35389 # DeepSeek API密钥
     base-url: https://api.deepseek.com # DeepSeek API基础URL
 strategy:
     prompt:
