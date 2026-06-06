@@ -68,15 +68,24 @@
             </div>
             
             <div class="actions">
-              <el-button
-                :type="isFavorite ? 'danger' : 'default'"
-                size="medium"
-                @click="handleFavorite"
-                :disabled="!isLogin"
-              >
-                {{ isFavorite ? $t('food.favorited') : $t('food.favorite') }}
-              </el-button>
-            </div>
+      <el-button
+        type="success"
+        size="medium"
+        icon="el-icon-location"
+        @click="viewOnMap"
+        v-if="food.longitude && food.latitude"
+      >
+        {{ $t('food.viewOnMap') }}
+      </el-button>
+      <el-button
+        :type="isFavorite ? 'danger' : 'default'"
+        size="medium"
+        @click="handleFavorite"
+        :disabled="!isLogin"
+      >
+        {{ isFavorite ? $t('food.favorited') : $t('food.favorite') }}
+      </el-button>
+    </div>
           </el-col>
         </el-row>
       </el-card>
@@ -207,6 +216,22 @@ export default {
         }
       } catch (error) {
         this.$message.error('操作失败')
+      }
+    },
+    viewOnMap() {
+      if (this.food.longitude && this.food.latitude) {
+        this.$router.push({
+          path: '/map',
+          query: {
+            type: 'restaurant',
+            id: this.food.id,
+            lng: this.food.longitude,
+            lat: this.food.latitude,
+            name: this.food.name
+          }
+        })
+      } else {
+        this.$message.warning('该餐厅暂无位置信息')
       }
     }
   }

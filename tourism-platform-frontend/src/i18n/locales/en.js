@@ -225,6 +225,7 @@ export default {
     comments: 'Comments',
     favorite: 'Favorite',
     favorited: 'Favorited',
+    viewOnMap: 'View on Map',
     rating: '/5',
     selectCategory: 'Select Category',
     searchFood: 'Search Food',
