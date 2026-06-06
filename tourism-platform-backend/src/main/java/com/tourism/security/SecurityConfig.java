@@ -86,6 +86,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     "/swagger-resources/**",
                     "/webjars/**"
                 ).permitAll()
+                // 文件上传接口需要认证后才能访问
+                .antMatchers("/upload/**").authenticated()
                 // 管理员接口（需要管理员角色）
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 // 需要认证的接口

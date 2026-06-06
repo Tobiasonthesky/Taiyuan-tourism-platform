@@ -1411,11 +1411,25 @@ public class AdminController {
             new LambdaQueryWrapper<User>().eq(User::getRole, RoleConstants.ROLE_ADMIN)
         );
         
-        // 统计景点数
-        long attractionCount = attractionMapper.selectCount(null);
+        // 统计景点数（只统计已审核通过的）
+        long attractionCount = attractionMapper.selectCount(
+            new LambdaQueryWrapper<Attraction>().eq(Attraction::getStatus, 1)
+        );
         
-        // 统计美食数
-        long foodCount = foodMapper.selectCount(null);
+        // 统计美食数（只统计已审核通过的）
+        long foodCount = foodMapper.selectCount(
+            new LambdaQueryWrapper<Food>().eq(Food::getStatus, 1)
+        );
+        
+        // 统计文化数（只统计已审核通过的）
+        long cultureCount = cultureMapper.selectCount(
+            new LambdaQueryWrapper<Culture>().eq(Culture::getStatus, 1)
+        );
+        
+        // 统计攻略数（只统计已审核通过的）
+        long strategyCount = strategyMapper.selectCount(
+            new LambdaQueryWrapper<Strategy>().eq(Strategy::getStatus, 1)
+        );
         
         // 统计订单数
         long orderCount = orderMapper.selectCount(null);
@@ -1460,6 +1474,8 @@ public class AdminController {
         statistics.put("adminCount", adminCount);
         statistics.put("attractionCount", attractionCount);
         statistics.put("foodCount", foodCount);
+        statistics.put("cultureCount", cultureCount);
+        statistics.put("strategyCount", strategyCount);
         statistics.put("orderCount", orderCount);
         statistics.put("pendingCount", pendingCount);
         statistics.put("pendingAttractionCount", pendingAttractionCount);
@@ -1477,11 +1493,19 @@ public class AdminController {
     public Result<?> getChartData() {
         Map<String, Object> chartData = new HashMap<>();
         
-        // 内容分类统计（饼图数据）
-        long attractionCount = attractionMapper.selectCount(null);
-        long foodCount = foodMapper.selectCount(null);
-        long cultureCount = cultureMapper.selectCount(null);
-        long strategyCount = strategyMapper.selectCount(null);
+        // 内容分类统计（饼图数据）- 只统计已审核通过的
+        long attractionCount = attractionMapper.selectCount(
+            new LambdaQueryWrapper<Attraction>().eq(Attraction::getStatus, 1)
+        );
+        long foodCount = foodMapper.selectCount(
+            new LambdaQueryWrapper<Food>().eq(Food::getStatus, 1)
+        );
+        long cultureCount = cultureMapper.selectCount(
+            new LambdaQueryWrapper<Culture>().eq(Culture::getStatus, 1)
+        );
+        long strategyCount = strategyMapper.selectCount(
+            new LambdaQueryWrapper<Strategy>().eq(Strategy::getStatus, 1)
+        );
         long hotelCount = hotelMapper.selectCount(null);
         long experienceCount = experienceMapper.selectCount(null);
         
@@ -1490,9 +1514,10 @@ public class AdminController {
         contentPie.put("values", new long[]{attractionCount, foodCount, cultureCount, strategyCount, hotelCount, experienceCount});
         chartData.put("contentPie", contentPie);
         
-        // 热门景点（柱状图数据）- 按浏览量排序取前10
+        // 热门景点（柱状图数据）- 按浏览量排序取前10，只显示已审核通过的
         List<Attraction> hotAttractions = attractionMapper.selectList(
             new LambdaQueryWrapper<Attraction>()
+                .eq(Attraction::getStatus, 1)
                 .orderByDesc(Attraction::getViewCount)
                 .last("LIMIT 10")
         );
@@ -1523,21 +1548,31 @@ public class AdminController {
         orderPie.put("values", new long[]{ticketOrderCount, hotelOrderCount, experienceOrderCount});
         chartData.put("orderPie", orderPie);
         
-        // 评论统计（柱状图数据）- 各模块评论数
+        // 评论统计（柱状图数据）- 各模块评论数，只统计已审核通过的
         long attractionCommentCount = commentMapper.selectCount(
-            new LambdaQueryWrapper<Comment>().eq(Comment::getTargetType, "attraction")
+            new LambdaQueryWrapper<Comment>()
+                .eq(Comment::getTargetType, "attraction")
+                .eq(Comment::getStatus, 1)
         );
         long foodCommentCount = commentMapper.selectCount(
-            new LambdaQueryWrapper<Comment>().eq(Comment::getTargetType, "food")
+            new LambdaQueryWrapper<Comment>()
+                .eq(Comment::getTargetType, "food")
+                .eq(Comment::getStatus, 1)
         );
         long hotelCommentCount = commentMapper.selectCount(
-            new LambdaQueryWrapper<Comment>().eq(Comment::getTargetType, "hotel")
+            new LambdaQueryWrapper<Comment>()
+                .eq(Comment::getTargetType, "hotel")
+                .eq(Comment::getStatus, 1)
         );
         long cultureCommentCount = commentMapper.selectCount(
-            new LambdaQueryWrapper<Comment>().eq(Comment::getTargetType, "culture")
+            new LambdaQueryWrapper<Comment>()
+                .eq(Comment::getTargetType, "culture")
+                .eq(Comment::getStatus, 1)
         );
         long experienceCommentCount = commentMapper.selectCount(
-            new LambdaQueryWrapper<Comment>().eq(Comment::getTargetType, "experience")
+            new LambdaQueryWrapper<Comment>()
+                .eq(Comment::getTargetType, "experience")
+                .eq(Comment::getStatus, 1)
         );
         
         Map<String, Object> commentBar = new HashMap<>();
